@@ -1,0 +1,7 @@
+openai
+streamlit
+python-dotenv
+streamlit-mic-recorder
+streamlit-audiorecorder
+faiss-cpu 
+numpy 
