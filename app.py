@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 import os
 import mimetypes
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Tuple
 
 import streamlit as st
 from streamlit_mic_recorder import mic_recorder
@@ -13,8 +13,9 @@ from speech import transcribe_audio
 # Step 3: auto-discovery + manifest status
 from doc_registry import scan_and_update_manifest
 
-# Step 6–8 pipeline
-from index_store import scan_and_ingest_if_needed
+# ✅ Blue/Green auto-indexer (same approach as FastAPI)
+from index_manager import SafeAutoIndexer, IndexManagerConfig
+
 from retriever import retrieve
 from answerer import answer_question
 
@@ -104,23 +105,17 @@ textarea[aria-label="Transcribed text"] {
   .card-icon { font-size: 28px; }
 }
 
-/* ---------------- ChatGPT-style references (ONLY affects download buttons) ---------------- */
-div.stDownloadButton > button {
-  background: #f3f4f6 !important;
-  color: #111827 !important;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 999px !important;
-  padding: 6px 12px !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-  box-shadow: none !important;
-  width: auto !important;
+/* ---------------- ChatGPT-style references pills ---------------- */
+.ref-row { display:flex; align-items:center; gap:10px; margin: 6px 0; flex-wrap: wrap; }
+.ref-pill {
+  background:#f3f4f6; color:#111827; border:1px solid #e5e7eb;
+  border-radius:999px; padding:6px 12px; font-size:13px; font-weight:500;
+  display:inline-block;
 }
-div.stDownloadButton > button:hover {
-  background: #eef2ff !important;
-  border-color: #dbeafe !important;
-  transform: none !important;
-  box-shadow: none !important;
+.ref-action {
+  background:#eef2ff; border:1px solid #dbeafe; color:#111827;
+  border-radius:999px; padding:6px 12px; font-size:13px; text-decoration:none;
+  display:inline-block;
 }
 
 /* Reference metadata text */
@@ -140,12 +135,6 @@ def _normalize_assistant_output(raw: Any) -> Tuple[str, List[Dict[str, Any]]]:
     if isinstance(raw, dict):
         return (raw.get("answer", "") or ""), (raw.get("references", []) or [])
     return str(raw), []
-
-
-@st.cache_data(show_spinner=False)
-def _read_file_bytes(path: str) -> bytes:
-    with open(path, "rb") as f:
-        return f.read()
 
 
 def _compress_int_ranges(nums: List[int]) -> str:
@@ -217,6 +206,13 @@ def _group_references(refs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
 
 
 def _render_references_chatgpt_style(references: List[Dict[str, Any]]) -> None:
+    """
+    Shows one reference pill + two options:
+      - Open (new tab)
+      - Download
+    Uses URLs returned by answerer.py (open_url / download_url),
+    with safe fallbacks based on Base_URL + path.
+    """
     if not references:
         return
 
@@ -227,28 +223,47 @@ def _render_references_chatgpt_style(references: List[Dict[str, Any]]) -> None:
     st.markdown("---")
     st.markdown("**References:**")
 
+    baseurl = os.getenv("Base_URL", "https://askpera.infinitysol.agency").rstrip("/")
+
     for i, g in enumerate(grouped, start=1):
         doc = g.get("document", "Unknown document")
-        path = g.get("path", "")
+        path = (g.get("path", "") or "").strip()
         count = int(g.get("count", 1) or 1)
         label = f"{doc} ({count})"
 
-        if path and os.path.exists(path):
-            try:
-                data = _read_file_bytes(path)
-                mime = mimetypes.guess_type(path)[0] or "application/octet-stream"
-                st.download_button(
-                    label=label,
-                    data=data,
-                    file_name=os.path.basename(path),
-                    mime=mime,
-                    key=f"refpill_{hash(path)}_{i}",
-                )
-            except Exception:
-                st.markdown(f"- {label}")
-        else:
-            st.markdown(f"- {label}")
-            st.caption("Source file not found on server.")
+        # representative ref for doc/path to get URL hints
+        ref_match = None
+        for r in references:
+            d = (r.get("document") or r.get("doc_name") or "").strip()
+            p = (r.get("path") or "").strip()
+            if d == doc and p == path:
+                ref_match = r
+                break
+
+        url_hint = (ref_match or {}).get("url_hint") or ""
+        open_url = (ref_match or {}).get("open_url") or ""
+        download_url = (ref_match or {}).get("download_url") or ""
+
+        # Fallback build if missing (path is expected like /assets/data/<file>.pdf)
+        if not open_url and path:
+            open_url = f"{baseurl}{path}{url_hint}"
+        if not download_url and path:
+            # Prefer dedicated download endpoint if your FastAPI has it:
+            # /download/<filename>
+            # Otherwise it will still work (browser may open instead of download).
+            filename = path.split("/")[-1] if "/" in path else path
+            download_url = f"{baseurl}/download/{filename}"
+
+        st.markdown(
+            f"""
+            <div class="ref-row">
+              <div class="ref-pill">{label}</div>
+              <a class="ref-action" href="{open_url}" target="_blank" rel="noopener">Open</a>
+              <a class="ref-action" href="{download_url}" target="_blank" rel="noopener">Download</a>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
         pages: List[int] = g.get("pages") or []
         locs: List[str] = g.get("locs") or []
@@ -298,28 +313,33 @@ def _is_followup(text: str) -> bool:
 
 def _rewrite_followup_to_standalone(followup: str, last_question: str) -> str:
     """
-    Critical fix:
-    Instead of reusing old retrieval, turn follow-up into a retrieval-friendly
-    standalone query using last_question (deterministic, no LLM).
+    Turn follow-up into retrieval-friendly standalone query using last_question.
     """
     f = (followup or "").strip()
     lq = (last_question or "").strip()
     if not lq:
         return f
 
-    # If user is already asking a full standalone question, keep as-is
-    # (simple heuristic: longer query OR contains explicit PERA keywords)
     if len(f.split()) >= 10 or re.search(r"\b(pera|authority|regulation|policy|rule|notification|composition)\b", f, re.I):
         return f
 
-    # Default: anchor it to previous question
     return f"Regarding: {lq}\nFollow-up: {f}"
 
 
-# ---------------- Cached ingest ----------------
+# ---------------- Cached index (Blue/Green) ----------------
 @st.cache_resource(show_spinner=False)
-def _ensure_index_ready():
-    return scan_and_ingest_if_needed(data_dir="assets/data", index_dir="assets/index")
+def _ensure_index_ready() -> Dict[str, Any]:
+    cfg = IndexManagerConfig(
+        data_dir=os.getenv("DATA_DIR", "assets/data"),
+        indexes_root=os.getenv("INDEXES_ROOT", "assets/indexes"),
+        active_pointer_path=os.getenv("INDEX_POINTER_PATH", "assets/indexes/ACTIVE.json"),
+        poll_seconds=int(os.getenv("INDEX_POLL_SECONDS", "30")),
+        keep_last_n=int(os.getenv("INDEX_KEEP_LAST_N", "3")),
+        chunk_max_chars=int(os.getenv("CHUNK_MAX_CHARS", "4500")),
+        chunk_overlap_chars=int(os.getenv("CHUNK_OVERLAP_CHARS", "350")),
+    )
+    ix = SafeAutoIndexer(cfg)
+    return ix.ensure_index_once()
 
 
 # ---------------- Session state ----------------
@@ -360,24 +380,19 @@ def _handle_user_message(user_raw: str):
 
     is_follow = bool(last_q and _is_followup(prompt))
 
-    # ✅ NEW: follow-up -> retrieval-friendly rewrite (instead of reusing last_ret blindly)
     retrieval_query = prompt
     if is_follow:
         retrieval_query = _rewrite_followup_to_standalone(prompt, last_q)
 
     with st.spinner("PERA AI is thinking..."):
-        # 1) Preferred path: retrieve using the rewritten query (stays grounded, avoids wrong reuse)
         retrieval_used = retrieve(retrieval_query)
         composed_q_for_answerer = prompt
 
-        # give answerer the last question as context WITHOUT breaking retrieval
         if is_follow and last_q:
             composed_q_for_answerer = f"{prompt}\n\nContext (previous question): {last_q}"
 
         raw = answer_question(composed_q_for_answerer, retrieval_used)
 
-        # 2) Recovery path: if retrieval failed but we have last retrieval, try it once
-        #    (prevents premature refusal for very short follow-ups)
         if (
             isinstance(raw, dict)
             and (raw.get("answer") or "").strip() == "There is no information available to this question."
@@ -387,7 +402,6 @@ def _handle_user_message(user_raw: str):
             and last_ret.get("has_evidence")
         ):
             raw = answer_question(composed_q_for_answerer, last_ret)
-            # if recovery worked, use last_ret as retrieval_used for memory
             if isinstance(raw, dict) and (raw.get("answer") or "").strip() != "There is no information available to this question.":
                 retrieval_used = last_ret
 
@@ -395,10 +409,7 @@ def _handle_user_message(user_raw: str):
     final_answer = f"{ack} {answer}".strip() if ack else answer
     st.session_state.chat.append({"role": "assistant", "content": final_answer, "references": refs})
 
-    # ✅ Memory update rule:
-    # Update only when we truly have evidence, and keep last_question as the "topic question"
     if isinstance(retrieval_used, dict) and retrieval_used.get("has_evidence"):
-        # if this was a follow-up, keep last_question stable (topic remains same)
         if not is_follow:
             st.session_state.last_question = prompt
         st.session_state.last_retrieval = retrieval_used
@@ -420,7 +431,7 @@ with st.sidebar:
     if st.button("🔄 Refresh Index"):
         st.cache_resource.clear()
         st.cache_data.clear()
-        st.success("Index refresh triggered. Rebuilding now…")
+        st.success("Index refresh triggered. Rebuilding / switching index…")
         st.rerun()
 
     st.markdown("### 💬 Chat History")
@@ -443,7 +454,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Step 3: status line
+# Step 3: status line (manifest only for UI status)
 try:
     status = scan_and_update_manifest(data_dir="assets/data", index_dir="assets/index")
     st.markdown(
@@ -456,13 +467,13 @@ try:
 except Exception as e:
     st.markdown(f"<div class='doc-status'>📚 Document scan failed: {e}</div>", unsafe_allow_html=True)
 
-# Step 6: ensure index ready
+# Step 6: ensure index ready (blue/green)
 with st.spinner("Indexing documents (auto)..."):
     ingest_status = _ensure_index_ready()
 
 st.markdown(
-    f"<div class='doc-status'>🧠 Index: {ingest_status.get('chunks_added', 0)} chunks added "
-    f"(new/changed: {ingest_status.get('new_or_changed', 0)})</div>",
+    f"<div class='doc-status'>🧠 Active Index: {ingest_status.get('active_index_dir','')} "
+    f"| Changed: {ingest_status.get('changed', False)}</div>",
     unsafe_allow_html=True,
 )
 

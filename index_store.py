@@ -23,19 +23,18 @@ from chunker import chunk_units, Chunk
 # -----------------------------
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
 
-# ✅ embedding text format version (forces systematic rebuild when changed)
+# embedding/search format versions (force systematic rebuild when changed)
 EMBED_TEXT_VERSION = int(os.getenv("EMBED_TEXT_VERSION", "2"))
-
-# ✅ NEW: search_text format version (forces systematic rebuild when changed)
 SEARCH_TEXT_VERSION = int(os.getenv("SEARCH_TEXT_VERSION", "1"))
 
-# Safety limits for embedding payload size
 MAX_EMBED_CHARS_PER_TEXT = int(os.getenv("MAX_EMBED_CHARS_PER_TEXT", "7000"))
 MAX_EMBED_CHARS_PER_BATCH = int(os.getenv("MAX_EMBED_CHARS_PER_BATCH", "120000"))
 
-# Chunking defaults (can be overridden by function params)
 DEFAULT_CHUNK_MAX_CHARS = int(os.getenv("CHUNK_MAX_CHARS", "4500"))
 DEFAULT_CHUNK_OVERLAP_CHARS = int(os.getenv("CHUNK_OVERLAP_CHARS", "350"))
+
+# ✅ Critical: if index files are missing/empty, force full ingest even if manifest says "unchanged"
+FORCE_REBUILD_IF_INDEX_MISSING = os.getenv("FORCE_REBUILD_IF_INDEX_MISSING", "1").strip() != "0"
 
 
 # -----------------------------
@@ -44,10 +43,8 @@ DEFAULT_CHUNK_OVERLAP_CHARS = int(os.getenv("CHUNK_OVERLAP_CHARS", "350"))
 def _safe_mkdir(path: str) -> None:
     os.makedirs(path, exist_ok=True)
 
-
 def _p(index_dir: str, name: str) -> str:
     return os.path.join(index_dir, name).replace("\\", "/")
-
 
 def _read_jsonl(path: str) -> List[Dict[str, Any]]:
     if not os.path.exists(path):
@@ -64,7 +61,6 @@ def _read_jsonl(path: str) -> List[Dict[str, Any]]:
                 continue
     return out
 
-
 def _rewrite_jsonl(path: str, rows: List[Dict[str, Any]]) -> None:
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
@@ -72,15 +68,17 @@ def _rewrite_jsonl(path: str, rows: List[Dict[str, Any]]) -> None:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     os.replace(tmp, path)
 
-
 def _sha256_text(s: str) -> str:
     return hashlib.sha256((s or "").encode("utf-8", errors="ignore")).hexdigest()
 
+def _sha256_file(path: str) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
 
 def _safe_default_path(doc_name: str) -> str:
-    """
-    Ensures every chunk row has a stable file path.
-    """
     doc_name = (doc_name or "").strip()
     if not doc_name:
         return ""
@@ -91,19 +89,13 @@ def _safe_default_path(doc_name: str) -> str:
 # FAISS helpers
 # -----------------------------
 def _load_or_create_faiss(faiss_path: str, dim: int) -> faiss.Index:
-    """
-    IndexIDMap(IndexFlatIP) so we can search by inner product (cosine after normalization).
-    """
     if os.path.exists(faiss_path):
         return faiss.read_index(faiss_path)
-
     base = faiss.IndexFlatIP(dim)
     return faiss.IndexIDMap(base)
 
-
 def _save_faiss(index: faiss.Index, faiss_path: str) -> None:
     faiss.write_index(index, faiss_path)
-
 
 def _normalize_vectors(v: np.ndarray) -> np.ndarray:
     norms = np.linalg.norm(v, axis=1, keepdims=True) + 1e-12
@@ -119,19 +111,13 @@ def _require_api_key() -> str:
         raise RuntimeError("OPENAI_API_KEY is missing. Ensure .env is present and loaded.")
     return key
 
-
 def _truncate_text_for_embedding(t: str) -> str:
     t = (t or "").strip()
     if len(t) <= MAX_EMBED_CHARS_PER_TEXT:
         return t
     return t[:MAX_EMBED_CHARS_PER_TEXT]
 
-
 def embed_texts(texts: List[str]) -> np.ndarray:
-    """
-    Embeds texts using char-based batches to avoid token/request limits.
-    Returns float32 numpy array shape (n, dim).
-    """
     if not texts:
         return np.zeros((0, 1), dtype=np.float32)
 
@@ -168,13 +154,12 @@ def embed_texts(texts: List[str]) -> np.ndarray:
         batch_chars += tlen
 
     flush()
-
     vectors = np.array(all_vecs, dtype=np.float32)
     return vectors
 
 
 # -----------------------------
-# Embedding text (semantic)
+# Embedding/search text builders
 # -----------------------------
 def _loc_label(loc_kind: Any, loc_start: Any, loc_end: Any) -> str:
     lk = (loc_kind or "").strip()
@@ -189,7 +174,6 @@ def _loc_label(loc_kind: Any, loc_start: Any, loc_end: Any) -> str:
         return str(loc_start)
     return ""
 
-
 def _build_embed_text_from_parts(
     doc_name: str,
     doc_rank: Any,
@@ -203,22 +187,20 @@ def _build_embed_text_from_parts(
     stype = (source_type or "").strip()
     loc = _loc_label(loc_kind, loc_start, loc_end)
     rank = str(doc_rank) if doc_rank is not None else "0"
-
     header = f"DOCUMENT: {dn}\nRANK: {rank}\nTYPE: {stype}\nLOCATION: {loc}\n"
     body = (raw_text or "").strip()
     return (header + "\n" + body).strip()
 
-
 def _build_embed_text_for_chunk(ch: Chunk) -> str:
-    dn = getattr(ch, "doc_name", "Unknown document")
-    dr = getattr(ch, "doc_rank", 0)
-    st = getattr(ch, "source_type", "")
-    lk = getattr(ch, "loc_kind", "")
-    ls = getattr(ch, "loc_start", None)
-    le = getattr(ch, "loc_end", None)
-    tx = getattr(ch, "chunk_text", "") or ""
-    return _build_embed_text_from_parts(dn, dr, st, lk, ls, le, tx)
-
+    return _build_embed_text_from_parts(
+        getattr(ch, "doc_name", "Unknown document"),
+        getattr(ch, "doc_rank", 0),
+        getattr(ch, "source_type", ""),
+        getattr(ch, "loc_kind", ""),
+        getattr(ch, "loc_start", None),
+        getattr(ch, "loc_end", None),
+        getattr(ch, "chunk_text", "") or "",
+    )
 
 def _build_embed_text_for_row(r: Dict[str, Any]) -> str:
     return _build_embed_text_from_parts(
@@ -231,20 +213,6 @@ def _build_embed_text_for_row(r: Dict[str, Any]) -> str:
         r.get("text", "") or "",
     )
 
-
-def _needs_embed_version_rebuild(rows: List[Dict[str, Any]]) -> bool:
-    for r in rows:
-        if not r.get("active", True):
-            continue
-        v = r.get("embed_text_version")
-        if v is None or int(v) != int(EMBED_TEXT_VERSION):
-            return True
-    return False
-
-
-# -----------------------------
-# ✅ NEW: Search text (lexical-friendly, deterministic, non-hallucinated)
-# -----------------------------
 _TAG_PATTERNS: List[Tuple[str, str]] = [
     (r"\bshall\s+consist\b", "composition"),
     (r"\bconsist\s+of\b", "composition"),
@@ -256,16 +224,11 @@ _TAG_PATTERNS: List[Tuple[str, str]] = [
 ]
 
 def _derive_search_tags(raw_text: str) -> List[str]:
-    """
-    Only add a tag if the chunk itself contains the triggering phrase.
-    This avoids any hallucinated metadata.
-    """
     t = (raw_text or "").lower()
     tags: List[str] = []
     for pat, tag in _TAG_PATTERNS:
         if re.search(pat, t, flags=re.IGNORECASE):
             tags.append(tag)
-    # de-dup preserve order
     seen = set()
     out: List[str] = []
     for x in tags:
@@ -275,7 +238,6 @@ def _derive_search_tags(raw_text: str) -> List[str]:
         out.append(x)
     return out
 
-
 def _build_search_text_from_parts(
     doc_name: str,
     source_type: str,
@@ -284,17 +246,6 @@ def _build_search_text_from_parts(
     loc_end: Any,
     raw_text: str,
 ) -> str:
-    """
-    search_text is for *retrieval robustness* (future-proof).
-    It is deterministic, auditable, and does NOT change user-visible evidence.
-
-    Structure:
-      DOC: <name>
-      TYPE: <pdf/docx>
-      LOC: <Page X> / <Section...>
-      TAGS: <derived tags only if supported by chunk>
-      TEXT: <raw chunk>
-    """
     dn = (doc_name or "Unknown document").strip()
     stype = (source_type or "").strip()
     loc = _loc_label(loc_kind, loc_start, loc_end)
@@ -306,16 +257,15 @@ def _build_search_text_from_parts(
     header = f"DOC: {dn}\nTYPE: {stype}\nLOC: {loc}\n{tags_line}\n"
     return (header + "\n" + body).strip()
 
-
 def _build_search_text_for_chunk(ch: Chunk) -> str:
-    dn = getattr(ch, "doc_name", "Unknown document")
-    st = getattr(ch, "source_type", "")
-    lk = getattr(ch, "loc_kind", "")
-    ls = getattr(ch, "loc_start", None)
-    le = getattr(ch, "loc_end", None)
-    tx = getattr(ch, "chunk_text", "") or ""
-    return _build_search_text_from_parts(dn, st, lk, ls, le, tx)
-
+    return _build_search_text_from_parts(
+        getattr(ch, "doc_name", "Unknown document"),
+        getattr(ch, "source_type", ""),
+        getattr(ch, "loc_kind", ""),
+        getattr(ch, "loc_start", None),
+        getattr(ch, "loc_end", None),
+        getattr(ch, "chunk_text", "") or "",
+    )
 
 def _build_search_text_for_row(r: Dict[str, Any]) -> str:
     return _build_search_text_from_parts(
@@ -327,6 +277,14 @@ def _build_search_text_for_row(r: Dict[str, Any]) -> str:
         r.get("text", "") or "",
     )
 
+def _needs_embed_version_rebuild(rows: List[Dict[str, Any]]) -> bool:
+    for r in rows:
+        if not r.get("active", True):
+            continue
+        v = r.get("embed_text_version")
+        if v is None or int(v) != int(EMBED_TEXT_VERSION):
+            return True
+    return False
 
 def _needs_search_version_rebuild(rows: List[Dict[str, Any]]) -> bool:
     for r in rows:
@@ -346,7 +304,6 @@ def _next_chunk_id(existing_rows: List[Dict[str, Any]]) -> int:
         return 1
     return max(int(r.get("id", 0)) for r in existing_rows) + 1
 
-
 def _mark_inactive_for_doc(rows: List[Dict[str, Any]], doc_name: str) -> int:
     n = 0
     now = int(time.time())
@@ -359,6 +316,28 @@ def _mark_inactive_for_doc(rows: List[Dict[str, Any]], doc_name: str) -> int:
 
 
 # -----------------------------
+# ✅ NEW: Manifest builder for cold-start rebuild
+# -----------------------------
+def _build_manifest_from_scanned(scanned: List[Dict[str, Any]]) -> Dict[str, Any]:
+    files_map: Dict[str, Dict[str, Any]] = {}
+    for e in scanned:
+        try:
+            sha = _sha256_file(e["path"])
+        except Exception:
+            sha = ""
+        files_map[e["filename"]] = {
+            "filename": e["filename"],
+            "path": e["path"],
+            "ext": e.get("ext", ""),
+            "mtime": int(e.get("mtime", 0) or 0),
+            "size": int(e.get("size", 0) or 0),
+            "rank": int(e.get("rank", 0) or 0),
+            "sha256": sha,
+        }
+    return {"version": 1, "files": files_map}
+
+
+# -----------------------------
 # Main: scan + incremental ingest
 # -----------------------------
 def scan_and_ingest_if_needed(
@@ -368,10 +347,6 @@ def scan_and_ingest_if_needed(
     chunk_max_chars: int = DEFAULT_CHUNK_MAX_CHARS,
     chunk_overlap_chars: int = DEFAULT_CHUNK_OVERLAP_CHARS,
 ) -> Dict[str, Any]:
-    """
-    ✅ Now also ensures search_text fields are present (versioned),
-       without changing user-visible evidence text.
-    """
     _safe_mkdir(index_dir)
 
     faiss_path = _p(index_dir, "faiss.index")
@@ -379,52 +354,75 @@ def scan_and_ingest_if_needed(
     manifest_path = _p(index_dir, "manifest.json")
 
     scanned = scan_assets_data(data_dir=data_dir)
-    new_or_changed, unchanged, removed, updated_manifest = compare_with_manifest(
-        scanned=scanned,
-        index_dir=index_dir,
-        manifest_name=manifest_name,
-        compute_hash=True
-    )
 
+    # Read existing rows (if any)
     rows = _read_jsonl(chunks_path)
 
-    # ✅ If index exists but embed/search versions differ, rebuild now (permanent)
-    if os.path.exists(faiss_path) and rows and (_needs_embed_version_rebuild(rows) or _needs_search_version_rebuild(rows)):
-        _ = rebuild_index_from_chunks(index_dir=index_dir)
-        rows = _read_jsonl(chunks_path)
+    # ✅ Cold start detection: manifest may exist but index files are missing/empty
+    chunks_missing_or_empty = (not os.path.exists(chunks_path)) or (os.path.getsize(chunks_path) == 0)
+    faiss_missing = not os.path.exists(faiss_path)
+    cold_start = FORCE_REBUILD_IF_INDEX_MISSING and (faiss_missing or chunks_missing_or_empty)
 
-    start_id = _next_chunk_id(rows)
+    if cold_start:
+        # Force full ingest of all scanned files
+        new_or_changed = list(scanned)
+        unchanged: List[Dict[str, Any]] = []
+        removed: List[Dict[str, Any]] = []
+        updated_manifest = _build_manifest_from_scanned(scanned)
 
-    # Deactivate REMOVED docs too
-    deactivated = 0
-    for r in removed:
-        docname = r.get("filename") or r.get("name")
-        if docname:
-            deactivated += _mark_inactive_for_doc(rows, docname)
+        # Start fresh rows
+        rows = []
+        start_id = 1
+        deactivated = 0
+    else:
+        new_or_changed, unchanged, removed, updated_manifest = compare_with_manifest(
+            scanned=scanned,
+            index_dir=index_dir,
+            manifest_name=manifest_name,
+            compute_hash=True
+        )
 
-    # If nothing new/changed and index exists -> just save manifest and chunks (with deactivations)
-    if not new_or_changed and os.path.exists(faiss_path):
-        _rewrite_jsonl(chunks_path, rows)
-        with open(manifest_path, "w", encoding="utf-8") as f:
-            json.dump(updated_manifest, f, ensure_ascii=False, indent=2)
-        return {
-            "found": len(scanned),
-            "new_or_changed": 0,
-            "unchanged": len(unchanged),
-            "removed": len(removed),
-            "chunks_added": 0,
-            "chunks_deactivated": deactivated,
-            "faiss_vectors_added": 0,
-        }
+        # If embed/search versions differ, rebuild (permanent)
+        if os.path.exists(faiss_path) and rows and (_needs_embed_version_rebuild(rows) or _needs_search_version_rebuild(rows)):
+            _ = rebuild_index_from_chunks(index_dir=index_dir)
+            rows = _read_jsonl(chunks_path)
 
+        start_id = _next_chunk_id(rows)
+
+        # Deactivate removed docs
+        deactivated = 0
+        for r in removed:
+            docname = r.get("filename") or r.get("name")
+            if docname:
+                deactivated += _mark_inactive_for_doc(rows, docname)
+
+        # If nothing new/changed and index exists -> just persist manifest and deactivations
+        if not new_or_changed and os.path.exists(faiss_path):
+            _rewrite_jsonl(chunks_path, rows)
+            with open(manifest_path, "w", encoding="utf-8") as f:
+                json.dump(updated_manifest, f, ensure_ascii=False, indent=2)
+            return {
+                "found": len(scanned),
+                "new_or_changed": 0,
+                "unchanged": len(unchanged),
+                "removed": len(removed),
+                "chunks_added": 0,
+                "chunks_deactivated": deactivated,
+                "faiss_vectors_added": 0,
+                "cold_start_rebuild": False,
+            }
+
+    # If we reach here: we will ingest changed files (or full set for cold start)
     changed_files = [e["path"] for e in new_or_changed]
     changed_names = [e["filename"] for e in new_or_changed]
 
+    # Deactivate previous chunks for changed docs
     for doc in changed_names:
-        deactivated += _mark_inactive_for_doc(rows, doc)
+        _ = _mark_inactive_for_doc(rows, doc)
 
     units = extract_units_from_files(changed_files)
 
+    # Apply rank
     rank_map = {e["filename"]: int(e.get("rank", 0) or 0) for e in new_or_changed}
     for u in units:
         try:
@@ -438,7 +436,6 @@ def scan_and_ingest_if_needed(
         overlap_chars=chunk_overlap_chars
     )
 
-    # embed enriched semantic text
     embed_text_list: List[str] = []
     kept_chunks: List[Chunk] = []
     for c in chunks:
@@ -448,6 +445,7 @@ def scan_and_ingest_if_needed(
         kept_chunks.append(c)
         embed_text_list.append(_build_embed_text_for_chunk(c))
 
+    # If extraction produced nothing, still write manifest
     if not embed_text_list:
         _rewrite_jsonl(chunks_path, rows)
         with open(manifest_path, "w", encoding="utf-8") as f:
@@ -455,11 +453,13 @@ def scan_and_ingest_if_needed(
         return {
             "found": len(scanned),
             "new_or_changed": len(new_or_changed),
-            "unchanged": len(unchanged),
-            "removed": len(removed),
+            "unchanged": 0 if cold_start else len(unchanged),
+            "removed": 0 if cold_start else len(removed),
             "chunks_added": 0,
-            "chunks_deactivated": deactivated,
+            "chunks_deactivated": 0,
             "faiss_vectors_added": 0,
+            "cold_start_rebuild": bool(cold_start),
+            "note": "No chunks extracted from PDFs (check extractors/chunker).",
         }
 
     vectors = embed_texts(embed_text_list)
@@ -468,6 +468,7 @@ def scan_and_ingest_if_needed(
 
     idx = _load_or_create_faiss(faiss_path, dim)
 
+    # If dim mismatch, rebuild from chunks (only makes sense if we had chunks)
     if idx.d != dim:
         rebuilt = rebuild_index_from_chunks(index_dir=index_dir)
         idx = rebuilt["index"]
@@ -504,15 +505,12 @@ def scan_and_ingest_if_needed(
             "loc_end": getattr(ch, "loc_end", None),
             "path": path,
 
-            # ✅ user-visible evidence text
             "text": t,
             "text_sha256": _sha256_text(t),
 
-            # ✅ semantic embedding tracking
             "embed_text_version": int(EMBED_TEXT_VERSION),
             "embed_text_sha256": _sha256_text(embed_text),
 
-            # ✅ lexical search text (future-proof retrieval)
             "search_text_version": int(SEARCH_TEXT_VERSION),
             "search_text_sha256": _sha256_text(search_text),
             "search_text": search_text,
@@ -528,19 +526,16 @@ def scan_and_ingest_if_needed(
     return {
         "found": len(scanned),
         "new_or_changed": len(new_or_changed),
-        "unchanged": len(unchanged),
-        "removed": len(removed),
+        "unchanged": 0 if cold_start else len(unchanged),
+        "removed": 0 if cold_start else len(removed),
         "chunks_added": len(new_rows),
-        "chunks_deactivated": deactivated,
+        "chunks_deactivated": 0,
         "faiss_vectors_added": len(new_rows),
+        "cold_start_rebuild": bool(cold_start),
     }
 
 
 def rebuild_index_from_chunks(index_dir: str = "assets/index") -> Dict[str, Any]:
-    """
-    Rebuild FAISS index from ACTIVE chunks in chunks.jsonl.
-    Also ensures search_text fields are present/versioned.
-    """
     faiss_path = _p(index_dir, "faiss.index")
     chunks_path = _p(index_dir, "chunks.jsonl")
 
@@ -564,7 +559,6 @@ def rebuild_index_from_chunks(index_dir: str = "assets/index") -> Dict[str, Any]
     idx.add_with_ids(vectors, ids)
     _save_faiss(idx, faiss_path)
 
-    # ✅ Mark embed/search versions on ACTIVE rows to prevent repeat rebuilds
     changed = False
     for r, et in zip(active, embed_texts_list):
         if int(r.get("embed_text_version", -1)) != int(EMBED_TEXT_VERSION):
@@ -572,7 +566,6 @@ def rebuild_index_from_chunks(index_dir: str = "assets/index") -> Dict[str, Any]
             r["embed_text_sha256"] = _sha256_text(et)
             changed = True
 
-        # ensure search_text exists + versioned
         stxt = _build_search_text_for_row(r)
         if int(r.get("search_text_version", -1)) != int(SEARCH_TEXT_VERSION) or not r.get("search_text"):
             r["search_text_version"] = int(SEARCH_TEXT_VERSION)

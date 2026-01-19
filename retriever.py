@@ -2,10 +2,84 @@ from __future__ import annotations
 
 import os
 import re
-from typing import List, Dict, Any
+import json
+from typing import List, Dict, Any, Optional
 from collections import defaultdict
 
 from index_store import load_index_and_chunks, embed_texts, _normalize_vectors
+
+
+# -----------------------------
+# ✅ Active index pointer (no circular imports)
+# -----------------------------
+class ActiveIndexPointer:
+    """
+    Reads the current active index directory from a small JSON pointer file.
+    Blue/green index switching without touching live index files.
+    """
+    def __init__(self, pointer_path: str = "assets/indexes/ACTIVE.json"):
+        self.pointer_path = (pointer_path or "").replace("\\", "/")
+
+    def read(self) -> Optional[str]:
+        if not self.pointer_path:
+            return None
+        if not os.path.exists(self.pointer_path):
+            return None
+        try:
+            with open(self.pointer_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            p = (data.get("active_index_dir") or "").strip()
+            if not p:
+                return None
+            p = p.replace("\\", "/")
+            return p if os.path.isdir(p) else None
+        except Exception:
+            return None
+
+
+_ACTIVE_POINTER = ActiveIndexPointer(os.getenv("INDEX_POINTER_PATH", "assets/indexes/ACTIVE.json"))
+
+
+def _resolve_index_dir(index_dir: Optional[str]) -> str:
+    """
+    Resolution order (production-safe):
+      1) explicit index_dir argument (if caller passes it)
+      2) ACTIVE pointer JSON file ✅ MUST win
+      3) INDEX_DIR env fallback (ONLY if pointer missing)
+      4) legacy fallback: assets/index (ONLY if nothing else exists)
+
+    ✅ Key fix:
+    If pointer file exists but points to a missing dir, do NOT silently fall back to assets/index.
+    That fallback is what keeps you stuck on old datasets in production.
+    """
+    # 1) explicit argument
+    if index_dir and str(index_dir).strip():
+        p = str(index_dir).strip().replace("\\", "/")
+        return p if os.path.isdir(p) else "assets/index"
+
+    pointer_path = os.getenv("INDEX_POINTER_PATH", "assets/indexes/ACTIVE.json").replace("\\", "/")
+    pointer_exists = os.path.exists(pointer_path)
+
+    # 2) pointer (must override env)
+    ptr = _ACTIVE_POINTER.read()
+    if ptr:
+        return ptr
+
+    # ✅ pointer exists but is invalid: stop falling back to old assets/index
+    if pointer_exists:
+        # This forces you to fix ACTIVE.json / rebuild index rather than serving stale data
+        return "assets/indexes/__INVALID_POINTER__"
+
+    # 3) env fallback (only if pointer missing)
+    env_dir = os.getenv("INDEX_DIR", "").strip()
+    if env_dir:
+        env_dir = env_dir.replace("\\", "/")
+        if os.path.isdir(env_dir):
+            return env_dir
+
+    # 4) legacy fallback
+    return "assets/index"
+
 
 # -----------------------------
 # Retrieval configuration
@@ -29,9 +103,8 @@ LEX_FALLBACK_ENABLED = os.getenv("RETRIEVER_LEX_FALLBACK_ENABLED", "1").strip() 
 LEX_FALLBACK_MAX = int(os.getenv("RETRIEVER_LEX_FALLBACK_MAX", "80"))
 LEX_FALLBACK_PER_DOC = int(os.getenv("RETRIEVER_LEX_FALLBACK_PER_DOC", "3"))
 
-# Criteria precision
 CRITERIA_DOC_PRIORITIZATION = os.getenv("RETRIEVER_CRITERIA_DOC_PRIORITIZATION", "1").strip() != "0"
-CRITERIA_MIN_DOCS = int(os.getenv("RETRIEVER_CRITERIA_MIN_DOCS", "2"))  # keep at least 2 docs if possible
+CRITERIA_MIN_DOCS = int(os.getenv("RETRIEVER_CRITERIA_MIN_DOCS", "2"))
 
 
 # -----------------------------
@@ -44,7 +117,6 @@ _STOPWORDS = {
     "pera",
 }
 
-# intent-ish / filler words that should NOT dominate overlap decisions
 _INTENT_STOP = {
     "role", "roles", "duty", "duties", "function", "functions", "responsibility",
     "responsibilities", "tor", "tors", "term", "terms", "reference",
@@ -55,7 +127,6 @@ _INTENT_STOP = {
 
 _KEEP_SHORT = {"ai", "ml", "it", "hr", "ppra", "ipo", "cto", "tor", "tors", "dg"}
 
-# deterministic abbreviation expansions (retrieval-side)
 _ABBREV_MAP = {
     "cto": "chief technology officer",
     "tor": "terms of reference",
@@ -63,8 +134,6 @@ _ABBREV_MAP = {
     "dg": "director general",
     "hr": "human resource",
     "it": "information technology",
-
-    # common shorthand / informal
     "mgr": "manager",
     "dev": "development",
     "sr": "senior",
@@ -88,12 +157,6 @@ def _normalize_text(s: str) -> str:
 
 
 def _stem_token(t: str) -> str:
-    """
-    Very small deterministic stemmer (plural/singular robustness):
-    - sergeants -> sergeant
-    - positions -> position
-    - policies -> policy
-    """
     t = (t or "").strip().lower()
     if len(t) <= 3:
         return t
@@ -107,7 +170,6 @@ def _stem_token(t: str) -> str:
         return t[:-2]
     if t.endswith("s") and not t.endswith("ss") and len(t) > 4:
         return t[:-1]
-
     return t
 
 
@@ -137,10 +199,6 @@ def _extract_keywords(question: str) -> List[str]:
 
 
 def _entity_keywords(question: str) -> List[str]:
-    """
-    Entity-focused tokens (titles/roles/nouns) to avoid overlap being dominated
-    by generic intent words like "criteria", "role", "authority", etc.
-    """
     toks = _tokenize_for_overlap(question)
     ent: List[str] = []
     seen = set()
@@ -191,10 +249,7 @@ _COMPOSITION_PHRASES = [
     "shall consist of the following members",
 ]
 
-_CRITERIA_PAT = re.compile(
-    r"\b(criteria|criterion|eligib|qualification|qualify|required|requirement|experience|education|minimum|degree|age|skills?)\b",
-    re.I
-)
+_CRITERIA_PAT = re.compile(r"\b(criteria|criterion|eligib|qualification|qualify|required|requirement|experience|education|minimum|degree|age|skills?)\b", re.I)
 _CRITERIA_PHRASES = [
     "eligibility criteria",
     "minimum qualification",
@@ -206,10 +261,7 @@ _CRITERIA_PHRASES = [
     "skills",
 ]
 
-# role / TOR intent
 _ROLE_PAT = re.compile(r"\b(role|roles|tor|tors|terms of reference|duty|duties|responsibil|function|job description)\b", re.I)
-
-# informal “most power / main authority” intent
 _POWER_PAT = re.compile(r"\b(main authority|most power|most powerful|who holds the most power|who is powerful)\b", re.I)
 
 
@@ -218,47 +270,26 @@ def _intent_extra_keywords(question: str) -> List[str]:
     extras: List[str] = []
 
     if _COMPOSITION_PAT.search(q):
-        extras.extend([
-            "shall", "consist", "comprise", "constitution", "member",
-            "chairperson", "vice", "secretary",
-            "include", "following",
-        ])
-
+        extras.extend(["shall", "consist", "comprise", "constitution", "member", "chairperson", "vice", "secretary", "include", "following"])
     if _CRITERIA_PAT.search(q):
-        extras.extend([
-            "eligibility", "criteria", "qualification", "experience",
-            "education", "minimum", "required", "requirement",
-            "age", "degree", "competenc", "skill",
-        ])
-
+        extras.extend(["eligibility", "criteria", "qualification", "experience", "education", "minimum", "required", "requirement", "age", "degree", "competenc", "skill"])
     if _ROLE_PAT.search(q):
-        extras.extend([
-            "terms", "reference", "tor", "duties", "responsibilities",
-            "functions", "report", "reports", "wing", "purpose",
-        ])
-
+        extras.extend(["terms", "reference", "tor", "duties", "responsibilities", "functions", "report", "reports", "wing", "purpose"])
     if _POWER_PAT.search(q):
-        # common formal anchors (PERA docs often use formal titles)
-        extras.extend([
-            "chairperson", "vice", "authority", "director", "general", "member", "secretary",
-        ])
+        extras.extend(["chairperson", "vice", "authority", "director", "general", "member", "secretary"])
 
-    extras2: List[str] = []
+    out: List[str] = []
     seen = set()
     for e in extras:
         se = _stem_token(e)
         if se in seen:
             continue
         seen.add(se)
-        extras2.append(se)
-    return extras2
+        out.append(se)
+    return out
 
 
 def _swap_two_word_title(ent: List[str]) -> str:
-    """
-    If entity looks like two words (e.g., development manager),
-    produce swapped order: manager development.
-    """
     if len(ent) != 2:
         return ""
     a, b = ent[0], ent[1]
@@ -268,12 +299,6 @@ def _swap_two_word_title(ent: List[str]) -> str:
 
 
 def _build_query_variants(question: str) -> List[str]:
-    """
-    Systematic, deterministic query expansion to prevent regressions from:
-    - word order changes ("Development Manager" vs "Manager Development")
-    - informal phrasing ("main authority / most power")
-    - role phrasing variations ("role" vs "duties" vs "TORs")
-    """
     q = (question or "").strip()
     if not q:
         return [q]
@@ -281,42 +306,34 @@ def _build_query_variants(question: str) -> List[str]:
     variants: List[str] = [q]
     qn = _normalize_text(q)
 
-    # base entity tokens for title-like expansion
     ent = _entity_keywords(q)
     ent_phrase = " ".join(ent[:4]).strip()
 
-    # composition / constitution expansions
     if _COMPOSITION_PAT.search(q):
         variants.append("Authority shall consist of the following members chairperson vice chairperson secretary member")
         variants.append("Constitution of the Authority members of the Authority")
 
-    # criteria expansions
     if _CRITERIA_PAT.search(qn):
         variants.append(f"{q} eligibility criteria qualification experience")
         variants.append(f"{q} minimum qualification experience required")
 
-    # role/TOR expansions
     if _ROLE_PAT.search(qn) and ent_phrase:
         variants.append(f"terms of reference of {ent_phrase} in PERA")
         variants.append(f"duties and responsibilities of {ent_phrase} in PERA")
         variants.append(f"job description of {ent_phrase} in PERA")
 
-    # word-order robustness for 2-word role titles
     swapped = _swap_two_word_title(ent[:2])
     if swapped:
-        # preserve original user query but add swap variants
         variants.append(re.sub(r"\s+", " ", q, flags=re.I).strip().replace(ent[0] + " " + ent[1], swapped))
         variants.append(f"{swapped} role duties responsibilities in PERA")
 
-    # informal power/authority mapping
     if _POWER_PAT.search(qn):
         variants.append("chairperson vice chairperson authority powers")
         variants.append("director general powers functions authority")
         variants.append("who is chairperson of the authority and who has powers")
 
-    # de-dup preserve order
-    seen = set()
     out: List[str] = []
+    seen = set()
     for v in variants:
         v = v.strip()
         if not v:
@@ -326,7 +343,6 @@ def _build_query_variants(question: str) -> List[str]:
             continue
         seen.add(key)
         out.append(v)
-
     return out[:MAX_QUERY_VARIANTS]
 
 
@@ -342,12 +358,6 @@ def _required_overlap(keywords: List[str], strict: bool) -> int:
 
 
 def _lexical_fallback_hits(rows: List[Dict[str, Any]], all_keywords: List[str], entity_kw: List[str], question: str) -> Dict[int, float]:
-    """
-    Lexical fallback is ONLY a safety net when:
-      - query is composition/criteria-like
-      - AND the row text matches strong legal phrases or has meaningful overlap
-      - AND at least one ENTITY keyword appears (prevents broad-intent noise)
-    """
     if not LEX_FALLBACK_ENABLED:
         return {}
 
@@ -365,26 +375,17 @@ def _lexical_fallback_hits(rows: List[Dict[str, Any]], all_keywords: List[str], 
     for r in rows:
         if not r.get("active", True):
             continue
-
         text = r.get("text") or ""
         if not text:
             continue
 
         tn = _normalize_text(text)
-
         phrase_hit = any(p in tn for p in phrases)
-
-        # overlap against all keywords (intent+entity)
         overlap_all = _keyword_overlap_count(all_keywords, text)
-
-        # overlap against entity keywords (role/title tokens)
         overlap_ent = _keyword_overlap_count(entity_kw, text) if entity_kw else 0
 
-        # ✅ Key regression fix: do not accept generic matches without entity anchor
-        # (prevents “criteria” queries from pulling unrelated HR/panel docs)
         if entity_kw and overlap_ent < 1 and not phrase_hit:
             continue
-
         if not phrase_hit and overlap_all < 2:
             continue
 
@@ -412,7 +413,6 @@ def _lexical_fallback_hits(rows: List[Dict[str, Any]], all_keywords: List[str], 
     return best
 
 
-# Criteria doc scoring (precision)
 def _criteria_doc_signal_score(doc: Dict[str, Any]) -> float:
     hits = doc.get("hits", []) or []
     if not hits:
@@ -420,6 +420,7 @@ def _criteria_doc_signal_score(doc: Dict[str, Any]) -> float:
 
     h0 = hits[0]
     txt = _normalize_text(h0.get("text") or "")
+
     phrase_hits = 0
     for p in _CRITERIA_PHRASES:
         if p in txt:
@@ -459,7 +460,9 @@ def _apply_criteria_doc_prioritization(question: str, evidence_docs: List[Dict[s
 # -----------------------------
 # Main retrieval
 # -----------------------------
-def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
+def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
+    index_dir = _resolve_index_dir(index_dir)
+
     empty = {
         "question": question,
         "has_evidence": False,
@@ -472,10 +475,23 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
     if not question:
         return empty
 
+    # ✅ If pointer exists but invalid => do not serve stale assets/index
+    if index_dir.endswith("__INVALID_POINTER__"):
+        return empty
+
     try:
         idx, rows = _load_index_rows(index_dir=index_dir)
         if idx is None or not rows:
             return empty
+
+        # ✅ HARD SAFETY: if index still contains ANY docx rows, treat index as stale
+        # This prevents production from silently serving old datasets.
+        for r in rows:
+            dn = str(r.get("doc_name", "")).lower()
+            p = str(r.get("path", "")).lower()
+            st = str(r.get("source_type", "")).lower()
+            if dn.endswith(".docx") or p.endswith(".docx") or st == "docx":
+                return empty
 
         id_to_row = _rows_by_id(rows)
 
@@ -483,15 +499,11 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
         if QUERY_VARIANTS_ENABLED:
             queries = _build_query_variants(question)
 
-        # keywords:
-        # - entity_kw: title/role tokens (robust to word order and pluralization)
-        # - all_kw: entity + intent extras
         entity_kw = _entity_keywords(question)
         base_kw = _extract_keywords(question)
         extras_kw = _intent_extra_keywords(question)
         all_kw = base_kw + [k for k in extras_kw if k not in base_kw]
 
-        # semantic search across variants
         q_vecs = embed_texts(queries)
         q_vecs = _normalize_vectors(q_vecs)
         scores_mat, ids_mat = idx.search(q_vecs, TOP_K)
@@ -512,7 +524,6 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
                 if prev is None or score > prev:
                     best_by_id[vid_i] = score
 
-        # lexical fallback merge (composition/criteria only, entity-anchored)
         lex_best = _lexical_fallback_hits(rows, all_kw, entity_kw, question)
         for cid, pseudo in lex_best.items():
             prev = best_by_id.get(cid)
@@ -522,7 +533,6 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
         if not best_by_id:
             return empty
 
-        # Build hit objects
         hits: List[Dict[str, Any]] = []
         for vid_i, score in best_by_id.items():
             r = id_to_row.get(int(vid_i))
@@ -530,12 +540,8 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
                 continue
 
             text = (r.get("text") or "")
-
-            # ✅ Overlap should primarily reflect ENTITY alignment (prevents noisy intent-only matches)
             overlap_entity = _keyword_overlap_count(entity_kw, text) if entity_kw else 0
             overlap_all = _keyword_overlap_count(all_kw, text)
-
-            # store overlap as entity overlap if we have entity tokens; else fall back to all overlap
             overlap = overlap_entity if entity_kw else overlap_all
 
             hits.append({
@@ -550,7 +556,6 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
                 "loc_start": r.get("loc_start"),
                 "loc_end": r.get("loc_end"),
                 "path": r.get("path"),
-                # keep diagnostics (harmless if ignored)
                 "overlap_all": int(overlap_all),
                 "overlap_entity": int(overlap_entity),
             })
@@ -558,7 +563,6 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
         if not hits:
             return empty
 
-        # strict pass (use entity-based overlap gates)
         strict_req = _required_overlap(entity_kw if entity_kw else base_kw, strict=True)
         strict_hits = [h for h in hits if (int(h.get("overlap", 0)) >= strict_req)]
 
@@ -568,7 +572,6 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
 
         final_hits = strict_hits if strict_hits else hits
 
-        # group by document
         grouped: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
         ranks: Dict[str, int] = {}
         for h in final_hits:
@@ -583,11 +586,7 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
                 reverse=True
             )
             doc_hits = doc_hits[:MAX_CHUNKS_PER_DOC]
-            evidence_docs.append({
-                "doc_name": dn,
-                "doc_rank": ranks.get(dn, 0),
-                "hits": doc_hits
-            })
+            evidence_docs.append({"doc_name": dn, "doc_rank": ranks.get(dn, 0), "hits": doc_hits})
 
         def best_score(ed: Dict[str, Any]) -> float:
             hs = ed.get("hits", [])
@@ -602,10 +601,7 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
             reverse=True
         )
 
-        strong = [
-            ed for ed in evidence_docs
-            if ed.get("hits") and float(ed["hits"][0]["score"]) >= STRONG_SIM_THRESHOLD
-        ]
+        strong = [ed for ed in evidence_docs if ed.get("hits") and float(ed["hits"][0]["score"]) >= STRONG_SIM_THRESHOLD]
         primary = strong[0] if strong else evidence_docs[0]
 
         best = best_score(primary)
@@ -617,8 +613,6 @@ def retrieve(question: str, index_dir: str = "assets/index") -> Dict[str, Any]:
                 kept_docs.append(ed)
 
         kept_docs = kept_docs[:MAX_DOCS_RETURNED]
-
-        # apply criteria precision reorder (after pruning)
         kept_docs = _apply_criteria_doc_prioritization(question, kept_docs)
 
         return {

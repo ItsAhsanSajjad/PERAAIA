@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import re
 from typing import Dict, Any, List
+from urllib.parse import quote
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -21,7 +22,7 @@ MAX_EVIDENCE_CHARS = int(os.getenv("MAX_EVIDENCE_CHARS", "24000"))
 ANSWER_MIN_TOP_SCORE = float(os.getenv("ANSWER_MIN_TOP_SCORE", "0.45"))
 HIT_MIN_SCORE = float(os.getenv("HIT_MIN_SCORE", "0.40"))
 
-# ✅ NEW: if semantic score is strong, allow evidence even with low lexical overlap
+# if semantic score is strong, allow evidence even with low lexical overlap
 HIT_STRONG_SCORE_BYPASS = float(os.getenv("HIT_STRONG_SCORE_BYPASS", "0.62"))
 
 MAX_HITS_PER_DOC_FOR_PROMPT = int(os.getenv("MAX_HITS_PER_DOC_FOR_PROMPT", "4"))
@@ -30,6 +31,10 @@ MAX_REFS_RETURNED = int(os.getenv("MAX_REFS_RETURNED", "8"))
 
 # Reference snippet size
 REF_SNIPPET_CHARS = int(os.getenv("REF_SNIPPET_CHARS", "360"))
+
+# Base URL for full links (used by API + mobile clients)
+BASE_URL = os.getenv("Base_URL", "https://askpera.infinitysol.agency").rstrip("/")
+
 
 # -----------------------------
 # Client
@@ -62,7 +67,7 @@ def _strip_inline_citations(text: str) -> str:
 
 
 # -----------------------------
-# ✅ Query normalization for lexical scoring
+# Query normalization for lexical scoring
 # -----------------------------
 _STOPWORDS = {
     "the", "a", "an", "is", "are", "was", "were", "to", "of", "and", "or",
@@ -70,7 +75,6 @@ _STOPWORDS = {
     "who", "what", "when", "where", "why", "how", "please",
 }
 
-# ✅ Deterministic abbreviation expansions (helps overlap detection)
 _ABBREV_MAP = {
     "cto": "chief technology officer",
     "tor": "terms of reference",
@@ -85,7 +89,6 @@ _ABBREV_MAP = {
 
 def _expand_abbreviations(q: str) -> str:
     s = (q or "").lower()
-    # replace whole words only
     for k, v in _ABBREV_MAP.items():
         s = re.sub(rf"\b{re.escape(k)}\b", v, s)
     return s
@@ -93,7 +96,6 @@ def _expand_abbreviations(q: str) -> str:
 
 def _tokenize(s: str) -> List[str]:
     s = _expand_abbreviations(s or "")
-    # keep english + digits + urdu block
     s = re.sub(r"[^a-z0-9\u0600-\u06FF\s]", " ", s)
     s = re.sub(r"\s+", " ", s).strip()
     toks = []
@@ -114,18 +116,57 @@ def _keyword_overlap(question: str, text: str) -> int:
     return len(q.intersection(t))
 
 
-def _safe_default_path(doc_name: str) -> str:
-    doc_name = (doc_name or "").strip()
-    if not doc_name:
-        return ""
-    return os.path.join("assets", "data", doc_name).replace("\\", "/")
+# -----------------------------
+# Paths / URLs
+# -----------------------------
+def _safe_default_url_path(doc_name: str) -> str:
+    """
+    Public path for FastAPI static mount:
+      /assets/data/<filename>
+    """
+    dn = (doc_name or "").strip()
+    if not dn:
+        return "/assets/data"
+    return f"/assets/data/{dn}".replace("\\", "/")
 
 
-def _file_type_from_path(path: str) -> str:
-    p = (path or "").lower()
-    if p.endswith(".pdf"):
+def _normalize_public_path(path_or_url: str, doc_name: str) -> str:
+    """
+    Normalize any stored path into /assets/data/<file>.pdf
+    """
+    p = (path_or_url or "").strip().replace("\\", "/")
+
+    # If already correct public path
+    if p.startswith("/assets/data/"):
+        return p
+
+    # If filesystem-ish relative
+    if p.startswith("assets/data/"):
+        return "/" + p
+
+    # If it's something like ".../assets/data/<file>"
+    if "/assets/data/" in p:
+        tail = p.split("/assets/data/", 1)[1]
+        return "/assets/data/" + tail
+
+    # If it ends in a filename, use doc_name filename
+    if p.lower().endswith(".pdf"):
+        filename = p.split("/")[-1]
+        return f"/assets/data/{filename}"
+
+    # fallback
+    return _safe_default_url_path(doc_name)
+
+
+def _file_type_from_doc(doc_name: str, public_path: str) -> str:
+    """
+    We only want PDFs now. If something old leaks in, label it but still generate safe links.
+    """
+    dn = (doc_name or "").lower().strip()
+    pp = (public_path or "").lower().strip()
+    if dn.endswith(".pdf") or pp.endswith(".pdf"):
         return "pdf"
-    if p.endswith(".docx"):
+    if dn.endswith(".docx") or pp.endswith(".docx"):
         return "docx"
     return "file"
 
@@ -138,6 +179,23 @@ def _make_snippet(text: str) -> str:
     if len(t) <= REF_SNIPPET_CHARS:
         return t
     return t[: REF_SNIPPET_CHARS].rstrip() + "…"
+
+
+def _build_open_url(public_path: str, url_hint: str) -> str:
+    """
+    Full open URL for web/mobile.
+    """
+    return f"{BASE_URL}{public_path}{url_hint or ''}"
+
+
+def _build_download_url(doc_name: str) -> str:
+    """
+    Uses FastAPI endpoint:
+      /download/{filename}
+    """
+    filename = (doc_name or "").strip()
+    # ensure safe URL encoding for spaces/special chars
+    return f"{BASE_URL}/download/{quote(filename)}"
 
 
 # -----------------------------
@@ -186,15 +244,9 @@ def _truncate_evidence_blocks(evidence_docs: List[Dict[str, Any]]) -> str:
 
 
 # -----------------------------
-# ✅ Evidence filtering (SYSTEMATIC FIX)
+# Evidence filtering
 # -----------------------------
 def _filter_evidence(question: str, evidence_docs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """
-    Keep ONLY high-confidence hits.
-    Systematic fix:
-    - Prefer retriever-provided overlap if present.
-    - Allow strong semantic hits even if lexical overlap is 0 (prevents false refusals).
-    """
     filtered: List[Dict[str, Any]] = []
 
     for d in evidence_docs:
@@ -210,7 +262,6 @@ def _filter_evidence(question: str, evidence_docs: List[Dict[str, Any]]) -> List
             if not txt:
                 continue
 
-            # ✅ Prefer retriever overlap (already tuned with variants/intent)
             retr_overlap = h.get("overlap")
             if retr_overlap is not None:
                 try:
@@ -218,20 +269,15 @@ def _filter_evidence(question: str, evidence_docs: List[Dict[str, Any]]) -> List
                 except Exception:
                     retr_overlap = None
 
-            # ✅ If overlap exists and is >=1, accept
             if retr_overlap is not None and retr_overlap >= 1:
                 good_hits.append(h)
                 continue
 
-            # Otherwise compute our own lexical overlap (abbrev-expanded)
             lex_ov = _keyword_overlap(question, txt)
-
-            # ✅ If lexical overlap exists, accept
             if lex_ov > 0:
                 good_hits.append(h)
                 continue
 
-            # ✅ Strong semantic bypass (prevents “info exists but refused”)
             if score >= HIT_STRONG_SCORE_BYPASS:
                 good_hits.append(h)
                 continue
@@ -251,8 +297,10 @@ def _filter_evidence(question: str, evidence_docs: List[Dict[str, Any]]) -> List
 def _make_reference(hit: Dict[str, Any]) -> Dict[str, Any]:
     doc = hit.get("doc_name", "Unknown document")
 
-    path = (hit.get("path") or "").strip() or _safe_default_path(doc)
-    path = path.replace("\\", "/")
+    # ✅ hard safety: we only want to expose PDFs now
+    # If doc_name is .docx somehow, still build paths but mark file_type
+    raw_path = (hit.get("path") or "").strip()
+    public_path = _normalize_public_path(raw_path, doc)
 
     loc_kind = hit.get("loc_kind")
     loc_start = hit.get("loc_start")
@@ -260,23 +308,37 @@ def _make_reference(hit: Dict[str, Any]) -> Dict[str, Any]:
 
     snippet = _make_snippet(hit.get("text") or "")
 
+    # url_hint supports page linking for PDFs
+    url_hint = ""
+    if loc_kind == "page" and loc_start is not None:
+        url_hint = f"#page={loc_start}"
+
+    open_url = _build_open_url(public_path, url_hint)
+    download_url = _build_download_url(doc)
+
     ref: Dict[str, Any] = {
         "document": doc,
-        "path": path,
-        "file_type": _file_type_from_path(path),
+
+        # ✅ path remains URL path for static mount (backward compatible)
+        "path": public_path,
+
+        # ✅ new fields for mobile/devs
+        "open_url": open_url,
+        "download_url": download_url,
+
+        "file_type": _file_type_from_doc(doc, public_path),
         "loc_kind": loc_kind,
         "loc_start": loc_start,
         "loc_end": loc_end,
         "snippet": snippet,
+        "url_hint": url_hint,
     }
 
     if loc_kind == "page" and loc_start is not None:
         ref["page_start"] = loc_start
         ref["page_end"] = loc_start if loc_end is None else loc_end
-        ref["url_hint"] = f"#page={loc_start}"
     else:
         ref["loc"] = str(loc_start) if loc_start is not None else ""
-        ref["url_hint"] = ""
 
     return ref
 
@@ -307,13 +369,6 @@ def _build_references_from_filtered(evidence_docs: List[Dict[str, Any]]) -> List
 # Main answering API
 # -----------------------------
 def answer_question(question: str, retrieval: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Output format:
-    - Answer text only (NO inline citations)
-    - References returned only in 'references' list for UI
-    - Greeting/smalltalk handled deterministically with no retrieval/refs
-    """
-
     decision = decide_smalltalk(question or "")
     if decision and decision.is_greeting_only:
         return {"answer": decision.response, "references": []}
@@ -325,7 +380,6 @@ def answer_question(question: str, retrieval: Dict[str, Any]) -> Dict[str, Any]:
     if not evidence_docs:
         return _refuse()
 
-    # ✅ Filter out irrelevant evidence (now recall-safe)
     evidence_docs = _filter_evidence(question, evidence_docs)
     if not evidence_docs:
         return _refuse()

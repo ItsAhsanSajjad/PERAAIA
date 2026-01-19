@@ -4,11 +4,11 @@ import os
 import json
 import hashlib
 import re
-from dataclasses import dataclass
 from typing import List, Dict, Tuple
 
 
-SUPPORTED_EXTS = (".pdf", ".docx")
+# PDF-only (DOCX migrated and removed)
+SUPPORTED_EXTS = (".pdf",)
 
 
 def _safe_mkdir(path: str) -> None:
@@ -41,7 +41,7 @@ def _parse_book_rank(filename: str) -> int:
 
 def scan_assets_data(data_dir: str = "assets/data") -> List[Dict]:
     """
-    Scans assets/data for .pdf and .docx.
+    Scans assets/data for PDFs.
     Returns list of dict entries with basic file metadata.
     """
     data_dir = data_dir.replace("\\", "/")
@@ -53,6 +53,7 @@ def scan_assets_data(data_dir: str = "assets/data") -> List[Dict]:
         full = os.path.join(data_dir, name).replace("\\", "/")
         if not os.path.isfile(full):
             continue
+
         low = name.lower()
         if not low.endswith(SUPPORTED_EXTS):
             continue
@@ -113,11 +114,11 @@ def compare_with_manifest(
     unchanged: List[Dict] = []
 
     for entry in scanned:
-        key = entry["filename"]  # keying by filename (simple + matches your requirement)
+        key = entry["filename"]
         current_keys.add(key)
 
         prev = mf_files.get(key)
-        # Compute hash only when needed (but compute_hash=True recommended)
+
         if compute_hash:
             entry_hash = _sha256_file(entry["path"])
         else:
@@ -131,7 +132,6 @@ def compare_with_manifest(
             new_or_changed.append(entry_out)
             continue
 
-        # Compare against manifest
         changed = False
         if compute_hash and prev.get("sha256") != entry_hash:
             changed = True
@@ -153,7 +153,6 @@ def compare_with_manifest(
     # Build updated manifest (only current scanned files)
     new_files_map: Dict[str, Dict] = {}
     for e in scanned:
-        # add sha256 if enabled
         sha = _sha256_file(e["path"]) if compute_hash else mf_files.get(e["filename"], {}).get("sha256")
         new_files_map[e["filename"]] = {
             "filename": e["filename"],
@@ -166,7 +165,6 @@ def compare_with_manifest(
         }
 
     updated_manifest = {"version": 1, "files": new_files_map}
-
     return new_or_changed, unchanged, removed, updated_manifest
 
 
@@ -175,23 +173,6 @@ def scan_and_update_manifest(
     index_dir: str = "assets/index",
     manifest_name: str = "manifest.json",
 ) -> Dict:
-    """
-    One call convenience function used by Streamlit:
-    - scans assets/data
-    - compares with manifest
-    - writes manifest
-    - returns status dict for UI
-
-    Output example:
-      {
-        "found": 5,
-        "new_or_changed": 2,
-        "unchanged": 3,
-        "removed": 1,
-        "new_or_changed_files": [...],
-        "removed_files": [...],
-      }
-    """
     scanned = scan_assets_data(data_dir=data_dir)
     new_or_changed, unchanged, removed, updated_manifest = compare_with_manifest(
         scanned=scanned,
