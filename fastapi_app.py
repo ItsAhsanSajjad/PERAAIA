@@ -46,10 +46,11 @@ def ask_question(request: QueryRequest):
             path = ref.get("path", "")
             url_hint = ref.get("url_hint", "")
             snippet = ref.get("snippet", "")
+            baseurl=os.getenv("Base_URL", "https://askpera.infinitysol.agency/")
 
             html_answer += f"""
             <li style="margin-bottom:6px;">
-              <a href="http://10.53.34.67:8020/{path}{url_hint}" target="_blank" download>{doc}</a>
+              <a href="{baseurl}/{path}{url_hint}" target="_blank" download>{doc}</a>
               <p style="margin:2px 0;">{snippet}</p>
             </li>
             """
