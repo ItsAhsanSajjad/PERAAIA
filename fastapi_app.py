@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import os
-from typing import Optional
+from urllib.parse import quote
+from typing import List, Dict, Any, Tuple
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
@@ -11,7 +12,7 @@ from pydantic import BaseModel
 from retriever import retrieve
 from answerer import answer_question
 
-# ✅ Auto-indexer (safe blue/green builds + atomic pointer switch)
+# Auto-indexer (safe blue/green builds + atomic pointer switch)
 from index_manager import SafeAutoIndexer, IndexManagerConfig
 
 
@@ -28,7 +29,7 @@ app.mount(
 )
 
 # -----------------------------
-# ✅ Auto-indexer setup
+#  Auto-indexer setup
 # -----------------------------
 INDEXES_ROOT = os.getenv("INDEXES_ROOT", os.path.join("assets", "indexes")).replace("\\", "/")
 ACTIVE_POINTER_PATH = os.getenv("INDEX_POINTER_PATH", os.path.join("assets", "indexes", "ACTIVE.json")).replace("\\", "/")
@@ -51,10 +52,11 @@ indexer = SafeAutoIndexer(
     )
 )
 
+
 @app.on_event("startup")
 def _startup_indexer():
     """
-    ✅ Starts background indexing:
+     Starts background indexing:
     - bootstraps an initial index if ACTIVE pointer missing
     - then polls for new/changed PDFs and rebuilds safely
     """
@@ -77,16 +79,14 @@ class QueryResponse(BaseModel):
 class QueryResponseJSON(BaseModel):
     user_id: str
     answer: str
-    references: list
+    references: List[Dict[str, Any]]
 
 
 # -----------------------------
 # Helpers
 # -----------------------------
 def _is_safe_under_assets_data(abs_path: str) -> bool:
-    """
-    Prevent path traversal: ensure abs_path is under DATA_DIR.
-    """
+    """Prevent path traversal: ensure abs_path is under DATA_DIR."""
     try:
         data_abs = os.path.abspath(DATA_DIR)
         file_abs = os.path.abspath(abs_path)
@@ -95,16 +95,53 @@ def _is_safe_under_assets_data(abs_path: str) -> bool:
         return False
 
 
-def _to_assets_data_rel(doc_name: str) -> str:
+def _extract_filename(ref_path: str, doc_name: str) -> str:
     """
-    Convert doc_name into 'assets/data/<doc_name>' relative path.
+    Given a reference path (maybe '/assets/data/x.pdf' or 'assets/data/x.pdf' or ''),
+    return a safe filename to use in /download/{filename}.
     """
-    doc_name = (doc_name or "").strip()
-    return os.path.join("assets", "data", doc_name).replace("\\", "/")
+    p = (ref_path or "").strip().replace("\\", "/")
+
+    if p.startswith("/assets/data/") or p.startswith("assets/data/"):
+        return os.path.basename(p)
+
+    if p.lower().endswith(".pdf"):
+        return os.path.basename(p)
+
+    # Fallback to doc_name (which should already be the filename)
+    return os.path.basename((doc_name or "").strip())
+
+
+def _dedupe_references(refs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """
+    Deduplicate repeated references so the same file doesn't appear multiple times
+    just because multiple chunks were used.
+    """
+    seen = set()
+    out: List[Dict[str, Any]] = []
+    for r in refs or []:
+        if not isinstance(r, dict):
+            continue
+        doc = (r.get("document") or "Unknown document").strip()
+        filename = _extract_filename(r.get("path", ""), doc)
+        key = (doc, filename)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(r)
+    return out
+
+
+def _build_download_url(baseurl: str, filename: str) -> str:
+    """
+    IMPORTANT: URL-encode filenames so spaces/unicode/() don't cause 403/404.
+    """
+    safe = quote(filename)
+    return f"{baseurl}/download/{safe}"
 
 
 # -----------------------------
-# ✅ Download endpoint (forces download with headers)
+#  Download endpoint (forces download)
 # -----------------------------
 @app.get("/download/{filename:path}")
 def download_pdf(filename: str):
@@ -114,8 +151,9 @@ def download_pdf(filename: str):
       /download/PERA%20Special%20Allowaance%20Advice%2019-01-2026.pdf
     """
     filename = (filename or "").strip()
+    if not filename:
+        raise HTTPException(status_code=400, detail="Filename is required.")
 
-    # Only allow direct file names under DATA_DIR
     abs_path = os.path.join(DATA_DIR, filename).replace("\\", "/")
 
     if not _is_safe_under_assets_data(abs_path):
@@ -124,17 +162,16 @@ def download_pdf(filename: str):
     if not os.path.exists(abs_path) or not os.path.isfile(abs_path):
         raise HTTPException(status_code=404, detail="File not found.")
 
-    # Force download
     return FileResponse(
         abs_path,
         media_type="application/pdf",
         filename=os.path.basename(abs_path),
-        headers={"Content-Disposition": f'attachment; filename="{os.path.basename(abs_path)}"'}
+        headers={"Content-Disposition": f'attachment; filename="{os.path.basename(abs_path)}"'},
     )
 
 
 # -----------------------------
-# Main endpoint (HTML)
+# Main endpoint (HTML)  ONLY DOWNLOAD LINKS
 # -----------------------------
 @app.post("/ask", response_model=QueryResponse)
 def ask_question(request: QueryRequest):
@@ -143,61 +180,43 @@ def ask_question(request: QueryRequest):
 
     baseurl = os.getenv("Base_URL", "https://askpera.infinitysol.agency").rstrip("/")
 
-    html_answer = f"""
-    <div style="font-family: Arial, sans-serif; line-height: 1.6; margin:0; padding:0;">
-      <p style="margin:0; padding:0;">{result['answer']}</p>
-    """
+    answer_text = result.get("answer", "") or ""
+    references = _dedupe_references(result.get("references", []) or [])
 
-    references = result.get("references", []) or []
+    parts: List[str] = []
+    parts.append('<div style="font-family: Arial, sans-serif; line-height: 1.6; margin:0; padding:0;">')
+    parts.append(f'<p style="margin:0; padding:0;">{answer_text}</p>')
+
     if references:
-        html_answer += """
-        <hr style="margin:8px 0;" />
-        <h3 style="margin:4px 0;">References</h3>
-        <ol style="margin:0; padding-left:18px;">
-        """
+        parts.append('<hr style="margin:8px 0;" />')
+        parts.append('<h3 style="margin:4px 0;">References</h3>')
+        parts.append('<ol style="margin:0; padding-left:18px;">')
 
         for ref in references:
-            doc = ref.get("document", "Unknown document")
-            snippet = ref.get("snippet", "") or ""
+            doc = (ref.get("document") or "Unknown document").strip()
+            snippet = (ref.get("snippet") or "").strip()
 
-            # Your answerer stores a relative path like assets/data/<file>.pdf
-            # We normalize it for open link:
-            path = (ref.get("path") or "").strip()
-            if not path:
-                path = _to_assets_data_rel(doc)
+            filename = _extract_filename(ref.get("path", ""), doc)
+            download_href = _build_download_url(baseurl, filename)
 
-            # Ensure starts with / for web
-            open_path = "/" + path.lstrip("/")
+            parts.append(
+                f"""
+                <li style="margin-bottom:6px;">
+                  <a href="{download_href}" download>{doc}</a>
+                  <p style="margin:2px 0;">{snippet}</p>
+                </li>
+                """.strip()
+            )
 
-            url_hint = (ref.get("url_hint") or "").strip()
+        parts.append("</ol>")
 
-            open_href = f"{baseurl}{open_path}{url_hint}"
+    parts.append("</div>")
 
-            # Download uses our download endpoint with filename only
-            # Extract filename from path:
-            filename = os.path.basename(path)
-            download_href = f"{baseurl}/download/{filename}"
-
-            html_answer += f"""
-            <li style="margin-bottom:10px;">
-              <div style="margin-bottom:4px;"><strong>{doc}</strong></div>
-              <div style="margin-bottom:4px;">
-                <a href="{open_href}" target="_blank" rel="noopener noreferrer">Open</a>
-                &nbsp;|&nbsp;
-                <a href="{download_href}">Download</a>
-              </div>
-              <p style="margin:2px 0;">{snippet}</p>
-            </li>
-            """
-
-        html_answer += "</ol>"
-
-    html_answer = html_answer.rstrip("</p>\n    </div>") + "</p></div>"
-    return QueryResponse(user_id=request.user_id, answer=html_answer.strip())
+    return QueryResponse(user_id=request.user_id, answer="\n".join(parts).strip())
 
 
 # -----------------------------
-# ✅ JSON endpoint (recommended for mobile)
+# JSON endpoint (for mobile) ONLY DOWNLOAD LINKS
 # -----------------------------
 @app.post("/ask_json", response_model=QueryResponseJSON)
 def ask_question_json(request: QueryRequest):
@@ -206,28 +225,22 @@ def ask_question_json(request: QueryRequest):
 
     baseurl = os.getenv("Base_URL", "https://askpera.infinitysol.agency").rstrip("/")
 
-    refs_out = []
-    for ref in (result.get("references") or []):
-        doc = ref.get("document", "Unknown document")
-        snippet = ref.get("snippet", "") or ""
+    references = _dedupe_references(result.get("references", []) or [])
 
-        path = (ref.get("path") or "").strip()
-        if not path:
-            path = _to_assets_data_rel(doc)
+    refs_out: List[Dict[str, Any]] = []
+    for ref in references:
+        doc = (ref.get("document") or "Unknown document").strip()
+        snippet = (ref.get("snippet") or "").strip()
 
-        url_hint = (ref.get("url_hint") or "").strip()
-
-        open_url = f"{baseurl}/" + path.lstrip("/") + url_hint
-        filename = os.path.basename(path)
-        download_url = f"{baseurl}/download/{filename}"
+        filename = _extract_filename(ref.get("path", ""), doc)
+        download_url = _build_download_url(baseurl, filename)
 
         refs_out.append({
             "document": doc,
             "snippet": snippet,
-            "path": path,
-            "url_hint": url_hint,
-            "open_url": open_url,
             "download_url": download_url,
+
+            # keep optional metadata for future UI improvements
             "page_start": ref.get("page_start"),
             "page_end": ref.get("page_end"),
             "loc_kind": ref.get("loc_kind"),
@@ -237,6 +250,6 @@ def ask_question_json(request: QueryRequest):
 
     return QueryResponseJSON(
         user_id=request.user_id,
-        answer=result.get("answer", ""),
+        answer=result.get("answer", "") or "",
         references=refs_out
     )
