@@ -21,12 +21,14 @@ from chunker import chunk_units, Chunk
 # -----------------------------
 # Config (env-tunable)
 # -----------------------------
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small").strip()
 
-# ✅ Bump defaults so improvements force a systematic rebuild unless env pins older versions.
-# If you already set these in .env, update them there too.
+# Versioning: bump when you change embed/search text construction logic
 EMBED_TEXT_VERSION = int(os.getenv("EMBED_TEXT_VERSION", "3"))
 SEARCH_TEXT_VERSION = int(os.getenv("SEARCH_TEXT_VERSION", "2"))
+
+# Rebuild if model changes
+EMBED_MODEL_VERSION = int(os.getenv("EMBED_MODEL_VERSION", "1"))
 
 MAX_EMBED_CHARS_PER_TEXT = int(os.getenv("MAX_EMBED_CHARS_PER_TEXT", "7000"))
 MAX_EMBED_CHARS_PER_BATCH = int(os.getenv("MAX_EMBED_CHARS_PER_BATCH", "120000"))
@@ -34,8 +36,19 @@ MAX_EMBED_CHARS_PER_BATCH = int(os.getenv("MAX_EMBED_CHARS_PER_BATCH", "120000")
 DEFAULT_CHUNK_MAX_CHARS = int(os.getenv("CHUNK_MAX_CHARS", "4500"))
 DEFAULT_CHUNK_OVERLAP_CHARS = int(os.getenv("CHUNK_OVERLAP_CHARS", "350"))
 
-# ✅ Critical: if index files are missing/empty, force full ingest even if manifest says "unchanged"
 FORCE_REBUILD_IF_INDEX_MISSING = os.getenv("FORCE_REBUILD_IF_INDEX_MISSING", "1").strip() != "0"
+
+EMBED_RETRIES = int(os.getenv("EMBED_RETRIES", "4"))
+EMBED_RETRY_BASE_SLEEP = float(os.getenv("EMBED_RETRY_BASE_SLEEP", "0.8"))
+
+# Purge inactive vectors from FAISS (critical for recall correctness)
+PURGE_INACTIVE_FROM_FAISS = os.getenv("PURGE_INACTIVE_FROM_FAISS", "1").strip() != "0"
+
+# Auditability controls
+STORE_EMBED_TEXT_PREVIEW = os.getenv("STORE_EMBED_TEXT_PREVIEW", "1").strip() != "0"
+EMBED_TEXT_PREVIEW_CHARS = int(os.getenv("EMBED_TEXT_PREVIEW_CHARS", "1200"))
+
+DEBUG = os.getenv("INDEX_STORE_DEBUG", "0").strip() != "0"
 
 
 # -----------------------------
@@ -79,32 +92,68 @@ def _sha256_file(path: str) -> str:
             h.update(chunk)
     return h.hexdigest()
 
-def _safe_default_path(doc_name: str) -> str:
+def _safe_default_fs_path(doc_name: str) -> str:
     doc_name = (doc_name or "").strip()
     if not doc_name:
         return ""
     return os.path.join("assets", "data", doc_name).replace("\\", "/")
 
+def _canonical_public_path(doc_name: str) -> str:
+    # This is what UI/API should use for open_url construction
+    dn = (doc_name or "").strip()
+    return f"/assets/data/{dn}".replace("\\", "/") if dn else "/assets/data"
+
+def _basename(p: str) -> str:
+    try:
+        return os.path.basename((p or "").replace("\\", "/"))
+    except Exception:
+        return (p or "").split("/")[-1]
+
+def _now() -> int:
+    return int(time.time())
+
 
 # -----------------------------
 # FAISS helpers
 # -----------------------------
+def _new_idmap_index(dim: int) -> faiss.Index:
+    # IndexIDMap2 supports remove_ids reliably
+    base = faiss.IndexFlatIP(dim)
+    return faiss.IndexIDMap2(base)
+
 def _load_or_create_faiss(faiss_path: str, dim: int) -> faiss.Index:
     if os.path.exists(faiss_path):
         return faiss.read_index(faiss_path)
-    base = faiss.IndexFlatIP(dim)
-    return faiss.IndexIDMap(base)
+    return _new_idmap_index(dim)
 
 def _save_faiss(index: faiss.Index, faiss_path: str) -> None:
     faiss.write_index(index, faiss_path)
 
 def _normalize_vectors(v: np.ndarray) -> np.ndarray:
+    if v.size == 0:
+        return v
     norms = np.linalg.norm(v, axis=1, keepdims=True) + 1e-12
     return v / norms
 
+def _faiss_supports_remove(idx: faiss.Index) -> bool:
+    return hasattr(idx, "remove_ids")
+
+def _remove_ids_from_faiss(idx: faiss.Index, ids: List[int]) -> Tuple[bool, str]:
+    if not ids:
+        return True, "no-ids"
+    if not _faiss_supports_remove(idx):
+        return False, "remove_ids not supported"
+    try:
+        arr = np.array(sorted(set(int(x) for x in ids)), dtype=np.int64)
+        sel = faiss.IDSelectorBatch(arr.size, faiss.swig_ptr(arr))
+        idx.remove_ids(sel)
+        return True, f"removed={arr.size}"
+    except Exception as e:
+        return False, f"remove_ids failed: {e}"
+
 
 # -----------------------------
-# OpenAI embeddings (safe batching)
+# OpenAI embeddings (memory-safe batching + retries)
 # -----------------------------
 def _require_api_key() -> str:
     key = os.getenv("OPENAI_API_KEY", "").strip()
@@ -126,37 +175,118 @@ def embed_texts(texts: List[str]) -> np.ndarray:
     client = OpenAI(api_key=_require_api_key())
 
     safe_texts = [_truncate_text_for_embedding(t) for t in texts]
+    n_total = len(safe_texts)
 
-    all_vecs: List[List[float]] = []
+    dim: Optional[int] = None
+    out: Optional[np.ndarray] = None
+    cursor = 0
+
+    def _call_embeddings(inp: List[str]) -> List[List[float]]:
+        last_err: Optional[Exception] = None
+        for attempt in range(max(1, EMBED_RETRIES)):
+            try:
+                resp = client.embeddings.create(model=EMBEDDING_MODEL, input=inp)
+                return [d.embedding for d in resp.data]
+            except Exception as e:
+                last_err = e
+                time.sleep(EMBED_RETRY_BASE_SLEEP * (2 ** attempt))
+        raise RuntimeError(f"Embedding call failed after retries: {last_err}")
+
     batch: List[str] = []
     batch_chars = 0
 
-    def flush():
-        nonlocal batch, batch_chars, all_vecs
+    def flush() -> None:
+        nonlocal batch, batch_chars, dim, out, cursor
         if not batch:
             return
-        resp = client.embeddings.create(model=EMBEDDING_MODEL, input=batch)
-        all_vecs.extend([d.embedding for d in resp.data])
+        embs = _call_embeddings(batch)
+        if not embs:
+            batch = []
+            batch_chars = 0
+            return
+        if dim is None:
+            dim = len(embs[0])
+            out = np.empty((n_total, dim), dtype=np.float32)
+
+        arr = np.asarray(embs, dtype=np.float32)
+        assert out is not None
+        out[cursor:cursor + arr.shape[0], :] = arr
+        cursor += arr.shape[0]
+
         batch = []
         batch_chars = 0
 
     for t in safe_texts:
         tlen = len(t)
+
         if tlen >= MAX_EMBED_CHARS_PER_BATCH:
             flush()
-            resp = client.embeddings.create(model=EMBEDDING_MODEL, input=[t])
-            all_vecs.extend([d.embedding for d in resp.data])
+            embs = _call_embeddings([t])
+            if embs:
+                if dim is None:
+                    dim = len(embs[0])
+                    out = np.empty((n_total, dim), dtype=np.float32)
+                arr = np.asarray(embs, dtype=np.float32)
+                assert out is not None
+                out[cursor:cursor + 1, :] = arr
+                cursor += 1
             continue
 
-        if batch_chars + tlen > MAX_EMBED_CHARS_PER_BATCH and batch:
+        if batch and (batch_chars + tlen > MAX_EMBED_CHARS_PER_BATCH):
             flush()
 
         batch.append(t)
         batch_chars += tlen
 
     flush()
-    vectors = np.array(all_vecs, dtype=np.float32)
-    return vectors
+
+    if out is None or dim is None:
+        return np.zeros((0, 1), dtype=np.float32)
+
+    if cursor != n_total:
+        out = out[:cursor, :]
+
+    return out
+
+
+# -----------------------------
+# Evidence quality: skip junk chunks at ingestion (but keep key short signals)
+# -----------------------------
+_PAGE_GARBAGE_RE = re.compile(r"^\s*page\s*\d+\s*(of\s*\d+)?\s*$", re.I)
+_ONLY_NUM_PUNCT_RE = re.compile(r"^[\s0-9\-–—_.,:;|/\\()]+$")
+
+def _count_letters(s: str) -> int:
+    return len(re.findall(r"[A-Za-z\u0600-\u06FF]", s or ""))
+
+def _count_words(s: str) -> int:
+    return len(re.findall(r"[A-Za-z\u0600-\u06FF]{2,}", s or ""))
+
+def _force_keep_short_signal(t: str) -> bool:
+    tl = (t or "").lower()
+    if "schedule" in tl or "annex" in tl or "appendix" in tl:
+        return True
+    if "punjab enforcement and regulatory authority" in tl or re.search(r"\bpera\b", tl):
+        return True
+    if "terms of reference" in tl or re.search(r"\btor\b", tl):
+        return True
+    if "chief technology officer" in tl or re.search(r"\bcto\b", tl):
+        return True
+    return False
+
+def _is_low_signal_chunk(txt: str) -> bool:
+    t = (txt or "").strip()
+    if not t:
+        return True
+    if _force_keep_short_signal(t):
+        return False
+    if _PAGE_GARBAGE_RE.match(t):
+        return True
+    if len(t) <= 16 and _ONLY_NUM_PUNCT_RE.match(t):
+        return True
+    # conservative junk filter (avoid dropping valid short definitions)
+    if len(t) < 60 and _count_words(t) < 6 and _count_letters(t) < 25:
+        return True
+    return False
 
 
 # -----------------------------
@@ -175,17 +305,19 @@ def _loc_label(loc_kind: Any, loc_start: Any, loc_end: Any) -> str:
         return str(loc_start)
     return ""
 
-
-# ✅ PERA identity + aliases for embeddings ONLY
 _PERA_IDENTITY_LINE = (
     "ENTITY: PERA (Punjab Enforcement and Regulatory Authority, Punjab). "
-    "ALIASES: pira, perra, peera, peraa. "
+    "ALIASES: pira, perra, peera, peraa, pehra. "
     "TOPICS: enforcement, regulation, scheduled laws, complaints, hearings, recruitment, HR, discipline, contracts."
 )
 
-# ✅ Richer tag patterns: improves retrieval for “complaint procedure”, “vision”, etc.
 _TAG_PATTERNS: List[Tuple[str, str]] = [
-    # composition / authority
+    (r"\bschedule\b", "schedule"),
+    (r"\bscheduled\b", "scheduled"),
+    (r"\bannex(ure)?\b", "annexure"),
+    (r"\bappendix\b", "appendix"),
+    (r"\btable\b", "table"),
+
     (r"\bshall\s+consist\b", "composition"),
     (r"\bconsist\s+of\b", "composition"),
     (r"\bcomposition\b", "composition"),
@@ -196,7 +328,6 @@ _TAG_PATTERNS: List[Tuple[str, str]] = [
     (r"\bsecretary\b", "secretary"),
     (r"\bdirector\s+general\b", "director general"),
 
-    # complaint / hearings
     (r"\bcomplaint(s)?\b", "complaint"),
     (r"\bpublic\s+complaint(s)?\b", "public complaint"),
     (r"\bhearing(s)?\b", "hearing"),
@@ -207,7 +338,6 @@ _TAG_PATTERNS: List[Tuple[str, str]] = [
     (r"\bprocess\b", "process"),
     (r"\bhow\s+to\b", "how to"),
 
-    # purpose / functions / mandate (vision-like queries map here)
     (r"\bpurpose\b", "purpose"),
     (r"\bobjective(s)?\b", "objectives"),
     (r"\bfunction(s)?\b", "functions"),
@@ -216,7 +346,6 @@ _TAG_PATTERNS: List[Tuple[str, str]] = [
     (r"\bvision\b", "vision"),
     (r"\bmission\b", "mission"),
 
-    # HR / recruitment / criteria
     (r"\brecruitment\b", "recruitment"),
     (r"\beligibil", "eligibility"),
     (r"\bqualification(s)?\b", "qualification"),
@@ -227,7 +356,6 @@ _TAG_PATTERNS: List[Tuple[str, str]] = [
     (r"\bdisciplin", "discipline"),
     (r"\bmisconduct\b", "misconduct"),
 
-    # FAQ signals (important for complaint procedure in FAQ PDFs)
     (r"\bfaq\b", "faq"),
     (r"\bfrequently\s+asked\b", "faq"),
     (r"\bquestion(s)?\b", "questions"),
@@ -239,7 +367,6 @@ def _derive_search_tags(raw_text: str) -> List[str]:
     tl = t.lower()
     tags: List[str] = []
 
-    # Always include PERA tag if PERA appears or doc looks like PERA content
     if "pera" in tl or "punjab enforcement" in tl or "enforcement and regulatory" in tl:
         tags.append("pera")
 
@@ -247,7 +374,6 @@ def _derive_search_tags(raw_text: str) -> List[str]:
         if re.search(pat, t, flags=re.IGNORECASE):
             tags.append(tag)
 
-    # De-dup preserving order
     seen = set()
     out: List[str] = []
     for x in tags:
@@ -256,7 +382,6 @@ def _derive_search_tags(raw_text: str) -> List[str]:
         seen.add(x)
         out.append(x)
     return out
-
 
 def _build_embed_text_from_parts(
     doc_name: str,
@@ -267,13 +392,6 @@ def _build_embed_text_from_parts(
     loc_end: Any,
     raw_text: str,
 ) -> str:
-    """
-    ✅ Key improvement:
-    Add PERA identity line + derived tags into embedding input (NOT into the raw evidence text).
-    This makes semantic retrieval robust for typos & indirect wording like:
-      - "complant procedure" -> complaint/hearing/FAQ
-      - "vision of pera" -> purpose/objectives/functions/mandate
-    """
     dn = (doc_name or "Unknown document").strip()
     stype = (source_type or "").strip()
     loc = _loc_label(loc_kind, loc_start, loc_end)
@@ -291,9 +409,7 @@ def _build_embed_text_from_parts(
         f"{tags_line}\n"
         f"{_PERA_IDENTITY_LINE}\n"
     )
-
     return (header + "\n" + body).strip()
-
 
 def _build_embed_text_for_chunk(ch: Chunk) -> str:
     return _build_embed_text_from_parts(
@@ -317,7 +433,6 @@ def _build_embed_text_for_row(r: Dict[str, Any]) -> str:
         r.get("text", "") or "",
     )
 
-
 def _build_search_text_from_parts(
     doc_name: str,
     source_type: str,
@@ -334,7 +449,6 @@ def _build_search_text_from_parts(
     tags = _derive_search_tags(body)
     tags_line = f"TAGS: {', '.join(tags)}" if tags else "TAGS:"
 
-    # Keep search_text separate; retriever may choose to use it later
     header = f"DOC: {dn}\nTYPE: {stype}\nLOC: {loc}\n{tags_line}\n"
     return (header + "\n" + body).strip()
 
@@ -377,6 +491,19 @@ def _needs_search_version_rebuild(rows: List[Dict[str, Any]]) -> bool:
             return True
     return False
 
+def _needs_model_rebuild(rows: List[Dict[str, Any]]) -> bool:
+    for r in rows:
+        if not r.get("active", True):
+            continue
+        if (r.get("embedding_model") or "").strip() != EMBEDDING_MODEL:
+            return True
+        try:
+            if int(r.get("embed_model_version", 0) or 0) != int(EMBED_MODEL_VERSION):
+                return True
+        except Exception:
+            return True
+    return False
+
 
 # -----------------------------
 # Chunk store / id assignment
@@ -384,17 +511,26 @@ def _needs_search_version_rebuild(rows: List[Dict[str, Any]]) -> bool:
 def _next_chunk_id(existing_rows: List[Dict[str, Any]]) -> int:
     if not existing_rows:
         return 1
-    return max(int(r.get("id", 0)) for r in existing_rows) + 1
+    best = 0
+    for r in existing_rows:
+        try:
+            best = max(best, int(r.get("id", 0) or 0))
+        except Exception:
+            continue
+    return best + 1
 
-def _mark_inactive_for_doc(rows: List[Dict[str, Any]], doc_name: str) -> int:
-    n = 0
-    now = int(time.time())
+def _mark_inactive_for_doc(rows: List[Dict[str, Any]], doc_name: str) -> List[int]:
+    ids: List[int] = []
+    now = _now()
     for r in rows:
         if r.get("doc_name") == doc_name and r.get("active", True):
             r["active"] = False
             r["deactivated_at"] = now
-            n += 1
-    return n
+            try:
+                ids.append(int(r.get("id")))
+            except Exception:
+                pass
+    return ids
 
 
 # -----------------------------
@@ -416,7 +552,19 @@ def _build_manifest_from_scanned(scanned: List[Dict[str, Any]]) -> Dict[str, Any
             "rank": int(e.get("rank", 0) or 0),
             "sha256": sha,
         }
-    return {"version": 1, "files": files_map}
+
+    return {
+        "version": 2,
+        "build": {
+            "embedding_model": EMBEDDING_MODEL,
+            "embed_model_version": int(EMBED_MODEL_VERSION),
+            "embed_text_version": int(EMBED_TEXT_VERSION),
+            "search_text_version": int(SEARCH_TEXT_VERSION),
+            "chunk_max_chars": int(DEFAULT_CHUNK_MAX_CHARS),
+            "chunk_overlap_chars": int(DEFAULT_CHUNK_OVERLAP_CHARS),
+        },
+        "files": files_map,
+    }
 
 
 # -----------------------------
@@ -436,22 +584,31 @@ def scan_and_ingest_if_needed(
     manifest_path = _p(index_dir, "manifest.json")
 
     scanned = scan_assets_data(data_dir=data_dir)
-
     rows = _read_jsonl(chunks_path)
 
     chunks_missing_or_empty = (not os.path.exists(chunks_path)) or (os.path.getsize(chunks_path) == 0)
     faiss_missing = not os.path.exists(faiss_path)
     cold_start = FORCE_REBUILD_IF_INDEX_MISSING and (faiss_missing or chunks_missing_or_empty)
 
+    idx: Optional[faiss.Index] = None
+    if os.path.exists(faiss_path):
+        try:
+            idx = faiss.read_index(faiss_path)
+        except Exception:
+            idx = None
+
+    unchanged: List[Dict[str, Any]] = []
+    removed: List[Dict[str, Any]] = []
+    new_or_changed: List[Dict[str, Any]] = []
+
+    chunks_deactivated = 0
+    removed_ids_total: List[int] = []
+
     if cold_start:
         new_or_changed = list(scanned)
-        unchanged: List[Dict[str, Any]] = []
-        removed: List[Dict[str, Any]] = []
         updated_manifest = _build_manifest_from_scanned(scanned)
-
         rows = []
         start_id = 1
-        deactivated = 0
     else:
         new_or_changed, unchanged, removed, updated_manifest = compare_with_manifest(
             scanned=scanned,
@@ -460,42 +617,81 @@ def scan_and_ingest_if_needed(
             compute_hash=True
         )
 
-        if os.path.exists(faiss_path) and rows and (_needs_embed_version_rebuild(rows) or _needs_search_version_rebuild(rows)):
-            _ = rebuild_index_from_chunks(index_dir=index_dir)
+        # Rebuild if embed/search/model changed (prevents silent mismatch)
+        if os.path.exists(faiss_path) and rows and (
+            _needs_embed_version_rebuild(rows) or _needs_search_version_rebuild(rows) or _needs_model_rebuild(rows)
+        ):
+            rebuilt = rebuild_index_from_chunks(index_dir=index_dir)
+            idx = rebuilt["index"]
             rows = _read_jsonl(chunks_path)
 
         start_id = _next_chunk_id(rows)
 
-        deactivated = 0
+        # Deactivate removed docs (collect IDs for purge)
         for r in removed:
             docname = r.get("filename") or r.get("name")
             if docname:
-                deactivated += _mark_inactive_for_doc(rows, docname)
+                ids = _mark_inactive_for_doc(rows, docname)
+                removed_ids_total.extend(ids)
+                chunks_deactivated += len(ids)
 
-        if not new_or_changed and os.path.exists(faiss_path):
-            _rewrite_jsonl(chunks_path, rows)
-            with open(manifest_path, "w", encoding="utf-8") as f:
-                json.dump(updated_manifest, f, ensure_ascii=False, indent=2)
-            return {
-                "found": len(scanned),
-                "new_or_changed": 0,
-                "unchanged": len(unchanged),
-                "removed": len(removed),
-                "chunks_added": 0,
-                "chunks_deactivated": deactivated,
-                "faiss_vectors_added": 0,
-                "cold_start_rebuild": False,
-            }
-
+    # Deactivate changed docs (old versions) too
     changed_files = [e["path"] for e in new_or_changed]
     changed_names = [e["filename"] for e in new_or_changed]
 
     for doc in changed_names:
-        _ = _mark_inactive_for_doc(rows, doc)
+        ids = _mark_inactive_for_doc(rows, doc)
+        removed_ids_total.extend(ids)
+        chunks_deactivated += len(ids)
 
+    # Purge inactive IDs from FAISS (even if we will early-return)
+    purge_note = ""
+    if PURGE_INACTIVE_FROM_FAISS and removed_ids_total:
+        if idx is None and os.path.exists(faiss_path):
+            try:
+                idx = faiss.read_index(faiss_path)
+            except Exception:
+                idx = None
+
+        if idx is not None:
+            ok, msg = _remove_ids_from_faiss(idx, removed_ids_total)
+            purge_note = msg
+            if not ok:
+                rebuilt = rebuild_index_from_chunks(index_dir=index_dir)
+                idx = rebuilt["index"]
+                rows = _read_jsonl(chunks_path)
+                start_id = _next_chunk_id(rows)
+                purge_note = "rebuild_due_to_purge_failure"
+
+            # IMPORTANT: persist purge/rebuild immediately
+            try:
+                _save_faiss(idx, faiss_path)
+            except Exception:
+                pass
+
+    # ✅ Early return ONLY after purge persistence
+    if (not cold_start) and (not new_or_changed) and os.path.exists(faiss_path):
+        _rewrite_jsonl(chunks_path, rows)
+        with open(manifest_path, "w", encoding="utf-8") as f:
+            json.dump(updated_manifest, f, ensure_ascii=False, indent=2)
+
+        out = {
+            "found": len(scanned),
+            "new_or_changed": 0,
+            "unchanged": len(unchanged),
+            "removed": len(removed),
+            "chunks_added": 0,
+            "chunks_deactivated": chunks_deactivated,
+            "faiss_vectors_added": 0,
+            "cold_start_rebuild": False,
+        }
+        if purge_note:
+            out["purge_note"] = purge_note
+        return out
+
+    # Extract + chunk only changed docs
     units = extract_units_from_files(changed_files)
 
-    # Apply rank
     rank_map = {e["filename"]: int(e.get("rank", 0) or 0) for e in new_or_changed}
     for u in units:
         try:
@@ -511,83 +707,128 @@ def scan_and_ingest_if_needed(
 
     embed_text_list: List[str] = []
     kept_chunks: List[Chunk] = []
+
     for c in chunks:
         raw = (c.chunk_text or "").strip()
         if not raw:
             continue
+        if _is_low_signal_chunk(raw):
+            continue
         kept_chunks.append(c)
         embed_text_list.append(_build_embed_text_for_chunk(c))
 
+    # If no usable chunks, still persist manifest + rows + (already persisted purge above)
     if not embed_text_list:
         _rewrite_jsonl(chunks_path, rows)
         with open(manifest_path, "w", encoding="utf-8") as f:
             json.dump(updated_manifest, f, ensure_ascii=False, indent=2)
-        return {
+
+        out = {
             "found": len(scanned),
             "new_or_changed": len(new_or_changed),
             "unchanged": 0 if cold_start else len(unchanged),
             "removed": 0 if cold_start else len(removed),
             "chunks_added": 0,
-            "chunks_deactivated": 0,
+            "chunks_deactivated": chunks_deactivated,
             "faiss_vectors_added": 0,
             "cold_start_rebuild": bool(cold_start),
-            "note": "No chunks extracted from PDFs (check extractors/chunker).",
+            "note": "No usable chunks extracted (scanned PDFs or extractor returned empty text).",
         }
+        if purge_note:
+            out["purge_note"] = purge_note
+        return out
 
+    # Embed + normalize
     vectors = embed_texts(embed_text_list)
     vectors = _normalize_vectors(vectors)
-    dim = vectors.shape[1]
+    dim = int(vectors.shape[1]) if vectors.ndim == 2 else 1
 
-    idx = _load_or_create_faiss(faiss_path, dim)
+    # Load/create FAISS
+    if idx is None:
+        idx = _load_or_create_faiss(faiss_path, dim)
 
-    if idx.d != dim:
+    # Dimension mismatch safety
+    if getattr(idx, "d", None) != dim:
         rebuilt = rebuild_index_from_chunks(index_dir=index_dir)
         idx = rebuilt["index"]
         rows = _read_jsonl(chunks_path)
         start_id = _next_chunk_id(rows)
 
+    # Add new vectors with stable IDs
     ids = np.arange(start_id, start_id + len(kept_chunks), dtype=np.int64)
     idx.add_with_ids(vectors, ids)
 
-    now = int(time.time())
+    now = _now()
     new_rows: List[Dict[str, Any]] = []
 
-    for cid, ch in zip(ids.tolist(), kept_chunks):
+    for cid, ch, et in zip(ids.tolist(), kept_chunks, embed_text_list):
         t = (ch.chunk_text or "").strip()
-        if not t:
+        if not t or _is_low_signal_chunk(t):
             continue
 
         doc_name = getattr(ch, "doc_name", "Unknown document")
-        path = (getattr(ch, "path", "") or "").strip() or _safe_default_path(doc_name)
-        path = path.replace("\\", "/")
+        # Reference integrity: always canonical for serving
+        public_path = _canonical_public_path(doc_name)
 
-        embed_text = _build_embed_text_for_chunk(ch)
+        # Keep raw fs path only for internal debug/tracing
+        raw_fs_path = (getattr(ch, "path", "") or "").strip()
+        if not raw_fs_path:
+            raw_fs_path = _safe_default_fs_path(doc_name)
+        raw_fs_path = raw_fs_path.replace("\\", "/")
+
+        # Normalize loc fields for reference correctness
+        loc_kind = getattr(ch, "loc_kind", "") or ""
+        loc_start = getattr(ch, "loc_start", None)
+        loc_end = getattr(ch, "loc_end", None)
+        if loc_kind == "page":
+            try:
+                if loc_start is not None:
+                    loc_start = int(loc_start)
+                if loc_end is not None:
+                    loc_end = int(loc_end)
+            except Exception:
+                pass
+
         search_text = _build_search_text_for_chunk(ch)
 
-        new_rows.append({
+        row: Dict[str, Any] = {
             "id": int(cid),
             "active": True,
             "created_at": now,
+
             "doc_name": doc_name,
             "doc_rank": int(getattr(ch, "doc_rank", 0) or 0),
             "source_type": getattr(ch, "source_type", ""),
-            "loc_kind": getattr(ch, "loc_kind", ""),
-            "loc_start": getattr(ch, "loc_start", None),
-            "loc_end": getattr(ch, "loc_end", None),
-            "path": path,
 
-            # ✅ RAW evidence text stays clean
+            "loc_kind": loc_kind,
+            "loc_start": loc_start,
+            "loc_end": loc_end,
+
+            # ✅ Canonical path used by UI/API
+            "public_path": public_path,
+            # optional: raw path for debugging only
+            "path": raw_fs_path,
+
+            # Evidence payload
             "text": t,
             "text_sha256": _sha256_text(t),
+            "text_clean_sha256": _sha256_text(re.sub(r"\s+", " ", t).strip()),
 
-            # ✅ versions + embedding/search payload hashes
+            "embedding_model": EMBEDDING_MODEL,
+            "embed_model_version": int(EMBED_MODEL_VERSION),
+
             "embed_text_version": int(EMBED_TEXT_VERSION),
-            "embed_text_sha256": _sha256_text(embed_text),
+            "embed_text_sha256": _sha256_text(et),
 
             "search_text_version": int(SEARCH_TEXT_VERSION),
             "search_text_sha256": _sha256_text(search_text),
             "search_text": search_text,
-        })
+        }
+
+        if STORE_EMBED_TEXT_PREVIEW:
+            row["embed_text_preview"] = et[:max(100, EMBED_TEXT_PREVIEW_CHARS)]
+
+        new_rows.append(row)
 
     rows.extend(new_rows)
     _rewrite_jsonl(chunks_path, rows)
@@ -596,19 +837,26 @@ def scan_and_ingest_if_needed(
     with open(manifest_path, "w", encoding="utf-8") as f:
         json.dump(updated_manifest, f, ensure_ascii=False, indent=2)
 
-    return {
+    out = {
         "found": len(scanned),
         "new_or_changed": len(new_or_changed),
         "unchanged": 0 if cold_start else len(unchanged),
         "removed": 0 if cold_start else len(removed),
         "chunks_added": len(new_rows),
-        "chunks_deactivated": 0,
+        "chunks_deactivated": chunks_deactivated,
         "faiss_vectors_added": len(new_rows),
         "cold_start_rebuild": bool(cold_start),
     }
+    if purge_note:
+        out["purge_note"] = purge_note
+    return out
 
 
 def rebuild_index_from_chunks(index_dir: str = "assets/index") -> Dict[str, Any]:
+    """
+    Full rebuild from chunks.jsonl active rows.
+    This is the safety hatch when purge is not supported or dim mismatch occurs.
+    """
     faiss_path = _p(index_dir, "faiss.index")
     chunks_path = _p(index_dir, "chunks.jsonl")
 
@@ -616,34 +864,55 @@ def rebuild_index_from_chunks(index_dir: str = "assets/index") -> Dict[str, Any]
     active = [r for r in rows if r.get("active", True)]
 
     if not active:
-        if os.path.exists(faiss_path):
-            os.remove(faiss_path)
-        empty_idx = faiss.IndexIDMap(faiss.IndexFlatIP(1))
+        try:
+            if os.path.exists(faiss_path):
+                os.remove(faiss_path)
+        except Exception:
+            pass
+        empty_idx = _new_idmap_index(1)
         _save_faiss(empty_idx, faiss_path)
         return {"index": empty_idx, "rebuilt": True, "count": 0}
 
     embed_texts_list = [_build_embed_text_for_row(r) for r in active]
     vectors = embed_texts(embed_texts_list)
     vectors = _normalize_vectors(vectors)
-    dim = vectors.shape[1]
+    dim = int(vectors.shape[1])
 
-    idx = faiss.IndexIDMap(faiss.IndexFlatIP(dim))
+    idx = _new_idmap_index(dim)
     ids = np.array([int(r["id"]) for r in active], dtype=np.int64)
     idx.add_with_ids(vectors, ids)
     _save_faiss(idx, faiss_path)
 
     changed = False
     for r, et in zip(active, embed_texts_list):
-        if int(r.get("embed_text_version", -1)) != int(EMBED_TEXT_VERSION):
+        # Keep metadata aligned for audit + future diffing
+        if (r.get("embedding_model") or "").strip() != EMBEDDING_MODEL:
+            r["embedding_model"] = EMBEDDING_MODEL
+            changed = True
+        if int(r.get("embed_model_version", 0) or 0) != int(EMBED_MODEL_VERSION):
+            r["embed_model_version"] = int(EMBED_MODEL_VERSION)
+            changed = True
+
+        new_et_sha = _sha256_text(et)
+        if int(r.get("embed_text_version", -1)) != int(EMBED_TEXT_VERSION) or (r.get("embed_text_sha256") or "") != new_et_sha:
             r["embed_text_version"] = int(EMBED_TEXT_VERSION)
-            r["embed_text_sha256"] = _sha256_text(et)
+            r["embed_text_sha256"] = new_et_sha
+            if STORE_EMBED_TEXT_PREVIEW:
+                r["embed_text_preview"] = et[:max(100, EMBED_TEXT_PREVIEW_CHARS)]
             changed = True
 
         stxt = _build_search_text_for_row(r)
-        if int(r.get("search_text_version", -1)) != int(SEARCH_TEXT_VERSION) or not r.get("search_text"):
+        new_st_sha = _sha256_text(stxt)
+        if int(r.get("search_text_version", -1)) != int(SEARCH_TEXT_VERSION) or (r.get("search_text_sha256") or "") != new_st_sha:
             r["search_text_version"] = int(SEARCH_TEXT_VERSION)
-            r["search_text_sha256"] = _sha256_text(stxt)
+            r["search_text_sha256"] = new_st_sha
             r["search_text"] = stxt
+            changed = True
+
+        # Ensure canonical public_path exists (reference correctness)
+        dn = (r.get("doc_name") or "").strip()
+        if dn and not (r.get("public_path") or "").startswith("/assets/data/"):
+            r["public_path"] = _canonical_public_path(dn)
             changed = True
 
     if changed:
@@ -658,7 +927,10 @@ def load_index_and_chunks(index_dir: str = "assets/index") -> Tuple[Optional[fai
 
     idx = None
     if os.path.exists(faiss_path):
-        idx = faiss.read_index(faiss_path)
+        try:
+            idx = faiss.read_index(faiss_path)
+        except Exception:
+            idx = None
 
     rows = _read_jsonl(chunks_path)
     return idx, rows
