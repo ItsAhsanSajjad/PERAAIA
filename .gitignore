@@ -1,10 +1,2 @@
 .env
-__pycache__/
-*.pyc
-assets/index/
-assets/indexes/build_*/
-*.index
-*.jsonl
-assets/indexes/ACTIVE.json
-assets/indexes/manifest.json
-assets/chats/
+
