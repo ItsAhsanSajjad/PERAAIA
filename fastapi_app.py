@@ -10,7 +10,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from retriever import retrieve
+from retriever import retrieve, rewrite_contextual_query
 from answerer import answer_question
 
 # Auto-indexer (safe blue/green builds + atomic pointer switch)
@@ -31,11 +31,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Allow iframes (fix for browser blocking)
+@app.middleware("http")
+async def add_iframe_headers(request, call_next):
+    response = await call_next(request)
+    # X-Frame-Options is obsolete and ALLOWALL is invalid. 
+    # Use CSP frame-ancestors instead.
+    if "X-Frame-Options" in response.headers:
+        del response.headers["X-Frame-Options"]
+    response.headers["Content-Security-Policy"] = "frame-ancestors *"
+    return response
+
 
 # ============================================================
 # Static PDFs setup (serves real files at /assets/data/<filename>)
 # ============================================================
-DATA_DIR = os.getenv("DATA_DIR", os.path.join("assets", "data")).replace("\\", "/")
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.getenv("DATA_DIR", os.path.join(_SCRIPT_DIR, "assets", "data"))
 app.mount("/assets/data", StaticFiles(directory=DATA_DIR), name="data")
 
 
@@ -457,3 +469,191 @@ def ask_question_json(request: QueryRequest):
         answer=result.get("answer", "") or "",
         references=refs_out,
     )
+
+
+# ============================================================
+# NEW: Simple Chat API for Next.js frontend
+# ============================================================
+class SimpleChatRequest(BaseModel):
+    question: str
+    conversation_history: Optional[List[Dict[str, Any]]] = None
+
+
+class SimpleChatResponse(BaseModel):
+    answer: str
+    decision: str
+    references: List[Dict[str, Any]]
+
+
+@app.post("/api/ask", response_model=SimpleChatResponse)
+def simple_ask(request: SimpleChatRequest):
+    """Simple chat endpoint for Next.js frontend."""
+    question = request.question.strip()
+    
+    # --- Extract last Q/A from history for contextual rewriting ---
+    last_question = None
+    last_answer = None
+    if request.conversation_history:
+        for msg in reversed(request.conversation_history):
+            role = msg.get("role", "")
+            content = (msg.get("content") or "").strip()
+            if role == "assistant" and last_answer is None:
+                last_answer = content
+            elif role == "user" and last_question is None:
+                last_question = content
+            if last_question and last_answer:
+                break
+
+    # --- Rewrite query (handles Urdu, abbreviations, follow-ups) ---
+    query_for_retrieval = rewrite_contextual_query(question, last_question, last_answer)
+    print(f"[/api/ask] Original: '{question}' -> Rewritten: '{query_for_retrieval}'")
+
+    retrieval = retrieve(query_for_retrieval)
+    result = answer_question(
+        request.question, 
+        retrieval, 
+        conversation_history=request.conversation_history
+    )
+    
+    return SimpleChatResponse(
+        answer=result.get("answer", "Jawab nahi mila."),
+        decision=result.get("decision", "answer"),
+        references=result.get("references", []),
+    )
+
+
+# ============================================================
+# NEW: Voice Transcription Endpoint
+# ============================================================
+from fastapi import File, UploadFile
+from speech import transcribe_audio
+
+
+class TranscribeResponse(BaseModel):
+    text: str
+    success: bool
+
+
+@app.post("/transcribe", response_model=TranscribeResponse)
+async def transcribe(audio: UploadFile = File(...)):
+    """Transcribe audio to text using Whisper."""
+    try:
+        audio_bytes = await audio.read()
+        text = transcribe_audio(audio_bytes)
+        
+        # Check if it's an error message
+        is_error = text.startswith("⚠️")
+        
+        return TranscribeResponse(
+            text=text if not is_error else "",
+            success=not is_error
+        )
+    except Exception as e:
+        return TranscribeResponse(text="", success=False)
+
+
+# ============================================================
+# NEW: PDF Serving Endpoint (for Next.js)
+# ============================================================
+from urllib.parse import unquote
+import re
+
+def _normalize_for_match(s: str) -> str:
+    """Normalize filename for fuzzy matching - strips all special chars."""
+    # Replace all types of dashes with hyphen
+    s = s.replace("–", "-").replace("—", "-").replace("−", "-")
+    # Replace smart quotes
+    s = s.replace("'", "'").replace("'", "'").replace('"', '"').replace('"', '"')
+    # Remove extra spaces
+    s = re.sub(r'\s+', ' ', s).strip()
+    # Lowercase for comparison
+    return s.lower()
+
+@app.get("/pdf/{filename:path}")
+def serve_pdf(filename: str):
+    """Serve PDF files for the Next.js frontend."""
+    try:
+        # 1. First attempt: EXACT match (but URL decoded)
+        # This handles 'PERA – FAQs.pdf' correctly if the fs has an en-dash
+        decoded_name = unquote(filename).strip()
+        filepath = os.path.join(DATA_DIR, decoded_name)
+        
+        found = False
+        
+        # Check exact existence
+        if os.path.exists(filepath) and os.path.isfile(filepath):
+            found = True
+        
+        # 2. Second attempt: Normalize dashes (en-dash/em-dash -> hyphen)
+        if not found:
+            normalized_name = decoded_name.replace("–", "-").replace("—", "-")
+            filepath_norm = os.path.join(DATA_DIR, normalized_name)
+            if os.path.exists(filepath_norm) and os.path.isfile(filepath_norm):
+                filepath = filepath_norm
+                found = True
+        
+        # 3. Third attempt: Try adding .pdf extension if missing
+        if not found:
+             # Try exact + .pdf
+            filepath_ext = os.path.join(DATA_DIR, decoded_name + ".pdf")
+            if os.path.exists(filepath_ext):
+                filepath = filepath_ext
+                found = True
+            else:
+                 # Try normalized + .pdf
+                filepath_ext_norm = os.path.join(DATA_DIR, normalized_name + ".pdf")
+                if os.path.exists(filepath_ext_norm):
+                    filepath = filepath_ext_norm
+                    found = True
+        
+        # 4. Fourth attempt: Smart fuzzy scan using normalized comparison
+        if not found:
+            try:
+                # Normalize the target name (remove .pdf, normalize all special chars)
+                target_norm = _normalize_for_match(decoded_name)
+                if target_norm.endswith(".pdf"):
+                    target_norm = target_norm[:-4]
+                
+                # Also try without any dashes/special chars at all
+                target_stripped = re.sub(r'[^a-z0-9 ]', '', target_norm)
+                    
+                for f in os.listdir(DATA_DIR):
+                    f_norm = _normalize_for_match(f)
+                    if f_norm.endswith(".pdf"):
+                        f_norm = f_norm[:-4]
+                    f_stripped = re.sub(r'[^a-z0-9 ]', '', f_norm)
+                    
+                    # Match if normalized versions match OR stripped versions match
+                    if f_norm == target_norm or f_stripped == target_stripped:
+                        filepath = os.path.join(DATA_DIR, f)
+                        found = True
+                        print(f"Fuzzy matched: {decoded_name} -> {f}")
+                        break
+            except Exception as e:
+                print(f"Error during fuzzy scan: {e}")
+        
+        if not found:
+             print(f"PDF Not Found: {filename} (decoded: {decoded_name})")
+             raise HTTPException(status_code=404, detail=f"PDF not found: {filename}")
+
+        # Security check
+        if not _is_safe_under_assets_data(filepath):
+            print(f"Access Denied for path: {filepath}")
+            raise HTTPException(status_code=403, detail="Access denied")
+        
+        return FileResponse(
+            filepath,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'inline; filename="{os.path.basename(filepath)}"',
+                "Content-Security-Policy": "frame-ancestors *",
+                "X-Frame-Options": "ALLOWALL",
+                "Access-Control-Allow-Origin": "*"
+            }
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"INTERNAL SERVER ERROR serving PDF {filename}: {str(e)}")
+        # Return simple 404 instead of 500 if something goes wrong, to avoid scaring user
+        raise HTTPException(status_code=404, detail="File could not be served")

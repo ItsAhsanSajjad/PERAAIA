@@ -152,6 +152,24 @@ def _remove_ids_from_faiss(idx: faiss.Index, ids: List[int]) -> Tuple[bool, str]
         return False, f"remove_ids failed: {e}"
 
 
+
+
+# ...
+
+# -----------------------------
+# Config (env-tunable)
+# -----------------------------
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "models/text-embedding-004").strip()
+
+# Versioning: bump when you change embed/search text construction logic
+EMBED_TEXT_VERSION = int(os.getenv("EMBED_TEXT_VERSION", "3"))
+SEARCH_TEXT_VERSION = int(os.getenv("SEARCH_TEXT_VERSION", "2"))
+
+# Rebuild if model changes
+EMBED_MODEL_VERSION = int(os.getenv("EMBED_MODEL_VERSION", "2")) # Bumped for Gemini
+
+# ...
+
 # -----------------------------
 # OpenAI embeddings (memory-safe batching + retries)
 # -----------------------------
@@ -163,6 +181,9 @@ def _require_api_key() -> str:
 
 def _truncate_text_for_embedding(t: str) -> str:
     t = (t or "").strip()
+    # OpenAI limit is ~8191 tokens ~32k chars, but let's be safe
+    # We use 10k chars max
+    MAX_EMBED_CHARS_PER_TEXT = 12000
     if len(t) <= MAX_EMBED_CHARS_PER_TEXT:
         return t
     return t[:MAX_EMBED_CHARS_PER_TEXT]
@@ -180,6 +201,9 @@ def embed_texts(texts: List[str]) -> np.ndarray:
     dim: Optional[int] = None
     out: Optional[np.ndarray] = None
     cursor = 0
+
+    # Max chars per batch request (safe limit)
+    MAX_EMBED_CHARS_PER_BATCH = 40000 
 
     def _call_embeddings(inp: List[str]) -> List[List[float]]:
         last_err: Optional[Exception] = None
@@ -209,8 +233,8 @@ def embed_texts(texts: List[str]) -> np.ndarray:
             out = np.empty((n_total, dim), dtype=np.float32)
 
         arr = np.asarray(embs, dtype=np.float32)
-        assert out is not None
-        out[cursor:cursor + arr.shape[0], :] = arr
+        if out is not None:
+             out[cursor:cursor + arr.shape[0], :] = arr
         cursor += arr.shape[0]
 
         batch = []
@@ -227,8 +251,8 @@ def embed_texts(texts: List[str]) -> np.ndarray:
                     dim = len(embs[0])
                     out = np.empty((n_total, dim), dtype=np.float32)
                 arr = np.asarray(embs, dtype=np.float32)
-                assert out is not None
-                out[cursor:cursor + 1, :] = arr
+                if out is not None:
+                     out[cursor:cursor + 1, :] = arr
                 cursor += 1
             continue
 
@@ -710,9 +734,12 @@ def scan_and_ingest_if_needed(
 
     for c in chunks:
         raw = (c.chunk_text or "").strip()
+        print(f"DEBUG CHUNK: len={len(raw)} role={getattr(c, 'loc_kind', '')}")
         if not raw:
+            print("  -> Empty")
             continue
         if _is_low_signal_chunk(raw):
+            print("  -> Low Signal")
             continue
         kept_chunks.append(c)
         embed_text_list.append(_build_embed_text_for_chunk(c))

@@ -1,15 +1,14 @@
 {
-  "version": 1,
+  "version": 2,
+  "build": {
+    "embedding_model": "text-embedding-3-small",
+    "embed_model_version": 1,
+    "embed_text_version": 4,
+    "search_text_version": 3,
+    "chunk_max_chars": 4000,
+    "chunk_overlap_chars": 200
+  },
   "files": {
-    "book21 Artificial Inteligence work details v2.pdf": {
-      "filename": "book21 Artificial Inteligence work details v2.pdf",
-      "path": "assets/data/book21 Artificial Inteligence work details v2.pdf",
-      "ext": ".pdf",
-      "mtime": 1770366137,
-      "size": 16726,
-      "rank": 21,
-      "sha256": "9232c2573dd6328ef9ce9fff5c09e5fd57a4b8e0fa0465af6b2438cd66e0e6b6"
-    },
     "(10 of 2024) The Punjab Enforcement and Regulation Bill 2024-B.pdf": {
       "filename": "(10 of 2024) The Punjab Enforcement and Regulation Bill 2024-B.pdf",
       "path": "assets/data/(10 of 2024) The Punjab Enforcement and Regulation Bill 2024-B.pdf",

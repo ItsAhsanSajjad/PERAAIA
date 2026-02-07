@@ -312,7 +312,8 @@ def extract_pdf_units(pdf_path: str) -> List[ExtractedUnit]:
         from pypdf import PdfReader
         reader = PdfReader(pdf_path)
         pages = reader.pages
-    except Exception:
+    except Exception as e:
+        print(f"Error extracting {pdf_path}: {e}")
         return units
 
     # first pass: raw page lines for header/footer detection
@@ -354,7 +355,6 @@ def extract_pdf_units(pdf_path: str) -> List[ExtractedUnit]:
                 path=pdf_path,
             )
         )
-
     return units
 
 
