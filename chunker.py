@@ -65,6 +65,31 @@ _TAB_TABLE_RE = re.compile(r"\t+")
 
 _HEADING_RE = re.compile(r"^\s*(schedule|annex|annexure|appendix|chapter|section)\b", re.I)
 
+# Role heading detection for hierarchical context injection
+# Matches role titles like "Chief Technology Officer", "Manager (Infrastructure & Networks)", "Android Developer"
+_ROLE_HEADING_RE = re.compile(
+    r"^\s*("
+    # Explicit common roles (case-insensitive)
+    r"chief\s+technology\s+officer|"
+    r"chief\s+executive\s+officer|"
+    r"director\s+general|"
+    r"deputy\s+director|"
+    r"assistant\s+director|"
+    r"sub[- ]?divisional\s+enforcement\s+officer|"
+    r"enforcement\s+officer|"
+    r"android\s+developer|"
+    r"software\s+developer|"
+    r"database\s+administrator|"  # EXPLICIT ADDITION
+    r"system\s+administrator|"
+    r"network\s+administrator|"
+    r"manager\s*\([^)]+\)|"  # Manager (Infrastructure & Networks)
+    r"[a-z]+\s+manager|"  # Project Manager, HR Manager, etc.
+    # Generic pattern: Title + (Officer|Developer|Manager|Director|Engineer|Specialist)
+    r"[A-Za-z][A-Za-z\s&]+\s+(officer|developer|manager|director|engineer|specialist|administrator|coordinator)"
+    r")\s*$",
+    re.IGNORECASE
+)
+
 def _looks_like_table_line(line: str) -> bool:
     if not line:
         return False
@@ -99,6 +124,34 @@ def _is_heading(line: str) -> bool:
     if 4 <= len(letters) <= 40 and letters.isupper():
         return True
     return False
+
+def _is_role_heading(line: str) -> Optional[str]:
+    """
+    Detects if a line is a role heading (CTO, Manager, etc.)
+    Returns the role title if detected, None otherwise.
+    """
+    if not line:
+        return None
+    s = line.strip()
+    
+    # EXCLUSION: Ignore "Report To" lines
+    if re.match(r"^\s*(report\s*to|reporting\s*to|reports\s*to)\b", s, re.I):
+        return None
+
+    # EXTRACTION: Handle "Position Title: - Role"
+    m_prefix = re.match(r"^\s*(position\s*title|job\s*title|role)\s*[:\-]+\s*(.*)", s, re.I)
+    if m_prefix:
+        s = m_prefix.group(2).strip()
+        s = re.sub(r"^[-•\:\s]+", "", s)
+
+    # Must be reasonably short
+    if len(s) > 80:
+        return None
+
+    match = _ROLE_HEADING_RE.search(s)
+    if match:
+        return s  # Return the cleaned role title
+    return None
 
 
 def _split_into_blocks(text: str) -> List[str]:
@@ -158,6 +211,75 @@ def _split_into_blocks(text: str) -> List[str]:
     flush()
 
     return blocks if blocks else [t]
+
+
+def _split_into_blocks_with_context(text: str) -> List[tuple]:
+    """
+    Enhanced block splitter that tracks role headings.
+    Returns list of (heading_context, block_text) tuples.
+    
+    The heading_context is the most recent role heading (e.g., "Chief Technology Officer")
+    which will be prepended to chunks for hierarchical context.
+    """
+    t = _clean_text(text)
+    if not t:
+        return []
+
+    lines = t.split("\n")
+    blocks: List[tuple] = []  # (heading_context, block_text)
+    buf: List[str] = []
+    current_role: Optional[str] = None  # Track the active role heading
+
+    def flush():
+        nonlocal buf
+        if not buf:
+            return
+        b = _clean_text("\n".join(buf))
+        if b:
+            blocks.append((current_role, b))
+        buf = []
+
+    def last_is_structured() -> bool:
+        if not buf:
+            return False
+        return _looks_like_table_or_list(buf[-1])
+
+    for ln in lines:
+        raw = (ln or "").strip()
+
+        # blank line = boundary
+        if not raw:
+            flush()
+            continue
+
+        # Check if this is a role heading
+        role_match = _is_role_heading(raw)
+        if role_match:
+            print(f"DEBUG ROLE MATCH: '{role_match}'")
+            flush()
+            current_role = role_match  # Update the active role context
+            buf.append(raw)
+            continue
+
+        # Standard headings start a new block (but don't reset role)
+        if _is_heading(raw):
+            flush()
+            buf.append(raw)
+            continue
+
+        structured = _looks_like_table_or_list(raw)
+
+        # If switching between narrative <-> structured, flush to avoid mixing
+        if buf:
+            prev_structured = last_is_structured()
+            if structured != prev_structured:
+                flush()
+
+        buf.append(raw)
+
+    flush()
+
+    return blocks if blocks else [(None, t)]
 
 
 def _trim_overlap_to_boundary(tail: str) -> str:
@@ -349,42 +471,73 @@ def chunk_units(
             )
             continue
 
-        blocks = _split_into_blocks(txt)
-        chunk_texts = _chunk_by_char_budget(blocks, max_chars=max_chars, overlap_chars=overlap_chars)
+        # Use context-aware block splitting to track role headings
+        blocks_with_context = _split_into_blocks_with_context(txt)
+        
+        # New "Group by Context" logic to prevent role bleeding
+        grouped_blocks = []
+        current_group_ctx = None
+        current_group_texts = []
+        
+        # Initialize with first block's context
+        if blocks_with_context:
+            current_group_ctx = blocks_with_context[0][0]
+            
+        for ctx, text in blocks_with_context:
+            # If context switches (e.g. from None to Role A, or Role A to Role B)
+            if ctx != current_group_ctx:
+                if current_group_texts:
+                    grouped_blocks.append((current_group_ctx, current_group_texts))
+                current_group_texts = []
+                current_group_ctx = ctx
+            
+            current_group_texts.append(text)
+            
+        if current_group_texts:
+            grouped_blocks.append((current_group_ctx, current_group_texts))
+            
+        # Chunk each group independently
+        for ctx, texts in grouped_blocks:
+            chunk_texts = _chunk_by_char_budget(texts, max_chars=max_chars, overlap_chars=overlap_chars)
+            
+            if not chunk_texts and len(texts) == 1:
+                chunk_texts = texts # fallback (shouldn't happen with valid texts)
 
-        if not chunk_texts:
-            chunk_texts = [txt]
-
-        for i, ctext in enumerate(chunk_texts):
-            ctext = _clean_text(ctext)
-            if not ctext:
-                continue
-
-            if len(ctext) < min_chunk_chars:
-                if len(chunk_texts) == 1:
-                    pass
-                elif _force_keep_chunk(ctext):
-                    pass
-                elif i == len(chunk_texts) - 1:
-                    # allow last tail only if it has enough real words
-                    if len(re.findall(r"[A-Za-z\u0600-\u06FF]{3,}", ctext)) >= 10:
-                        pass
-                    else:
-                        continue
-                else:
+            for i, ctext in enumerate(chunk_texts):
+                ctext = _clean_text(ctext)
+                if not ctext:
                     continue
 
-            out.append(
-                Chunk(
-                    doc_name=u.doc_name,
-                    doc_rank=rank,
-                    source_type=u.source_type,
-                    loc_kind=u.loc_kind,
-                    loc_start=u.loc_start,
-                    loc_end=u.loc_end,
-                    chunk_text=ctext,
-                    path=getattr(u, "path", None),
+                if len(ctext) < min_chunk_chars:
+                    if len(chunk_texts) == 1:
+                        pass
+                    elif _force_keep_chunk(ctext):
+                        pass
+                    elif i == len(chunk_texts) - 1:
+                        if len(re.findall(r"[A-Za-z\u0600-\u06FF]{3,}", ctext)) >= 10:
+                            pass
+                        else:
+                            continue
+                    else:
+                        continue
+
+                # HIERARCHICAL CONTEXT INJECTION:
+                final_text = ctext
+                # Only inject if we have context and it's not already in the text
+                if ctx and ctx.lower() not in ctext.lower():
+                    final_text = f"[Role: {ctx}]\n{ctext}"
+
+                out.append(
+                    Chunk(
+                        doc_name=u.doc_name,
+                        doc_rank=rank,
+                        source_type=u.source_type,
+                        loc_kind=u.loc_kind,
+                        loc_start=u.loc_start,
+                        loc_end=u.loc_end,
+                        chunk_text=final_text,
+                        path=getattr(u, "path", None),
+                    )
                 )
-            )
 
     return out
