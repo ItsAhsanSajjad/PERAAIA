@@ -198,11 +198,20 @@ export default function Home() {
 
     try {
       const history = messages.map(m => ({ role: m.role, content: m.content }));
+      console.log("Sending request to:", `${API_URL}/api/ask`);
+
       const res = await fetch(`${API_URL}/api/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: text, conversation_history: history }),
       });
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error(`API Error: ${res.status} ${res.statusText}`, errText);
+        throw new Error(`API Error: ${res.status} ${res.statusText} - ${errText}`);
+      }
+
       const data = await res.json();
       const botMsg: Message = {
         role: "assistant",
@@ -212,10 +221,15 @@ export default function Home() {
       };
       setMessages(prev => [...prev, botMsg]);
       setLatestIsNew(true);
-    } catch {
+    } catch (err: any) {
+      console.error("Fetch failed:", err);
+      // Show alert for critical errors like 405
+      if (err.message && err.message.includes("405")) {
+        alert("System Error: 405 Method Not Allowed. Please check backend logs.");
+      }
       setMessages(prev => [
         ...prev,
-        { role: "assistant", content: "⚠️ Connection error. Please try again.", timestamp: Date.now() },
+        { role: "assistant", content: `⚠️ Connection error: ${err.message || "Unknown error"}. Please try again.`, timestamp: Date.now() },
       ]);
     } finally {
       setLoading(false);

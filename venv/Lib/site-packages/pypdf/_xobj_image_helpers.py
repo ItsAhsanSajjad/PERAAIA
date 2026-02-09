@@ -276,11 +276,16 @@ def _handle_flate(
                 if lookup is not None:
                     img.putpalette(lookup, rawmode=mode)
             img = img.convert("L" if base == ColorSpaces.DEVICE_GRAY else "RGB")
-    elif not isinstance(color_space, NullObject) and color_space[0] == "/ICCBased":
-        # Table 65 - Additional Entries Specific to an ICC Profile Stream Dictionary
-        mode2 = _get_image_mode(color_space, colors, mode)[0]
-        if mode != mode2:
-            img = Image.frombytes(mode2, size, data)  # reloaded as mode may have changed
+    elif not is_null_or_none(color_space) and color_space[0] == "/ICCBased":
+        # Exclude pure black-and-white images.
+        # TODO: The remaining code still does not look correct. Shouldn't the proper way be
+        #       to use the original image and apply the ICC transformation on it?
+        #       For now, this just loads the original image with a different color space.
+        if mode != "1":
+            # Table 65 - Additional Entries Specific to an ICC Profile Stream Dictionary
+            mode2 = _get_image_mode(color_space, colors, mode)[0]
+            if mode != mode2:
+                img = Image.frombytes(mode, size, data)  # reloaded as mode may have changed
     if mode == "CMYK":
         extension = ".tif"
         image_format = "TIFF"
@@ -303,7 +308,7 @@ def _handle_jpx(
     mode, invert_color = _get_image_mode(color_space, colors, mode)
     if mode == "":
         mode = cast(mode_str_type, img1.mode)
-        invert_color = mode in ("CMYK",)
+        invert_color = mode == "CMYK"
     if img1.mode == "RGBA" and mode == "RGB":
         mode = "RGBA"
     # we need to convert to the good mode
@@ -471,7 +476,7 @@ def _xobj_to_image(
     # Get filters
     filters = x_object.get(StreamAttributes.FILTER, NullObject()).get_object()
     lfilters = filters[-1] if isinstance(filters, list) else filters
-    decode_parms = x_object.get(StreamAttributes.DECODE_PARMS, None)
+    decode_parms = x_object.get(StreamAttributes.DECODE_PARMS)
     if decode_parms and isinstance(decode_parms, (tuple, list)):
         decode_parms = decode_parms[0]
     else:
