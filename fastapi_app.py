@@ -4,7 +4,7 @@ import os
 from urllib.parse import quote
 from typing import List, Dict, Any, Optional, Tuple
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -502,6 +502,45 @@ def ask_question_json(request: QueryRequest):
         answer=result.get("answer", "") or "",
         references=refs_out,
     )
+
+
+# ============================================================
+# Voice Transcription (Whisper API)
+# ============================================================
+@app.post("/api/transcribe")
+async def transcribe_audio(file: UploadFile = File(...)):
+    """Transcribe voice audio to text using OpenAI Whisper API."""
+    import tempfile
+    from openai import OpenAI
+
+    try:
+        # Save uploaded audio to temp file
+        suffix = os.path.splitext(file.filename or "voice.webm")[1] or ".webm"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
+            content = await file.read()
+            tmp.write(content)
+            tmp_path = tmp.name
+
+        # Transcribe with Whisper
+        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        with open(tmp_path, "rb") as audio_file:
+            transcript = client.audio.transcriptions.create(
+                model="whisper-1",
+                file=audio_file,
+                language="ur",  # Urdu + Roman Urdu / English auto-detected
+            )
+
+        # Cleanup
+        os.unlink(tmp_path)
+
+        return {"text": transcript.text}
+    except Exception as e:
+        # Cleanup on error
+        try:
+            os.unlink(tmp_path)
+        except:
+            pass
+        return {"text": "", "error": str(e)}
 
 
 # ============================================================
