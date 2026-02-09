@@ -1,0 +1,137 @@
+Original: 'salay of dg'
+Rewritten: 'pay and allowances SPPP Schedule of the Director General'
+Total ranked: 81
+
+[1] subj=2 score=0.747 -
+    Compiled Working Paper_2nd Mee p.402
+    THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (EFFICIENCY & DISCIPLINE) REGULATIONS, 2025 CONTENTS
+
+1. Short title and Commencement
+2. Definitions
+3
+
+[2] subj=2 score=0.714 -
+    Annex I (Performance Appraisal p.1
+    THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (PERFORMANCE APPRAISAL) (AMENDED) REGULATIONS, 2025 CONTENTS
+
+1. Short title, Commencement and Applica
+
+[3] subj=2 score=0.702 SPPP $$ DG
+    Compiled Working Paper_2nd Mee p.401
+    Special Pay Package PERA (SPPP) Breakup Sr. No. Special Pay Package PERA (SPPP) Govt Equivalent Basic Pay Scale PERA Special Allowance Social Security
+
+[4] subj=2 score=0.700 SPPP DG
+    Compiled Working Paper_2nd Mee p.381
+    Position Title: - Assistant Manager Legal
+Report To: - | Head Legal & Prosecution
+Wing: - | Legal & Prosecution
+Purpose of the Position:
+Assistant Man
+
+[5] subj=2 score=0.699 SPPP DG
+    Compiled Working Paper_2nd Mee p.388
+    Position Title: Manager (Research & Implementation)
+Report To: | Deputy Director (Implementation)
+Wing: - | Monitoring & Implementation
+Purpose of the
+
+[6] subj=2 score=0.692 DG
+    PERA – Frequently Asked Questi p.1
+    PERA – Frequently Asked Questions (FAQs) General Information
+
+• What is PERA?
+
+The Punjab Enforcement and Regulatory Authority (PERA) is a provincial 
+
+[7] subj=2 score=0.691 SPPP DG
+    Compiled Working Paper_2nd Mee p.157
+    Organizational Structure Director General /BS-19/20 (1) Dir. Finance BS-19 (08) Dir. Admin. & HR BS-19 (17) Dir. Personnel BS-19 (08) Chief Technology
+
+[8] subj=2 score=0.683 SPPP DG
+    Compiled Working Paper_2nd Mee p.365
+    Position Title: - Head Procurement & Contracting
+Report To: - | Director Administration & HR
+Wing: - | Administration & HR
+Purpose of the Position:
+Re
+
+[9] subj=2 score=0.682 DG
+    Annex G Employees SRs 1.pdf p.31
+    Position Title: | Director (Personnel)
+Reports To: | Director General
+Purpose of the Position:
+He is responsible for coordination with the Enforcement
+
+[10] subj=2 score=0.681 DG
+    Compiled Working Paper_2nd Mee p.303
+    Position Title: | Director (Personnel)
+Reports To: | Director General
+Purpose of the Position:
+He is responsible for coordination with the Enforcement
+
+[11] subj=2 score=0.679 DG
+    Compiled Working Paper_2nd Mee p.301
+    Position Title: | Director (Administration & HR)
+Reports To: | Director General
+Purpose of the Position:
+He is responsible for managing all the activi
+
+[12] subj=2 score=0.678 DG
+    Compiled Working Paper_2nd Mee p.379
+    Position Title: - Head Legal & Prosecution
+Report To: - | Director General
+Wing: - | Legal & Prosecution
+Purpose of the Position:
+Head Legal & Prosecu
+
+[13] subj=2 score=0.675 DG
+    Compiled Working Paper_2nd Mee p.427
+    DIRECTORATE GENERAL PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY LAHORE Schedule-II Hierarchy of Performance Appraisal for Employees of Enforcement Sta
+
+[14] subj=2 score=0.673 DG
+    Annex G Employees SRs 1.pdf p.29
+    Position Title: | Additional Director General (Administration & HR)
+Reports To: | Director General
+Purpose of the Position:
+He is responsible for mana
+
+[15] subj=2 score=0.673 -
+    Compiled Working Paper_2nd Mee p.423
+    DIRECTORATE GENERAL PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY LAHORE Communication of Appraisal to Employee March 16 Employees are informed of their
+
+[16] subj=2 score=0.670 SPPP DG
+    Compiled Working Paper_2nd Mee p.381
+    Position Title: - Assistant Manager Legal
+Report To: - | Head Legal & Prosecution
+Wing: - | Legal & Prosecution
+Purpose of the Position:
+Assistant Man
+
+[17] subj=2 score=0.668 DG
+    Annex G Employees SRs 1.pdf p.31
+    Position Title: | Director (Personnel)
+Reports To: | Director General
+Purpose of the Position:
+He is responsible for coordination with the Enforcement
+
+[18] subj=2 score=0.668 DG
+    Compiled Working Paper_2nd Mee p.303
+    Position Title: | Director (Personnel)
+Reports To: | Director General
+Purpose of the Position:
+He is responsible for coordination with the Enforcement
+
+[19] subj=2 score=0.668 DG
+    Compiled Working Paper_2nd Mee p.301
+    Position Title: | Director (Administration & HR)
+Reports To: | Director General
+Purpose of the Position:
+He is responsible for managing all the activi
+
+[20] subj=2 score=0.667 SPPP DG
+    Compiled Working Paper_2nd Mee p.360
+    Position Title: - Graphic Designer
+Report To: - | Creative Lead
+Wing: - | IT & Communication
+Purpose of the Position:
+The Graphic Designer will assist

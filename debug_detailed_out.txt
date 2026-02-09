@@ -1,0 +1,6 @@
+No history: answer -> The name of the **Director General** of the Punjab Enforcement and Regulatory Authority (PERA) is **Capt. Farrukh Atiq Khan (Retd.)** [1].
+Poisoned: answer -> The **Director General** of the Punjab Enforcement and Regulatory Authority (PERA) is **Capt. Farrukh Atiq Khan (Rtd.)**.
+
+Ranked: 43, Context: 27807 chars, MAX_DOCS: 10
+Top chunk: Annex G Employees SRs 1.pdf p.61
+  text: Schedule-VI Special Allowance & Benefits Sr. No. BS Pay + Allowance PERA Special Allowance Deputation Allowance Fuel Limit 1 BS-20 Pay means Basic Pay

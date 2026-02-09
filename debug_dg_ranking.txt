@@ -1,0 +1,58 @@
+Query: 'dg name?'
+  Evidence groups: 6
+  Total ranked: 40
+  DG name chunk position: 11
+  Top 3 chunks:
+    [1] subj=2 score=0.650 Compiled Working Paper_2nd Mee p.429
+        GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY
+Lahore, Dated the | ,2025
+N O T
+    [2] subj=2 score=0.650 Compiled Working Paper_2nd Mee p.430
+        ii. Flag Badge: The Pakistani flag shall | be displayed above the name tag,
+signifying national repr
+    [3] subj=2 score=0.650 Flag-H; Uniform Regulations.pd p.2
+        GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY
+Lahore, Dated the | ,2025
+N O T
+
+Query: 'dg kon hai'
+  Evidence groups: 4
+  Total ranked: 40
+  DG name chunk position: 26
+  Top 3 chunks:
+    [1] subj=3 score=0.506 Compiled Working Paper_2nd Mee p.427
+        DIRECTORATE GENERAL PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY LAHORE Schedule-II Hierarchy of Perf
+    [2] subj=3 score=0.475 Compiled Working Paper_2nd Mee p.116
+        Performance Appraisal Regulations (Agenda 02 – Flag G) Employee Reporting Officer Countersigning Off
+    [3] subj=3 score=0.461 Annex G Employees SRs 1.pdf p.35
+        Position Title: | Deputy Director (Implementation)
+Reports to: | Additional Director General (Monito
+
+Query: 'director general name'
+  Evidence groups: 6
+  Total ranked: 40
+  DG name chunk position: 15
+  Top 3 chunks:
+    [1] subj=3 score=0.701 Annex G Employees SRs 1.pdf p.26
+        12 Office Assistant (BS-14) Director General At least BA / BBA or equivalent degree from a recognize
+    [2] subj=3 score=0.700 Compiled Working Paper_2nd Mee p.297
+        12 Office Assistant (BS-14) Director General At least BA / BBA or equivalent degree from a recognize
+    [3] subj=3 score=0.650 Annex G Employees SRs 1.pdf p.24
+        Schedule-II Conditions of Service Directorate General Sr. No. Name of Post with BS Appointing Author
+
+Query: 'who is director general pera'
+  Evidence groups: 3
+  Total ranked: 40
+  DG name chunk position: 1
+  Top 3 chunks:
+    [1] subj=3 score=0.750 Compiled Working Paper_2nd Mee p.54
+        Commissioner has requested land acquisition for establishment of ES Kot Chutta (FlagT).
+16.2 | There
+    [2] subj=3 score=0.750 Compiled Working Paper_2nd Mee p.300
+        Schedule-III Terms and Reference for Service
+Position Title: | Director General PERA
+Reports To: | A
+    [3] subj=3 score=0.750 Compiled Working Paper_2nd Mee p.374
+        Position Title: - Assistant Manager Finance
+Report To: - | Assistant Director Finance
+Wing: - Financ

@@ -1,0 +1,27 @@
+Query: 'director general pera name'
+Total ranked: 40
+DG name chunk NOT FOUND in any ranked chunks!
+
+
+--- Top 5 chunks ---
+[1] subj=3 score=0.662 Annex G Employees SRs 1.pdf p.31
+    Position Title: | Director (Personnel)
+Reports To: | Director General
+Purpose of the Position:
+He is
+[2] subj=3 score=0.662 Compiled Working Paper_2nd Mee p.303
+    Position Title: | Director (Personnel)
+Reports To: | Director General
+Purpose of the Position:
+He is
+[3] subj=3 score=0.660 Annex G Employees SRs 1.pdf p.33
+    Position Title: | Deputy Director (Administration & HR)
+Reports To: | Additional Director General (A
+[4] subj=3 score=0.660 Annex G Employees SRs 1.pdf p.29
+    Position Title: | Additional Director General (Administration & HR)
+Reports To: | Director General
+P
+[5] subj=3 score=0.660 Compiled Working Paper_2nd Mee p.301
+    Position Title: | Director (Administration & HR)
+Reports To: | Director General
+Purpose of the Posit

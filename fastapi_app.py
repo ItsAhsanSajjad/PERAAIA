@@ -85,8 +85,10 @@ def _startup_indexer():
 # API models
 # ============================================================
 class QueryRequest(BaseModel):
-    user_id: str
-    message: str
+    user_id: Optional[str] = "anon"
+    message: Optional[str] = None
+    question: Optional[str] = None  # Alias for message (frontend sends 'question')
+    conversation_history: Optional[List[Dict[str, str]]] = None
 
 
 class QueryResponse(BaseModel):
@@ -345,8 +347,39 @@ def download_pdf(filename: str):
 # ============================================================
 @app.post("/ask", response_model=QueryResponse)
 def ask_question(request: QueryRequest):
-    retrieval = retrieve(request.message)
-    result = answer_question(request.message, retrieval)
+    # Normalize message (Frontend sends 'question', Backend expected 'message')
+    current_q = (request.message or request.question or "").strip()
+    if not current_q:
+        return QueryResponse(user_id=request.user_id or "anon", answer="Please ask a question.")
+
+    # Extract history for Contextual Rewriting
+    history = request.conversation_history or []
+    last_q = ""
+    last_a = ""
+    
+    # Robust history extraction (find last User/Assistant pair)
+    if history:
+        for m in reversed(history):
+            role = m.get("role")
+            content = m.get("content", "")
+            if role == "assistant" and not last_a:
+                last_a = content
+            elif role == "user" and not last_q:
+                # Skip the current message if it was somehow appended (unlikely but safe)
+                if content != current_q:
+                    last_q = content
+            if last_q and last_a:
+                break
+
+    # Rewrite Query if needed (e.g. "what are that?" -> "what are SPPP benefits")
+    rewritten_query = rewrite_contextual_query(current_q, last_q, last_a)
+    if rewritten_query != current_q:
+        print(f"[API] Contextual Rewrite: '{current_q}' -> '{rewritten_query}'")
+
+    retrieval = retrieve(rewritten_query)
+    
+    # Pass original query + history to Answerer (LLM sees chat flow)
+    result = answer_question(current_q, retrieval, conversation_history=history)
 
     baseurl = _base_url()
     answer_text = result.get("answer", "") or ""
@@ -483,6 +516,7 @@ class SimpleChatResponse(BaseModel):
     answer: str
     decision: str
     references: List[Dict[str, Any]]
+    rewritten_query: Optional[str] = None
 
 
 @app.post("/api/ask", response_model=SimpleChatResponse)
@@ -519,6 +553,7 @@ def simple_ask(request: SimpleChatRequest):
         answer=result.get("answer", "Jawab nahi mila."),
         decision=result.get("decision", "answer"),
         references=result.get("references", []),
+        rewritten_query=query_for_retrieval
     )
 
 

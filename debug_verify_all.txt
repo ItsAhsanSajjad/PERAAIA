@@ -1,0 +1,24 @@
+✅ 'who is director genral pera' 
+   Rewritten: 'who is director general pera'
+   Decision: answer
+   Answer: The **Director General PERA** is responsible for assisting the Authority in performing its functions and exercising its powers as mentioned in the Act
+
+✅ 'who is head of pera' 
+   Rewritten: 'who is head of pera'
+   Decision: answer
+   Answer: The head of PERA is the **Director General PERA**, who reports to the Authority and is responsible for assisting in performing its functions and exerc
+
+✅ 'dg name?' 
+   Rewritten: 'dg name?'
+   Decision: answer
+   Answer: The name of the Director General of the Punjab Enforcement and Regulatory Authority (PERA) is **Capt. Farrukh Atiq Khan (Rtd.)** [11].
+
+❌ 'director general name' 
+   Rewritten: 'director general name'
+   Decision: refuse
+   Answer: I'm a bit stuck on that one—my digital mind is a little tired! 🤯 Please try asking again.
+
+❌ 'nam kia hai' (follow-up)
+   Rewritten: 'What is the name of the Director General who is the head of PERA?'
+   Decision: refuse
+   Answer: I'm a bit stuck on that one—my digital mind is a little tired! 🤯 Please try asking again.

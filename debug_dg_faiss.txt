@@ -1,0 +1,40 @@
+Chunk 100: Annex G Employees SRs 1.pdf page=61
+  text: Schedule-VI Special Allowance & Benefits Sr. No. BS Pay + Allowance PERA Special Allowance Deputation Allowance Fuel Limit 1 BS-20 Pay means Basic Pay plus increment as per the length of service, and allowances means all the allowances being drawn by the Officer / Official who has been appointed by 
+
+Chunk 256: Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf page=42
+  text: The 2nd Authority meeting of the Punjab Enforcement and Regulatory Authority (PERA) was held on May 31, 2025 under the chairmanship of hon’ble Chief Secretary / Vice Chairperson of the Authority. The meeting commenced with the recitation of the Holy Quran. The Quorum was complete, and the following 
+
+Chunk 268: Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf page=54
+  text: Commissioner has requested land acquisition for establishment of ES Kot Chutta (Flag- T). 16.2 Therefore it is proposed that DG PERA may be allowed to take up the case for land acquisition proceedings under the Land Acquisition Act, 1894 for establishment of the Enforcement Station at Hassanabdal an
+
+Chunk 842: Flag-S; MOM Selection Panel.pdf page=1
+  text: LAHORE Minutes of Meeting: Selection Panel for Independent Members of PERA Date: 8th May 2025 Venue: PERA, HQ, 10-03 Arfa Software Technology Park Lahore Time: 12:00pm (noon) Attendees:
+
+1) Mr. Zahid Saeed, Former Chief Secretary – Punjab (Member Selection Panel)
+2) Mr. Azam Suleman, Former Chief Se
+
+Chunk 843: Flag-S; MOM Selection Panel.pdf page=2
+  text: LAHORE Sr. # Agenda Discussion Decision The TORs clearly define eligibility, roles, deliverables, tenure, and performance expectations for each member category. Key functional areas identified for independent member positions include:
+Member Finance – Oversight of financial management and audit func
+
+Total DG name chunks: 5
+Query 'director general name': chunk 100 NOT in top 60!
+Query 'director general name': chunk 256 NOT in top 60!
+Query 'director general name': chunk 268 NOT in top 60!
+Query 'director general name': chunk 842 NOT in top 60!
+Query 'director general name': chunk 843 NOT in top 60!
+Query 'DG KON HAI': chunk 100 NOT in top 60!
+Query 'DG KON HAI': chunk 256 at rank 19, score=0.2516
+Query 'DG KON HAI': chunk 268 NOT in top 60!
+Query 'DG KON HAI': chunk 842 NOT in top 60!
+Query 'DG KON HAI': chunk 843 NOT in top 60!
+Query 'who is dg pera': chunk 100 NOT in top 60!
+Query 'who is dg pera': chunk 256 NOT in top 60!
+Query 'who is dg pera': chunk 268 at rank 58, score=0.4361
+Query 'who is dg pera': chunk 842 NOT in top 60!
+Query 'who is dg pera': chunk 843 NOT in top 60!
+Query 'name of dg': chunk 100 NOT in top 60!
+Query 'name of dg': chunk 256 NOT in top 60!
+Query 'name of dg': chunk 268 NOT in top 60!
+Query 'name of dg': chunk 842 NOT in top 60!
+Query 'name of dg': chunk 843 NOT in top 60!

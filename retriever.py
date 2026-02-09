@@ -321,6 +321,34 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
     for idx_val, score_val in final_keyword_list:
         _process_hit(idx_val, score_val, is_context=False)
 
+    # D. SPPP Salary Table Enrichment
+    # When query is about salary/pay, ensure the SPPP breakup table is included.
+    # Problem: Role chunk (e.g. "Android Dev = SPPP-4") is on page 355,
+    # but salary table ("SPPP-4 minimum/maximum pay") is on page 156/401.
+    # Expansion (±3 pages) can't bridge that gap, so we inject it explicitly.
+    _salary_kw = {"salary", "pay", "allowance", "benefit", "tankhwah", "maash",
+                  "kitni", "compensation", "scale", "sppp", "number", "amount"}
+    q_salary_check = question.lower()
+    is_salary_q = any(kw in q_salary_check for kw in _salary_kw)
+    
+    if is_salary_q:
+        # Check if SPPP table is already in results
+        has_sppp_table = any(
+            "Minimum Pay" in hit.get("text", "") and "Maximum Pay" in hit.get("text", "")
+            for doc_data in docs_map.values()
+            for hit in doc_data.get("hits", [])
+        )
+        
+        if not has_sppp_table:
+            injected = 0
+            for ci, chunk in enumerate(chunks):
+                text = chunk.get("text", "")
+                if ("Minimum Pay" in text and "Maximum Pay" in text and "SPPP" in text):
+                    _process_hit(ci, 0.55, is_context=False)  # Inject as regular hit (not context)
+                    injected += 1
+            if injected:
+                print(f"[Retriever] Injected {injected} SPPP salary table chunk(s)")
+
     # Convert to list and SORT by max_score descending
     evidence = list(docs_map.values())
     evidence.sort(key=lambda x: x["max_score"], reverse=True)
@@ -332,17 +360,63 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
     }
 
 # =============================================================================
+# Lightweight Typo Corrector (for standalone first queries)
+# =============================================================================
+_COMMON_TYPOS = {
+    "genral": "general", "genreal": "general", "gneral": "general",
+    "directer": "director", "diretor": "director", "drector": "director",
+    "suppor": "support", "suport": "support", "suppert": "support",
+    "salarey": "salary", "salaray": "salary", "salery": "salary",
+    "offcer": "officer", "oficer": "officer", "offier": "officer",
+    "manger": "manager", "mangaer": "manager", "maneger": "manager",
+    "enforcment": "enforcement", "enforcemnt": "enforcement",
+    "moniter": "monitor", "monitering": "monitoring", "montioring": "monitoring",
+    "additonal": "additional", "aditional": "additional",
+    "asistant": "assistant", "assistent": "assistant",
+    "benifit": "benefit", "benfit": "benefit", "benifits": "benefits",
+    "allowence": "allowance", "alowance": "allowance",
+    "compansation": "compensation", "compenstion": "compensation",
+    "responsibilties": "responsibilities", "responsibiliy": "responsibility",
+    "qualificaton": "qualification", "qualifcation": "qualification",
+    "experiance": "experience", "experienc": "experience",
+    "regulaton": "regulation", "regulaion": "regulation",
+    "notificaton": "notification", "noification": "notification",
+    "suppo": "support",
+}
+
+def _fix_common_typos(query: str) -> str:
+    """Fix common typos without using LLM — fast and doesn't over-expand."""
+    words = query.split()
+    fixed = []
+    for w in words:
+        w_lower = w.lower()
+        if w_lower in _COMMON_TYPOS:
+            # Preserve original case pattern
+            replacement = _COMMON_TYPOS[w_lower]
+            if w[0].isupper():
+                replacement = replacement.capitalize()
+            fixed.append(replacement)
+        else:
+            fixed.append(w)
+    result = " ".join(fixed)
+    if result != query:
+        print(f"[Retriever] Typo fix: '{query}' -> '{result}'")
+    return result
+
+# =============================================================================
 # Query Contextualizer (Memory)
 # =============================================================================
 def rewrite_contextual_query(current_query: str, last_question: str, last_answer: str) -> str:
     """
     Rewrite follow-up questions to be standalone using LLM.
+    Only rewrites when there IS conversation history — first messages pass through unchanged
+    because the embedding model handles typos/abbreviations well, and LLM rewriting
+    over-expands terms (e.g. 'PERA' -> 'Punjab Enforcement and Regulation Authority') which hurts retrieval.
     """
-    should_rewrite = os.getenv("RETRIEVER_LLM_QUERY_REWRITE_ALWAYS", "0") != "0"
-    
-    # If no history and not forced to rewrite, return original
-    if not last_question and not should_rewrite:
-        return current_query
+    # Only use LLM rewrite for follow-ups (with history)
+    # For standalone queries, just fix typos — LLM rewrite over-expands terms
+    if not last_question:
+        return _fix_common_typos(current_query)
         
     # If the user is just saying "thanks" or "ok", don't rewrite
     if len(current_query) < 4 and current_query.lower() in ["ok", "thanks", "theek", "sahi"]:
@@ -352,17 +426,30 @@ def rewrite_contextual_query(current_query: str, last_question: str, last_answer
         "You are a query rewriter for a RAG system.\n"
         "Your task: Rewrite the user query to be a standalone, semantically rich search query.\n"
         "Rules:\n"
-        "1. Expand abbreviations (e.g. 'CTO' -> 'Chief Technology Officer', 'DG' -> 'Director General', 'Mgr' -> 'Manager', 'Infra' -> 'Infrastructure & Networks').\n"
-        "2. Map broad terms to specific document sections (e.g. 'powers' -> 'powers, functions, and responsibilities', 'salary' -> 'pay and allowances').\n"
+        "1. Expand abbreviations (e.g. 'CTO' -> 'Chief Technology Officer', 'DG' -> 'Director General', 'EPO' -> 'Emergency Prohibition Order'). IMPORTANT: Do NOT expand 'PERA' — keep it as 'PERA'.\n"
+        "2. Map broad terms to specific document sections:\n"
+        "   - 'powers' -> 'powers, functions, and responsibilities'\n"
+        "   - 'salary' / 'pay' / 'tankhwah' -> 'pay and allowances SPPP Schedule'\n"
+        "   - 'in numbers' / 'kitni' / 'amount' -> 'minimum pay maximum pay PKR fuel limit SPPP'\n"
+        "   - 'members of board' / 'pera board' -> 'Constitution of the Authority'\n"
+        "   - 'appeal against EPO' -> 'representation against EPO' (Note: Tribunal appeal remains 'appeal')\n"
+        "   - 'encroachment' -> 'removal of encroachment' or 'unauthorized occupation'\n"
         "3. **Urdu/Hindi**: Translate carefully. 'kis ko' means 'whom' (object). 'kon' means 'who' (subject). Preserve the direction of action (e.g. 'CTO kis ko fire kr skta hai' -> 'Who can the Chief Technology Officer terminate?').\n"
         "4. Resolve pronouns using History if available.\n"
         "5. Keep the language (English) for the final query to match document content.\n"
-        "5. OUTPUT ONLY THE REWRITTEN QUERY. No quotes."
+        "6. OUTPUT ONLY THE REWRITTEN QUERY. No quotes."
     )
     
+    # Clean markdown from answer context for better rewriting
+    clean_answer = (last_answer or '')
+    clean_answer = _re.sub(r'\*\*', '', clean_answer)       # Bold markers
+    clean_answer = _re.sub(r'\[(\d+)\]', '', clean_answer)  # Citation refs [1][2]
+    clean_answer = _re.sub(r'^[-•]\s*', '', clean_answer, flags=_re.MULTILINE)  # Bullet points
+    clean_answer = clean_answer.strip()
+
     user_prompt = (
         f"History: {last_question or 'None'}\n"
-        f"Answer Context: {(last_answer or '')[:200]}...\n"
+        f"Answer Context: {clean_answer[:300]}...\n"
         f"Current Follow-up: {current_query}\n"
         "Rewritten Query:"
     )
@@ -377,7 +464,19 @@ def rewrite_contextual_query(current_query: str, last_question: str, last_answer
             ],
             temperature=0.0
         )
-        return response.choices[0].message.content.strip()
+        rewritten = response.choices[0].message.content.strip()
+
+        # Hard-coded post-processing: ensure pay/salary queries include SPPP terms
+        lower = rewritten.lower()
+        pay_keywords = ['pay', 'salary', 'allowances', 'tankhwah', 'compensation', 'remuneration']
+        number_keywords = ['number', 'numerical', 'kitni', 'kitna', 'amount', 'figure']
+        if any(kw in lower for kw in pay_keywords):
+            if 'sppp' not in lower:
+                rewritten = rewritten + " SPPP Schedule"
+            if any(kw in lower for kw in number_keywords) and 'minimum' not in lower:
+                rewritten = rewritten + " minimum pay maximum pay PKR fuel limit"
+
+        return rewritten
     except Exception as e:
         print(f"[Retriever] Rewrite failed: {e}")
         return current_query

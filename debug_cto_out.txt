@@ -1,0 +1,23 @@
+Total ranked chunks: 40
+  [1] subj=3 score=0.650 (10 of 2024) The Punjab Enforcement p.7
+      (2) The meetings of the Authority shall be presided over by the Chairperson or, in his absence, by the Vice Chairperson 
+  [2] subj=3 score=0.522 Compiled Working Paper_2nd Meeting  p.347
+      Position Title: - Manager (Development)
+Report To: - | Chief Technology Officer (CTO)
+Wing: - | IT & Communication
+Purpo
+  [3] subj=3 score=0.521 Annex H Contractual Employees SRs.p p.22
+      Position Title: - Manager (Development)
+Report To: - | Chief Technology Officer (CTO)
+Wing: - | IT & Communications
+Purp
+  [4] subj=2 score=0.650 Annex H Contractual Employees SRs.p p.2
+      GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY Lahore, Dated the 12th November, 2025 N O T I F I C
+  [5] subj=2 score=0.650 (10 of 2024) The Punjab Enforcement p.9
+      (r) sanction payment of reward to any person, inclu ding any employee, who has made an exceptional effort towards accomp
+
+Context chars: 23129
+Context empty: False
+
+Decision: refuse
+Answer: I'm a bit stuck on that one—my digital mind is a little tired! 🤯 Please try asking again.

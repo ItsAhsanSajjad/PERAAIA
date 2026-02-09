@@ -1,0 +1,57 @@
+=== STEP 1: REWRITE ===
+  Original: 'salarey ktna hai'
+  Rewritten: 'What is the pay and allowances SPPP Schedule for the Monitoring Manager (MIS & GIS)?'
+
+=== STEP 2: RETRIEVE ===
+  Evidence groups: 6
+  ✅ SPPP numbers in: Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf score=0.669
+     Special Pay Package PERA (SPPP) Breakup Sr. No. Special Pay Package PERA (SPPP) Govt Equivalent Basic Pay Scale PERA Special Allowance Social Security
+  ✅ SPPP numbers in: Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf score=0.669
+     Sr. No. Special Pay Package PERA (SPPP) Govt Equivalent Basic Pay Scale PERA Special Allowance Social Security Allowance In lieu of Pension @ 30% *Veh
+  ✅ SPPP numbers in: Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf score=0.669
+     Schedule-III Special Pay Package PERA (SPPP) Summary Sr. No. Special Pay Package PERA (SPPP) Minimum Pay per Month (PKR) Maximum Pay per Month (PKR) F
+  ✅ SPPP numbers in: Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf score=0.669
+     Sr. No. Special Pay Package PERA SPPP Minimum Pay per Month (PKR) Maximum Pay per Month (PKR) Fuel Limit (Petrol Liters/Month) 1 SPPP-1 350,082 1,000,
+  ✅ SPPP numbers in: Annex H Contractual Employees SRs.pdf score=0.665
+     Special Pay Package PERA (SPPP) Breakup Sr. No. Special Pay Package PERA (SPPP) Govt Equivalent Basic Pay Scale PERA Special Allowance Social Security
+
+=== STEP 3: RANKED CHUNKS (top 12) ===
+  Total ranked: 77
+  [1]💰 subj=5 score=0.619 Compiled Working Paper_2nd Meeting  p.401
+  [2]💰 subj=5 score=0.587 Compiled Working Paper_2nd Meeting  p.156
+  [3]💰 subj=5 score=0.577 Annex H Contractual Employees SRs.p p.83
+  [4]💰 subj=5 score=0.570 Compiled Working Paper_2nd Meeting  p.400
+  [5]💰 subj=5 score=0.140 Compiled Working Paper_2nd Meeting  p.155
+  [6]   subj=1 score=0.571 PERA – Frequently Asked Questions ( p.1
+  [7]   subj=1 score=0.140 Compiled Working Paper_2nd Meeting  p.398
+  [8]   subj=1 score=0.140 Compiled Working Paper_2nd Meeting  p.325
+  [9]   subj=1 score=0.140 Compiled Working Paper_2nd Meeting  p.329
+  [10]   subj=1 score=0.140 Compiled Working Paper_2nd Meeting  p.330
+  [11]   subj=0 score=0.669 Compiled Working Paper_2nd Meeting  p.391
+  [12]   subj=0 score=0.667 Compiled Working Paper_2nd Meeting  p.391
+
+=== STEP 4: ANSWER ===
+  Answer: **SPPP** salaries are as follows:
+
+- **SPPP-1**: 
+  - Minimum Pay: **350,082 PKR**
+  - Maximum Pay: **1,000,082 PKR**
+
+- **SPPP-2**: 
+  - Minimum Pay: **296,324 PKR**
+  - Maximum Pay: **746,324 PKR**
+
+- **SPPP-3**: 
+  - Minimum Pay: **250,051 PKR**
+  - Maximum Pay: **500,051 PKR**
+
+- **SPPP-4**: 
+  - Minimum Pay: **115,561 PKR**
+  - Maximum Pay: **250,561 PKR**
+
+- **SPPP-5**: 
+  - Minimum Pay: **90,219 PKR**
+  - Maximum Pay: **200,219 PKR** 
+
+These figures are based on the Special Pay Package PE
+  Refs: 3

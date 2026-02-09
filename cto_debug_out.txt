@@ -1,0 +1,20 @@
+Q: 'Chief Technology Officer pay and allowances SPPP Schedule'
+  has_evidence=True, docs=6
+  top_doc=?, top_score=0.6449
+
+Q: 'CTO SPPP salary'
+  has_evidence=True, docs=4
+  top_doc=?, top_score=0.7020
+
+Q: 'pay and allowances'
+  has_evidence=True, docs=6
+  top_doc=?, top_score=0.6986
+
+Q: 'SPPP-1 minimum maximum pay'
+  has_evidence=True, docs=7
+  top_doc=?, top_score=0.6718
+
+Q: 'Chief Technology Officer pay in numerical format SPPP Schedule pay and allowances'
+  has_evidence=True, docs=7
+  top_doc=?, top_score=0.6209
+

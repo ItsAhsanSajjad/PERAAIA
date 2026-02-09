@@ -1,0 +1,144 @@
+============================================================
+TC-038: 'After arrest, what must happen next?'
+============================================================
+Decision: answer
+Full answer: After an arrest under the PERA Act, the following steps must occur:
+
+- **Filing of FIR**: The PERA's Sub-Divisional Enforcement Officer (SDEO) is empowered to register a First Information Report (FIR) with the police for offences under the Act if necessary [9].
+
+- **Legal Proceedings**: The arrested individual may face legal proceedings in court, as offences under PERA are cognizable and non-bailable, meaning the police can arrest without a warrant, and bail is not a right [9].
+
+- **Handling of Minor Violations**: For most first-time or minor violations, PERA typically manages the situation with its own notices, fines, and hearings before escalating to an FIR [9].
+
+- **Court Trials**: Serious violations may lead to trial in court, where the case will be heard by magistrates [9].
+
+In summary, the process involves filing an FIR, potential legal proceedings, and handling of the case according to the severity of the violation.
+
+Ranked chunks (first 5):
+  [1] Compiled Working Paper_2nd Mee p.322 score=0.550
+      Position Title: | Senior Sergeant
+Reports To: | SDEO, Enforcement Officer and Investigation Officer
+Purpose of the Position:
+To assist and enable the 
+  [2] Compiled Working Paper_2nd Mee p.323 score=0.550
+      Position Title: | Sergeant
+Reports To: | SDEO, EO, IO and Senior Sergeant
+Purpose of the Position:
+To assist and enable the SDEO, EO and IO in exercis
+  [3] Annex G Employees SRs 1.pdf p.56 score=0.550
+      Position Title: | Senior Sergeant
+Reports To: | SDEO, Enforcement Officer and Investigation Officer
+Purpose of the Position:
+To assist and enable the 
+  [4] Annex G Employees SRs 1.pdf p.57 score=0.550
+      Position Title: | Sergeant
+Reports To: | SDEO, EO, IO and Senior Sergeant
+Purpose of the Position:
+To assist and enable the SDEO, EO and IO in exercis
+  [5] Annex H Contractual Employees  p.79 score=0.550
+      Position Title: | Senior Sergeant (STRIKE)
+Reports To: SDEO
+Wing: - | Monitoring & Implementation
+Purpose of the Position:
+The Senior Sergeant shall s
+
+Chunks with '24 hour' or 'magistrate' (in ALL ranked):
+  [7] PERA – Frequently Asked Questi p.2
+      • What are the main functions of PERA?
+
+PERA’s main function is to enforce the laws that keep Punjab orderly and safe. Its core mandate is to remove encroachments, resolve land-grabbing issues, ensure
+  [9] PERA – Frequently Asked Questi p.10
+      further penalty for not complying. Once an Absolute Order is issued, you are expected to comply within the given timeframe. If you fail to do so, PERA will execute the order: officers will carry out n
+  [10] Compiled Working Paper_2nd Mee p.21
+      (g) was served an order, but he chose not to abide by it.
+(2) | The record of the arrest s shall be maintained by the Sub
+Divisional Enforcement Officer and reported to the Magistrate as well as the H
+  [11] (10 of 2024) The Punjab Enforc p.21
+      (g) was served an order, but he chose not to abide by it.
+(2) | The record of the arrest s shall be maintained by the Sub
+Divisional Enforcement Officer and reported to the Magistrate as well as the H
+  [13] Compiled Working Paper_2nd Mee p.222
+      (e) Enter any public property, building, place or any premises where he has reason to believe that an offence under the Act or Scheduled laws has been occasioned or there is apprehension of its so hap
+  [14] Flag-C; O&Ps Code.pdf p.39
+      (e) Enter any public property, building, place or any premises where he has reason to believe that an offence under the Act or Scheduled laws has been occasioned or there is apprehension of its so hap
+  [16] Compiled Working Paper_2nd Mee p.221
+      (42) Grounds and | Authorization for Arrest: | (1) The power to arrest under this
+
+Code shall be exercised only by an officer duly authorized for this purpose, and solely on the grounds specified in S
+  [18] Flag-C; O&Ps Code.pdf p.38
+      (42) Grounds and Authorization for Arrest: | (1) The power to arrest under this
+Code shall be exercised only by an officer duly authorized for this purpose, and solely on the grounds specified in Sect
+  [26] Compiled Working Paper_2nd Mee p.30
+      compelling the production of documents, receiving evidence on affidavit and issuing commission for the examination of witnesses. (d) Fate of inquiry findings:
+(i) if the allegations are not proved in 
+  [32] Flag-C; O&Ps Code.pdf p.35
+      (c) any vehicle; (2) An Enforcement Officer shall have the power to undertake inspections, subject to the Act, in the following instances:
+(a) inspection on reasonable suspicion of an offence under th
+  [34] (10 of 2024) The Punjab Enforc p.30
+      compelling the production of documents, receiving evidence on affidavit and issuing commission for the examination of witnesses. (d) Fate of inquiry findings:
+(i) if the allegations are not proved in 
+  [36] Compiled Working Paper_2nd Mee p.218
+      (c) any vehicle; (2) An Enforcement Officer shall have the power to undertake inspections, subject to the Act, in the following instances:
+(a) inspection on reasonable suspicion of an offence under th
+
+============================================================
+TC-052: 'Give me the list of all Scheduled laws and their sections.'
+============================================================
+Decision: refuse
+Full answer: Yeh information PERA documents mein available nahi hai. Mazeed madad ke liye PERA se contact karein.
+
+Ranked chunks (first 5):
+  [1] Annex G Employees SRs 1.pdf p.56 score=0.600
+      Position Title: | Senior Sergeant
+Reports To: | SDEO, Enforcement Officer and Investigation Officer
+Purpose of the Position:
+To assist and enable the 
+  [2] Annex G Employees SRs 1.pdf p.57 score=0.600
+      Position Title: | Sergeant
+Reports To: | SDEO, EO, IO and Senior Sergeant
+Purpose of the Position:
+To assist and enable the SDEO, EO and IO in exercis
+  [3] Compiled Working Paper_2nd Mee p.322 score=0.600
+      Position Title: | Senior Sergeant
+Reports To: | SDEO, Enforcement Officer and Investigation Officer
+Purpose of the Position:
+To assist and enable the 
+  [4] Compiled Working Paper_2nd Mee p.323 score=0.600
+      Position Title: | Sergeant
+Reports To: | SDEO, EO, IO and Senior Sergeant
+Purpose of the Position:
+To assist and enable the SDEO, EO and IO in exercis
+  [5] Annex H Contractual Employees  p.79 score=0.600
+      Position Title: | Senior Sergeant (STRIKE)
+Reports To: SDEO
+Wing: - | Monitoring & Implementation
+Purpose of the Position:
+The Senior Sergeant shall s
+
+Chunks with 'schedule' (first 5 matches):
+  [1] Annex G Employees SRs 1.pdf p.56
+      Position Title: | Senior Sergeant
+Reports To: | SDEO, Enforcement Officer and Investigation Officer
+Purpose of the Position:
+To assist and enable the SDEO in exercising their powers and performing the
+  [2] Annex G Employees SRs 1.pdf p.57
+      Position Title: | Sergeant
+Reports To: | SDEO, EO, IO and Senior Sergeant
+Purpose of the Position:
+To assist and enable the SDEO, EO and IO in exercising their powers and performing their duties relat
+  [3] Compiled Working Paper_2nd Mee p.322
+      Position Title: | Senior Sergeant
+Reports To: | SDEO, Enforcement Officer and Investigation Officer
+Purpose of the Position:
+To assist and enable the SDEO in exercising their powers and performing the
+  [4] Compiled Working Paper_2nd Mee p.323
+      Position Title: | Sergeant
+Reports To: | SDEO, EO, IO and Senior Sergeant
+Purpose of the Position:
+To assist and enable the SDEO, EO and IO in exercising their powers and performing their duties relat
+  [5] Annex H Contractual Employees  p.79
+      Position Title: | Senior Sergeant (STRIKE)
+Reports To: SDEO
+Wing: - | Monitoring & Implementation
+Purpose of the Position:
+The Senior Sergeant shall serve as a field supervisor within the STRIKE Unit,

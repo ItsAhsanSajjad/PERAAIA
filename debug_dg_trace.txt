@@ -1,0 +1,44 @@
+=== TEST 1: 'who is director genral pera' ===
+  Rewritten: 'Who is the Director General of the Punjab Enforcement and Regulation Authority?'
+  Evidence groups: 6
+  has_evidence: True
+  Doc: Annex G Employees SRs 1.pdf score=0.714
+    Hit: Appointment:
+As explained in column 5 of Schedule-II. Salary and Benefits:
+Pay & Allowances equivalent to BPS-18 + PERA 
+    Hit: Position Title: | Deputy Director (Administration & HR)
+Reports To: | Additional Director General (Administration & HR)
+
+  Doc: Compiled Working Paper_2nd Meeting PERA  score=0.714
+    Hit: • In case of deputation, the Deputationist must be
+freshly recruited, as prescribed by the Authority, but must not be a 
+    Hit: among the officer of Revenue Service (Tehsildar) who has been appointed through Punjab Public Service Commission Enforce
+  Doc: Notification - Establishment of PERA Aut score=0.665
+    Hit: P a g e 2 | 2 NO. & DATE EVEN:
+A copy is forwarded for information and necessary action to:
+
+1. The Principal Secretary 
+    Hit: P a g e 2 | 2 NO. & DATE EVEN:
+A copy is forwarded for information and necessary action to:
+
+1. The Principal Secretary 
+  Decision: refuse
+  Answer: I'm a bit stuck on that one—my digital mind is a little tired! 🤯 Please try asking again.
+
+=== TEST 2: 'who is head of pera' ===
+  Rewritten: 'Who is the head of the Punjab Enforcement and Regulation Authority?'
+  Evidence groups: 6
+  has_evidence: True
+  Doc: (10 of 2024) The Punjab Enforcement and  score=0.695
+  Doc: Notification - Establishment of PERA Aut score=0.681
+  Doc: Compiled Working Paper_2nd Meeting PERA  score=0.664
+  Decision: refuse
+  Answer: I'm a bit stuck on that one—my digital mind is a little tired! 🤯 Please try asking again.
+
+=== TEST 3: 'who is director general pera' (no rewrite) ===
+  Evidence groups: 3
+  has_evidence: True
+  Decision: answer
+  Answer: The **Director General PERA** is responsible for assisting the Authority in performing its functions and exercising its powers as mentioned in the Act. Key responsibilities include:
+
+- Overall supervision of operations of HQ and Enforcement Stations.

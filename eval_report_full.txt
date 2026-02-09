@@ -1,0 +1,95 @@
+================================================================================
+PERA AI EVALUATION REPORT
+================================================================================
+Total: 54 | Passed: 47 | Failed: 7 | Rate: 87%
+================================================================================
+
+FAILURES:
+----------------------------------------
+TC-002: To which area does this Act extend?
+  Reason: Missing keywords: ['whole of the punjab']
+  Answer: The **Punjab Enforcement and Regulation Act 2024** extends to the **whole of Punjab** [1].
+
+TC-003: When does this Act come into force?
+  Reason: Missing keywords: ['notify']
+  Answer: The **Punjab Enforcement and Regulation Act 2024** will come into force on a date specified by the Government through a notification in the official G
+
+TC-009: How is the Authority established?
+  Reason: Missing keywords: ['notification', 'gazette']
+  Answer: The **Punjab Enforcement and Regulatory Authority (PERA)** is established under the **Punjab Enforcement and Regulation Act, 2024**. Here are the key 
+
+TC-010: Is the Authority a legal corporate body?
+  Reason: Missing keywords: ['body corporate']
+  Answer: Yes, the **Punjab Enforcement and Regulatory Authority (PERA)** is a **legal corporate body**. It has **perpetual succession** and a **common seal**, 
+
+TC-038: After arrest, what must happen next?
+  Reason: Missing keywords: ['24 hour', 'magistrate']
+  Answer: After an arrest under the PERA Act, the following steps typically occur:
+
+- **Filing of FIR**: The Sub-Divisional Enforcement Officer (SDEO) is empowe
+
+TC-047: Can PERA impose any penalty it wants under this Act?
+  Reason: Missing keywords: ['scheduled law']
+  Answer: No, PERA cannot impose any penalty it wants. The penalties are specified under the **PERA Act** and are categorized into minor and major penalties bas
+
+TC-052: Give me the list of all Scheduled laws and their sections.
+  Reason: Refused when should have answered
+  Answer: Yeh information PERA documents mein available nahi hai. Mazeed madad ke liye PERA se contact karein.
+
+
+ALL RESULTS:
+----------------------------------------
+✅ TC-001: All keywords found
+❌ TC-002: Missing keywords: ['whole of the punjab']
+❌ TC-003: Missing keywords: ['notify']
+✅ TC-004: All keywords found
+✅ TC-005: All keywords found
+✅ TC-006: All keywords found
+✅ TC-007: All keywords found
+✅ TC-008: All keywords found
+❌ TC-009: Missing keywords: ['notification', 'gazette']
+❌ TC-010: Missing keywords: ['body corporate']
+✅ TC-011: All keywords found
+✅ TC-012: All keywords found
+✅ TC-013: All keywords found
+✅ TC-014: All keywords found
+✅ TC-015: All keywords found
+✅ TC-016: All keywords found
+✅ TC-017: All keywords found
+✅ TC-018: All keywords found
+✅ TC-019: All keywords found
+✅ TC-020: All keywords found
+✅ TC-021: All keywords found
+✅ TC-022: All keywords found
+✅ TC-023: All keywords found
+✅ TC-024: All keywords found
+✅ TC-025: All keywords found
+✅ TC-026: All keywords found
+✅ TC-027: All keywords found
+✅ TC-028: All keywords found
+✅ TC-029: All keywords found
+✅ TC-030: All keywords found
+✅ TC-031: All keywords found
+✅ TC-032: All keywords found
+✅ TC-033: All keywords found
+✅ TC-034: All keywords found
+✅ TC-035: All keywords found
+✅ TC-036: All keywords found
+✅ TC-037: All keywords found
+❌ TC-038: Missing keywords: ['24 hour', 'magistrate']
+✅ TC-039: All keywords found
+✅ TC-040: All keywords found
+✅ TC-041: All keywords found
+✅ TC-042: All keywords found
+✅ TC-043: All keywords found
+✅ TC-044: All keywords found
+✅ TC-045: All keywords found
+✅ TC-046: All keywords found
+❌ TC-047: Missing keywords: ['scheduled law']
+✅ TC-048: All keywords found
+✅ TC-049: All keywords found
+✅ TC-050: Correctly refused
+✅ TC-051: Correctly refused
+❌ TC-052: Refused when should have answered
+✅ TC-053: All keywords found
+✅ TC-054: All keywords found

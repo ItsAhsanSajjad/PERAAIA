@@ -1,0 +1,12 @@
+PASS: 'CTO ki powers kia hain?'
+  **Chief Technology Officer (CTO)** ki **powers** aur **responsibilities** yeh hain:
+
+- **Productivity Maximization**: IT Applications, Custom Developed Software, aur Web Portals ki productivity aur pe
+
+PASS: 'monitoring manager salary'
+  The **Monitoring Manager** position is associated with the **SPPP-4** salary scale. According to the salary table:
+
+- **Minimum Pay**: PKR 115,561 per month
+- **Maximum Pay**: PKR 250,561 per month
+
+A

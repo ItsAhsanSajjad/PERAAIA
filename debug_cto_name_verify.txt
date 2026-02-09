@@ -1,0 +1,20 @@
+Identity check 'CTO NAM KIA HAI': PASS (not identity)
+Identity check 'CTO KA NAME': PASS (not identity)
+Identity check 'DG ka naam': PASS (not identity)
+Identity check 'nam kia hai': BOT NAME
+Identity check 'tera naam': BOT NAME
+
+Query: 'CTO KA NAME'
+  Decision: refuse
+  Has Ahsan (should be NO for CTO): NO ✅
+  Answer: Yeh information PERA documents mein available nahi hai. Mazeed madad ke liye PERA se contact karein.
+
+Query: 'CTO NAM KIA HAI'
+  Decision: answer
+  Has Ahsan (should be NO for CTO): NO ✅
+  Answer: **CTO** ka matlab hai **Chief Technology Officer**. Yeh position IT aur Communication wing mein hoti hai aur iski zimmedariyan IT applications aur software ki productivity ko maximize karna hoti hain.
+
+Query: 'DG KON HAI'
+  Decision: answer
+  Has Ahsan (should be NO for CTO): NO ✅
+  Answer: **Director General** of the Punjab Enforcement and Regulatory Authority (PERA) is **Capt. Farrukh Atiq Khan (Rtd.)**.

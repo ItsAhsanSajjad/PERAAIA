@@ -1,0 +1,17 @@
+has_evidence: True
+Chunks used: 74
+Context length: 23567 chars
+
+--- CONTEXT ---
+[1] Source: Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf (Page 349)
+Content: Position Title: - Manager (Infrastructure & Networks)
+Report To: - | Chief Technology Officer (CTO)
+Wing: - | IT & Communication
+Purpose of the Position:
+Responsible for maximizing the performance of IT infrastructure by directing the daily, weekly, and monthly activities. To provide leadership, motivation, training, and development of the workforce; process and procedure development to achieve operational excellence. Provide event driven operations monitoring, performance tracking and auditing capability. Areas of Responsibilities:
+ Perform various IT Infrastructure Administration tasks including the following areas of responsibility:
+ Data Centre Management  Core Network Infrastructure  Firewalls, Routers and Switches  Implement policies and procedures to meet service expectations and quality for Operations users through Firewall/Domain Controller.  Review the IT infrastructure to meet upcoming needs and expansion plans of the company.  Monitor network performance and optimize the network for optimal speed and availability.  Servers Management and their uptime assurance.  Deploy, configure, and update Domain Controller Group Policies.  Deploy, configure, and upgrade network software’s, such as enterprise antivirus or other remote support programs.  Installation of all types of updates like Windows 11, Windows Server 2016/2019/2022, Antivirus and Office 365 & MS Exchange Management.  Server and Network Equipment Management.  Plan, coordinate, and implement network security measures to protect IT Infrastructure from Internal/External attacks.  Responsible for Implementation of Policies, Procedures and SOPs.  Provide a high level of Technical Support to all Users.  Vendor Management with Procurement and Finance for their payments.  Procurement of IT Equipment & Services through Public Tenders with contracts.  Respond to Trouble tickets raised by Help Desk and is responsible for the resolution.  All IT Infra & systems admin istration functions like User Access control, Patch management, Virus Management, Spam Management, etc.  Coordination with Principals / Vendors on all IT related purchases including laying.  Manage staff and operations of data center Qualification and Experience:
+i Bachelor’s degree (Hons) in IT, Computer Sciences , Telecommunication | or Software
+Engineering or any other relevant / | similar degree from a recognized university; and
+ii 5 years’ post qualification relevant experience including at least 3 years’ experience in public sector. Note: Experience in private entities shall be accepted if such entity is registered with SECP, Registrar of Firms or any other Public Sector Regulatory Authority. Competencies & Personal Attributes:
+ A hands-on management approach that encourages change and creative problem-solving.  Ability to manage and maintain the operation of the data center and IT Infrastructure.  Ability to work

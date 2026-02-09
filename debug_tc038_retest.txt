@@ -1,0 +1,31 @@
+Decision: answer
+Full answer:
+After an arrest under the PERA Act, the following procedures must be followed:
+
+- The **Enforcement Officer** or **Investigation Officer** making the arrest must present the arrested person at the **Enforcement Station** without unnecessary delay.
+- They must inform the **Sub Divisional Enforcement Officer (SDEO)** of the arrest and submit a written report for further action.
+- The **SDEO** is required to register an **FIR (First Information Report)** immediately and produce the arrested person before a **Magistrate** within **twenty-four hours** of the arrest [2][3]. 
+
+This process ensures that the rights of the arrested individual are upheld and that legal procedures are followed correctly.
+
+Has '24': False
+Has 'magistrate': True
+
+Top 5 ranked chunks:
+  [1] subj=4 PERA – Frequently Asked Questi p.9
+      • Q: What types of violations are punishable under PERA?
+
+A: PERA covers a range of public offences.
+  [2] subj=4 Compiled Working Paper_2nd Mee p.21
+      (g) was served an order, but he chose not to abide by it.
+(2) | The record of the arrest s shall be 
+  [3] subj=4 (10 of 2024) The Punjab Enforc p.21
+      (g) was served an order, but he chose not to abide by it.
+(2) | The record of the arrest s shall be 
+  [4] subj=3 Compiled Working Paper_2nd Mee p.221
+      (42) Grounds and | Authorization for Arrest: | (1) The power to arrest under this
+
+Code shall be exe
+  [5] subj=3 Flag-C; O&Ps Code.pdf p.38
+      (42) Grounds and Authorization for Arrest: | (1) The power to arrest under this
+Code shall be exerci
