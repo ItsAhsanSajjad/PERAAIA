@@ -97,7 +97,7 @@ def transcribe_audio(audio_bytes: bytes, model: str = None) -> str:
     if not audio_bytes or len(audio_bytes) < 800:
         return "⚠️ I could not read the audio (empty/too short). Please record again."
 
-    model = model or (os.getenv("TRANSCRIBE_MODEL") or "gpt-4o-mini-transcribe")
+    model = model or (os.getenv("TRANSCRIBE_MODEL") or "whisper-1")
 
     ext = _guess_ext(audio_bytes)
 
