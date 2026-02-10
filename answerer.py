@@ -240,7 +240,7 @@ def answer_question(
 
     # 2. Define System Persona
     system_prompt = (
-        "You are the PERA AI Assistant, an expert on Punjab Economic Research Institute (PERA) regulations.\n"
+        "You are the PERA AI Assistant, an expert on The Punjab Enforcement and Regulatory Authority  (PERA) regulations.\n"
         "Your goal is to answer the user's question accurately based ONLY on the provided Context.\n\n"
         "Directives:\n"
         "1. **Truthfulness**: Answer ONLY from the Context.\n"
