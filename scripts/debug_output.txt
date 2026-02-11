@@ -1,0 +1,28 @@
+﻿[Retriever] Embedding query: 'What are the powers of PERA?'...
+[Retriever] Embedding done. Shape: (1536,)
+[Retriever] Searching FAISS with TOP_K=30...
+[Retriever] Search done. Found 30 hits.
+[Retriever] Added 0 context chunks.
+=== RAW RETRIEVAL ===
+  DOC: Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf (max_score=0.650, hits=36)
+    score=0.633 page=440 | 1.3 Scope & Applicability This Manual applies to all categories of PERA employees û including regular employees of teh A
+    score=0.631 page=452 | 4.5 Dress Code All PERA employees are expected to maintain a professional appearance and demeanor that reflects the seri
+    score=0.625 page=455 | organization and for delivering timely services to the public. The general working hours will be as notified by the Govt
+  DOC: Annex L PERA Squads and Weapons Regulations.pdf (max_score=0.650, hits=1)
+    score=0.650 page=2 | GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY Lahore, Dated the 12th November, 2025 NOTIFICATION 
+  DOC: Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf (max_score=0.650, hits=2)
+    score=0.650 page=16 | (l) ensure discipline of the Enforcement Station; (m) keep record of all registers as may be prescribed; (n) issue certi
+    score=0.650 page=18 | (xiv) power to initiate and conduct | inquiry under the Act and Scheduled laws; (xv) impose fine on the offenders as pro
+  DOC: Human_Resource_Manual_May_2025.pdf (max_score=0.615, hits=1)
+    score=0.615 page=17 | 4.5 Dress Code All PERA employees are expected to maintain a professional appearance and demeanor that reflects the seri
+
+=== INTENT: ORG_OVERVIEW ===
+
+=== GATED RETRIEVAL (has_evidence=True) ===
+  gate_reason: None
+  DOC: Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf (max_score=0.650, hits=20)
+    score=0.633 page=440 | 1.3 Scope & Applicability This Manual applies to all categories of PERA employees û including regular employees of teh A
+    score=0.619 page=463 | Chapter VII: Contract Renewal, Termination and Resignation of Contractual Employees 7.1 Contract Renewal 7.1.1 Minimum T
+  DOC: Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf (max_score=0.650, hits=2)
+    score=0.650 page=16 | (l) ensure discipline of the Enforcement Station; (m) keep record of all registers as may be prescribed; (n) issue certi
+    score=0.650 page=18 | (xiv) power to initiate and conduct | inquiry under the Act and Scheduled laws; (xv) impose fine on the offenders as pro

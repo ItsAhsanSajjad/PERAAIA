@@ -1,0 +1,78 @@
+DETERMINISTIC REGISTRY E2E TESTS
+==================================================
+
+
+--- 26. Schedule misspelling ---
+
+--- 27. SSO=System Support Officer ---
+
+--- 28. SSO salary (deterministic) ---
+
+--- 29. CTO role (registry) ---
+
+--- 30. Android Dev pay scale ---
+
+--- 31. PERA kia hai ---
+
+--- 32. PERA kb bani ---
+
+--- 33. Salma Butt ---
+
+--- 34. Act definitions ---
+
+--- 35. Schedule-I ---
+
+
+DETAILED RESULTS:
+  [FAIL] decision=answer -- got refuse
+  [FAIL] mentions SPPP -- 
+  [FAIL] has references -- 
+  [FAIL] decision=answer (not clarify) -- got clarify
+  [PASS] mentions System Support Officer
+  [PASS] no ban phrases
+  [FAIL] decision=answer -- got refuse
+  [FAIL] mentions SPPP-5 -- answer: maazrat, yeh sawal mere daayre se bahar hai. main sirf pera (punjab enforcement and regulatory autho
+  [FAIL] mentions numbers -- answer: maazrat, yeh sawal mere daayre se bahar hai. main sirf pera (punjab enforcement and regulatory autho
+  [FAIL] has references -- refs: []
+  [PASS] decision=answer
+  [PASS] mentions technology or IT
+  [PASS] has references
+  [FAIL] decision=answer -- got refuse
+  [FAIL] mentions SPPP -- answer: maazrat, yeh sawal mere daayre se bahar hai. main sirf pera (punjab enforcement and regulatory autho
+  [FAIL] has references -- 
+  [FAIL] decision=answer -- got refuse
+  [PASS] mentions Punjab
+  [PASS] mentions Enforcement
+  [PASS] decision=answer
+  [PASS] mentions 2024 or November
+  [PASS] has references
+  [FAIL] decision=answer -- got refuse
+  [FAIL] mentions MPA or member -- answer: i'm sorry, i couldn't find specific information about that in the pera documents.
+  [FAIL] decision=answer -- got refuse
+  [FAIL] mentions definition/court/dept -- answer: maazrat, yeh sawal mere daayre se bahar hai. main sirf pera (punjab enforcement and regulatory autho
+  [FAIL] has references -- 
+  [FAIL] decision=answer -- got refuse
+  [FAIL] has references -- 
+
+
+SUMMARY: 10 passed, 19 failed
+FAILURES ❌
+    [FAIL] decision=answer -- got refuse
+    [FAIL] mentions SPPP -- 
+    [FAIL] has references -- 
+    [FAIL] decision=answer (not clarify) -- got clarify
+    [FAIL] decision=answer -- got refuse
+    [FAIL] mentions SPPP-5 -- answer: maazrat, yeh sawal mere daayre se bahar hai. main sirf pera (punjab enforcement and regulatory autho
+    [FAIL] mentions numbers -- answer: maazrat, yeh sawal mere daayre se bahar hai. main sirf pera (punjab enforcement and regulatory autho
+    [FAIL] has references -- refs: []
+    [FAIL] decision=answer -- got refuse
+    [FAIL] mentions SPPP -- answer: maazrat, yeh sawal mere daayre se bahar hai. main sirf pera (punjab enforcement and regulatory autho
+    [FAIL] has references -- 
+    [FAIL] decision=answer -- got refuse
+    [FAIL] decision=answer -- got refuse
+    [FAIL] mentions MPA or member -- answer: i'm sorry, i couldn't find specific information about that in the pera documents.
+    [FAIL] decision=answer -- got refuse
+    [FAIL] mentions definition/court/dept -- answer: maazrat, yeh sawal mere daayre se bahar hai. main sirf pera (punjab enforcement and regulatory autho
+    [FAIL] has references -- 
+    [FAIL] decision=answer -- got refuse
+    [FAIL] has references -- 

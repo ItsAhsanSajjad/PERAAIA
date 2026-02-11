@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import time
 from urllib.parse import quote
 from typing import List, Dict, Any, Optional, Tuple
 
@@ -474,8 +475,17 @@ def ask_question_json(request: QueryRequest):
 # ============================================================
 # NEW: Simple Chat API for Next.js frontend
 # ============================================================
+import uuid as _uuid
+import hashlib as _hashlib
+from memory_store import get_memory_store
+
+_APP_DEBUG = os.getenv("APP_DEBUG", "0") == "1"
+
+
 class SimpleChatRequest(BaseModel):
     question: str
+    conversation_id: Optional[str] = None
+    # Frontend might still send history, but we prefer backend memory
     conversation_history: Optional[List[Dict[str, Any]]] = None
 
 
@@ -483,43 +493,179 @@ class SimpleChatResponse(BaseModel):
     answer: str
     decision: str
     references: List[Dict[str, Any]]
+    conversation_id: str
+    debug: Optional[Dict[str, Any]] = None
 
 
 @app.post("/api/ask", response_model=SimpleChatResponse)
 def simple_ask(request: SimpleChatRequest):
     """Simple chat endpoint for Next.js frontend."""
     question = request.question.strip()
+
+    # --- Stable conversation_id ---
+    conv_id = (request.conversation_id or "").strip()
+    if not conv_id:
+        conv_id = str(_uuid.uuid4())
+    print(f"[/api/ask] conversation_id={conv_id}")
     
-    # --- Extract last Q/A from history for contextual rewriting ---
-    last_question = None
-    last_answer = None
-    if request.conversation_history:
-        for msg in reversed(request.conversation_history):
-            role = msg.get("role", "")
-            content = (msg.get("content") or "").strip()
-            if role == "assistant" and last_answer is None:
-                last_answer = content
-            elif role == "user" and last_question is None:
-                last_question = content
-            if last_question and last_answer:
-                break
+    # We use a fixed user_id for now, or derive from request if auth added later
+    user_id = "default_user" 
+
+    # --- Load History from Persistent Memory ---
+    store = get_memory_store()
+    memory = store.load(user_id, conv_id)
+    history_messages = memory.get("messages", [])
+    pinned_evidence = memory.get("pinned_evidence", [])
+    session_state = memory.get("state", {})
+
+    # --- Build History Block for Rewriter ---
+    # Convert list of dicts to "User: ... \n Assistant: ..." block
+    history_block_lines = []
+    for msg in history_messages:
+        role = msg.get("role", "user").capitalize()
+        content = msg.get("content", "").strip()
+        history_block_lines.append(f"{role}: {content}")
+    history_block = "\n".join(history_block_lines)
 
     # --- Rewrite query (handles Urdu, abbreviations, follow-ups) ---
-    query_for_retrieval = rewrite_contextual_query(question, last_question, last_answer)
-    print(f"[/api/ask] Original: '{question}' -> Rewritten: '{query_for_retrieval}'")
+    query_for_retrieval = rewrite_contextual_query(question, history_block)
+    if query_for_retrieval != question:
+        print(f"[/api/ask] Rewritten: '{query_for_retrieval}'")
 
-    retrieval = retrieve(query_for_retrieval)
-    result = answer_question(
-        request.question, 
-        retrieval, 
-        conversation_history=request.conversation_history
-    )
+    # --- Intent-aware retrieval with Pinned Evidence ---
+    from answerer import classify_intent
+    intent = classify_intent(question)
     
-    return SimpleChatResponse(
+    # Pass pinned_evidence to retrieval to boost relevant chunks
+    retrieval = retrieve(query_for_retrieval, intent=intent, pinned_chunks=pinned_evidence)
+
+    # --- Generate Answer ---
+    result = answer_question(
+        request.question,
+        retrieval,
+        conversation_history=history_messages, # Pass backend history
+        session_context=session_state,
+        rewritten_query=query_for_retrieval,
+        intent=intent,
+    )
+
+    # --- Update Memory ---
+    # 1. Append User Message
+    store.append_user(user_id, conv_id, question)
+
+    # 2. Construct Evidence Trace from result
+    evidence_trace = {
+        "claims": result.get("_extracted_claims", []),
+        "debug": result.get("_debug_extraction", {}),
+        "job_title": result.get("_job_title"),
+        "compensation_type": result.get("_compensation_type"),
+        "compensation_grade": result.get("_compensation_grade")
+    }
+
+    # 3. Append Assistant Message (with trace)
+    store.append_assistant(user_id, conv_id, result.get("answer", ""), evidence_trace)
+
+    # 4. Update State (Topic/Entity locking)
+    new_state = {}
+    if result.get("_compensation_type"):
+        new_state["last_compensation_type"] = result["_compensation_type"]
+        new_state["last_grade"] = result.get("_compensation_grade")
+    if result.get("_job_title"):
+        new_state["last_job_title"] = result["_job_title"]
+    
+    if new_state:
+        store.update_state(user_id, conv_id, new_state)
+
+    # --- Build response ---
+    resp = SimpleChatResponse(
         answer=result.get("answer", "Jawab nahi mila."),
         decision=result.get("decision", "answer"),
         references=result.get("references", []),
+        conversation_id=conv_id,
     )
+
+    # --- Debug fields (APP_DEBUG=1) ---
+    if _APP_DEBUG:
+        from retriever import get_table_registry, _resolve_index_dir
+        reg = get_table_registry()
+        active_dir = _resolve_index_dir(None)
+        
+        # --- Trace: deterministic registry intent ---
+        det_intent_str = ""
+        det_meta = {}
+        try:
+            from deterministic_registry import route_intent as _dr_route
+            det_intent_str, det_meta = _dr_route(question)
+        except Exception:
+            det_intent_str = "import_error"
+
+        # --- Trace: top_k raw retrieval hits ---
+        raw_hits_trace = []
+        for dg in retrieval.get("evidence", []):
+            for hit in dg.get("hits", []):
+                raw_hits_trace.append({
+                    "doc": dg.get("doc_name", "?"),
+                    "chunk_id": hit.get("chunk_id"),
+                    "score": round(hit.get("score", 0), 4),
+                    "text_preview": (hit.get("text") or "")[:80],
+                })
+        raw_hits_trace.sort(key=lambda x: x["score"], reverse=True)
+
+        resp.debug = {
+            "conversation_id": conv_id,
+            "memory_loaded_messages": len(history_messages),
+            "memory_pinned_evidence": len(pinned_evidence),
+            "rewritten_query": query_for_retrieval,
+            "detected_intent": intent,
+            "registry_intent": det_intent_str,
+            "top_k_hits": raw_hits_trace[:10],
+            "decision": result.get("decision", "?"),
+            "extracted_claims": result.get("_extracted_claims", []),
+        }
+
+    return resp
+
+
+# ============================================================
+# DEBUG: /debug/index — active index + registry health
+# ============================================================
+@app.get("/debug/index")
+def debug_index():
+    """Return current active index directory, manifest & registry health."""
+    from retriever import get_table_registry, _resolve_index_dir
+    from index_store import load_index_and_chunks
+    reg = get_table_registry()
+    active_dir = _resolve_index_dir(None)
+
+    # Manifest hash
+    manifest_path = os.path.join(active_dir, "manifest.json")
+    manifest_hash = ""
+    built_at = ""
+    if os.path.exists(manifest_path):
+        with open(manifest_path, "rb") as f:
+            raw = f.read()
+            manifest_hash = _hashlib.md5(raw).hexdigest()[:12]
+        built_at = time.strftime(
+            "%Y-%m-%d %H:%M:%S",
+            time.localtime(os.path.getmtime(manifest_path))
+        )
+
+    # Chunks count from live index
+    _, chunks = load_index_and_chunks(active_dir)
+    chunks_count = len(chunks) if chunks else 0
+
+    # Auto-rebuild registry if stale
+    if reg.index_dir != active_dir.replace("\\", "/").rstrip("/") and chunks:
+        reg.build(chunks, active_dir)
+
+    return {
+        "active_index_dir": active_dir,
+        "manifest_hash": manifest_hash,
+        "built_at": built_at,
+        "chunks_count": chunks_count,
+        "table_registry": reg.debug_info(),
+        "conversations_active": len(_conversation_store),
+    }
 
 
 # ============================================================

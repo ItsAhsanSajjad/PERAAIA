@@ -1,0 +1,63 @@
+DETERMINISTIC REGISTRY E2E TESTS
+==================================================
+
+
+--- 26. Schedule misspelling ---
+
+--- 27. SSO=System Support Officer ---
+
+--- 28. SSO salary (deterministic) ---
+
+--- 29. CTO role (registry) ---
+
+--- 30. Android Dev pay scale ---
+
+--- 31. PERA kia hai ---
+
+--- 32. PERA kb bani ---
+
+--- 33. Salma Butt ---
+
+--- 34. Act definitions ---
+
+--- 35. Schedule-I ---
+
+
+DETAILED RESULTS:
+  [PASS] decision=answer
+  [PASS] mentions SPPP
+  [PASS] has references
+  [PASS] decision=answer (not clarify)
+  [PASS] mentions System Support Officer
+  [PASS] no ban phrases
+  [PASS] decision=answer
+  [FAIL] mentions SPPP-5 -- answer: - **minimum salary**: 90,219 pkr/month
+- **maximum salary**: 200,219 pkr/month
+  [PASS] mentions numbers
+  [PASS] has references
+  [PASS] decision=answer
+  [PASS] mentions technology or IT
+  [PASS] has references
+  [PASS] decision=answer
+  [PASS] mentions SPPP
+  [PASS] has references
+  [PASS] decision=answer
+  [PASS] mentions Punjab
+  [PASS] mentions Enforcement
+  [PASS] decision=answer
+  [PASS] mentions 2024 or November
+  [PASS] has references
+  [PASS] decision=answer
+  [FAIL] mentions MPA or member -- answer: - **salma butt** is mentioned in the documents related to the punjab enforcement and regulatory auth
+  [PASS] decision=answer
+  [PASS] mentions definition/court/dept
+  [PASS] has references
+  [PASS] decision=answer
+  [PASS] has references
+
+
+SUMMARY: 27 passed, 2 failed
+FAILURES ❌
+    [FAIL] mentions SPPP-5 -- answer: - **minimum salary**: 90,219 pkr/month
+- **maximum salary**: 200,219 pkr/month
+    [FAIL] mentions MPA or member -- answer: - **salma butt** is mentioned in the documents related to the punjab enforcement and regulatory auth

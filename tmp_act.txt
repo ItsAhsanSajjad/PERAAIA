@@ -1,0 +1,397 @@
+=== Bill/Act chunks ===
+chunk[7] p=0 len=2220 TEXT=Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe procedures for efficient and effective implementation and enforcement of special laws throughout Punjab. It is expedient , in the public interest , to establish overarching provincial enforcement author
+
+chunk[8] p=0 len=2143 TEXT=(i) “Court” means the Court of Session | established under the\nCode and also includes | the Court of an Additional Sessions\nJudge; (j) “custodian of the State property” means such officer or such employee of the Government who is responsible for managing, maintaining, and protecting the State property; (k) “Department” means the Department as defined under the\nPunjab Government Rules of Business |
+
+chunk[9] p=0 len=2280 TEXT=expiry of period of lease or license, continues to remain in the occupation of the State property or a n allottee who after the expiry or cancellation of such allotment, continues to remain in the occupation of the State property;\n(z) “independent member” means the member | of the Authority\nat clause (l) of sub-section (1) of section 4 of the Act; (aa) “initiating authority” means any officer or f
+
+chunk[10] p=0 len=2042 TEXT=(mm) “reference” means a reference made by a Department wherein any violation or offence is reported to the Authority or to the Enforcement Station for enf orcement of the Act or Scheduled laws; (nn) “regulations” means the regulations framed under the Act; (oo) “requisition” means a requisition sent under section 2 0 of the Act; (pp) “rules” means the rules made under the Act; (qq) “Selection Pan
+
+chunk[11] p=0 len=1963 TEXT=the Punjab Enforcement | and Regulatory Authority | for c arrying out the\n\npurposes of the Act.\n(2) | The Authority shall be a body corporate, having perpetual\nsuccession and a common seal, with power to enter into contract, acquire or dispose of property, and may, by its name, sue or be sued.\n(3) | The headquarters of the Authority shall be at Lahore with such\noffices in such other areas, as the 
+
+chunk[12] p=0 len=2364 TEXT=(5) The independent members shall be appointed by the Government for a period of three years but they shall serve during the pleasure of the Government.\n(6) The independent member | may resign at any time subject to\nservice of one month notice to the Government.\n\n5. Selection Panel.– (1) There shall be a Selection Panel consisting of\n\nthree persons, other than serving public serv ants or elected r
+
+chunk[13] p=0 len=2521 TEXT=(2) The meetings of the Authority shall be presided over by the Chairperson or, in his absence, by the Vice Chairperson or when the Vice Chairperson is also absent, by the Member nominated by the Chairperson. (3) The quorum for a meeting of the Authority shall be one half of the total members. (4) The Director General, on the direction of the Chairperson, shall call a meeting of the Authority. (5)
+
+chunk[14] p=0 len=1914 TEXT=(a) oversee, spearhead and monitor the implementation of\nthe policy guidelines issued | by the Government for the\npurposes of the Act; (b) appoint Hearing Officer for the purposes of the Act; (c) appoint Authorized Officer, not below the rank of Basic Scale 18, for the purposes of the Act; (d) conduct a situational assessment, systematically gather and analy se relevant data for decision -making a
+
+chunk[15] p=0 len=2035 TEXT=(r) sanction payment of reward to any person, inclu ding any employee, who has made an exceptional effort towards accomplishing the objective of the Act; and\n(s) exercise such other functions and | powers as may be\nnotified by the Government from time to time for carrying out the purposes of the Act. (3) The Authority may delegate any of its powers and functions to the Director General or Chairper
+
+chunk[16] p=0 len=2371 TEXT=(5) | The quorum for a meeting of the Board | shall be one half of\n\nthe total members.\n(6) | The Secretary, on the direction of the Chairperson, sh all call a\nmeeting of the Board.\n(7) | The decisions of the Board shall be taken by majority of the\nmembers present and voting and, in the event of equality of votes, t he\nChairperson or, in his absence, the member | presiding over that meeting,\nas the
+
+chunk[17] p=0 len=2099 TEXT=and Whistle-blower, who has made an exceptional effort towards accomplishing the objective of the Act; and (h) such other functions and exercise such oth er powers as\n\nmay be | assigned to it | by the Authority from time to\n\ntime, for carrying out the purposes of the Act.\n\n15. Powers and functions of Chairperson of the Board .- (1) The\n\nChairperson of the Board shall exercise such powers as are pr
+
+chunk[18] p=0 len=1765 TEXT=(b) confiscation of articles, carts or vehicles; (c) sealing of any premises; (d) removal of encroachments or public nuisance; (e) any ancillary matters a rising out of actions by the Enforcement Officer; and (f) any other matter as may be prescribed.\n(3) | The filing of representation and process of hearing shall be\nsuch as may be prescribed.\n(4) | The powers of the Hearing Officer shall include,
+
+chunk[19] p=0 len=1932 TEXT=(o) analyze the requisition sent by Enforcement Station and forward the same to the Board;\n\n(p) inspect any site or record, | seek reports and | summon\n\nthe attendance of any concerned person; (q) issue n otices to the offender and concerned per sons under the Act or Scheduled laws; (r) initiate, conduct and facilitate the i nquiries to ascertain the facts regarding an offence or the complaints re
+
+chunk[20] p=0 len=2034 TEXT=(2) | All proceedings may be audio -video recorded by the Hearing\nOfficer to ensure transparency and for purposes of maintaining | record of\nall proceedings.\n(3) | The Enforcement Officer may attend the hearing but is not\nrequired to do so, unless specifically asked to attend by the Hearing Officer.\n(4) | Written and oral evidence shall be submitted by any person at\nthe hearing.\n\n18. Recording of 
+
+chunk[21] p=0 len=2237 TEXT=(7) | The Authority may frame regulations for supervision and\nadministration of Enforcement Stations and its employees.\n\n20. Requisition by the Enforcement Station .– (1) The incharge of\n\nthe Enforcement Station, through concerned Hearing Officer, may send a requisition to the Secretary of the B oard, for support or assistance in the enforcement and implementation of the Act or Scheduled laws, as 
+
+chunk[22] p=0 len=2003 TEXT=(l) ensure discipline of the Enforcement Station; (m) keep record of all registers as may be prescribed; (n) issue certified copies of record; (o) conduct performance appraisal of Enforcement Officers, Investigation Officers, Sergeants and any other official of the Enforcement Station, as may be prescribed;\n\n(p) upon receipt of | references from Department, | act and\n\nproceed as per provisions of 
+
+chunk[23] p=0 len=1830 TEXT=(b) power to enter, inspect , search and seal any private property, building or place, subject to warrant or order of the Magistrate in whose jurisdiction such premises is situated; and\n(c) power to undertake any of the following | acts and\ninspections, subject to recording and reporting the same in the register of inspections:\n(i) | inspection on reasonable suspicion of an offence\nduring routine 
+
+chunk[24] p=0 len=2204 TEXT=(xiv) power to initiate and conduct | inquiry under the\nAct and Scheduled laws; (xv) impose fine on the offenders as provide d under the Act and Scheduled laws, subject to prescribed pecuniary limitations; (xvi) power to issue EPO under the Act; and (xvii) any other power or function c onferred or delegated under the Act and Scheduled laws or as may be prescribed. (5) The Enforcement Officer may e
+
+chunk[25] p=0 len=2077 TEXT=reason to believe that an offence has occurred or there is apprehension of so happening; (b) power to enter, inspect, search and seal any private property, building or place, subject to warrant or order of the Magistrate in whose jurisdiction such premises is situated; (c) power to stop, inspect, search and confiscate any vehicle for the purposes of the Act and Scheduled laws;\n(d) issue n otices o
+
+chunk[26] p=0 len=2066 TEXT=(3) The Sergeants shall have the following powers and functions:\n(a) assist the officers and employees for enforcement of the Act or Scheduled laws; (b) carry weapons as prescribed under the rules; and (c) perform any other function as may be prescribed.\n\n28. Enforcement Squad .– There shall be one or more Enforcement\n\nSquads in each Sub-division, comprising of the | Sub Divisional\nEnforcement Off
+
+chunk[27] p=0 len=2706 TEXT=(g) was served an order, but he chose not to abide by it.\n(2) | The record of the arrest s shall be maintained by the Sub\nDivisional Enforcement Officer and reported to the Magistrate as well as the Hearing Officer, in the prescribed manner.\n\n32. Procedure to be followed after arrest .– (1) The Enforcemen t\n\nOfficer or the Investigation O fficer making an arrest shall, without\nunnecessary delay, p
+
+chunk[28] p=0 len=2395 TEXT=(5) If the offender neither complies with the EPO nor prefers a representation within the given time period, the Enforcement Officer shall proceed to enforce the EPO and may take any one or more of the following actions against the offender:\n(a) remove or cause to be removed the public nuisance,\nusing such means and with such force | as may be\nreasonably necessary; or (b) impose and recover the fi
+
+chunk[29] p=0 len=2494 TEXT=(2) The Hearing O fficer may cancel, modify or co nvert the EPO into an Absolute Order. (3) The Absolute Order shall contain detail of the public nuisance,\nreasons of passi ng an Absolute Order, | direction to the offender creating\nsuch nuisance to remove the nuisance within a prescribed time period and manner and any further penalty that may be imposed on the offender if Absolute Order is not com
+
+chunk[30] p=0 len=2502 TEXT=37. Prohibition to encroachment.– No person shall make a ny\n\nencroachment, moveable or immovable, on any State property.\n\n38. Procedure for removal of moveable encroachment .- (1) The\n\nEnforcement Officer on his own motion, complaint or | reference from the\nDepartment or custodian of S tate property, information from W histleblower or any direction from Authority, Board, Hearing Officer or Sub Div
+
+chunk[31] p=0 len=2501 TEXT=(5) | If the proceeds of sale are not sufficient to cover the cost, the\nbalance shall be recoverable as arrears of land revenue, but if such proceeds exceed the cost, the excess shall be paid to the illegal occupier.\n(6) The Enforcement Officer | shall submit dai ly report of\ninformation received and actions taken against the moveable encroachments to the Sub Divisional Enforcement Officer.\n\n39. P
+
+chunk[32] p=0 len=2369 TEXT=(g) submit a report before the Sub Divisional Enforcement Officer for determination of cost of en forcement and rents by the Hearing Officer, if any.\n\n(6) The Hearing Officer | shall be authorized to dispose of | the\n\nconfiscated articles, goods, machinery or the building material, decide the fate of sealed premises, and determination of cost of enforcement and rents, as may be prescribed. (7) The
+
+chunk[33] p=0 len=2021 TEXT=notice shall be affixed at a conspicuous part of the house, if any, in which the offender is known to have last resided or carried on business or personally worked for gain; or (d) Public notice in newspaper : If service for any reason is not possible or expedi ent in the manner set out above, the publication in the daily national Urdu newspaper of wide circulation, shall be made; or (e) Local Pro
+
+chunk[34] p=0 len=2399 TEXT=(d) fails to produce any document or article required to be produced before the concerned officer; (e) fails to furnish such information in the manner and at the time as required by the concerned officer; (f) offers resistance in taking of any property or suspected article by the lawful authority of the concerned officer; (g) refuses to provide assistance to the concerned officer as required under
+
+chunk[35] p=0 len=2172 TEXT=(c) vexatiously and unnecessarily delays the forwarding to a court or to any other authority to whom he is legally bound to forward any arrested person; (d) conducts faulty or defective inspection or investigation; (e) makes a statement which is false or misleading in material particulars or uses a false document for the purpose; (f) is guilty of any wilful breach or neglect of any provision of la
+
+chunk[36] p=0 len=1966 TEXT=compelling the production of documents, receiving evidence on affidavit and issuing commission for the examination of witnesses. (d) Fate of inquiry findings:\n(i) if the allegations are not proved in the inquiry, the initiating authority shall file the inquiry; (ii) if the allegations are proved, the initiating authority shall refer the matter to Sub Divisional Enforcement Officer with a recommend
+
+chunk[37] p=0 len=2567 TEXT=(b) entertain any application or initiate proceedings or grant any injunction or stay or otherwise make any in terim order, in respect of any order made or action taken under the Act, and no such order shall be called in question other than by way of appeal under the Act.\n\n51. Representation.– Any offender or a complainant aggrieved by the\n\naction, order or any pen alty imposed by an Enforcement O
+
+chunk[38] p=0 len=2734 TEXT=as the lead regulator, as the case may be, the secondary regulator shall not be permitted to take concurrent cognizance of the same violation.\n(2) | Without prejudice to sub -section (1), the Authority and a\nregulatory body or agency under Scheduled laws | may enter into a\nmemorandum of understanding or other arrangement for establishing distribution of powers and functions between themselves for 
+
+chunk[39] p=0 len=2626 TEXT=(4) | The Whistle-blower disclosure received under sub -section (2)\nshall be referred to the Hearing Officer who shall make an assessment of the information contained in the disclosure and verify the same to the extent as may be practicably possible , in such manner as may be prescribed.\n(5) | Upon assessment and verification under sub-section (4), if the\nHearing Officer is of the view that the W 
+
+chunk[40] p=0 len=2595 TEXT=Whistle-blower disclosur e, take any measure | for the protection of such\nperson and for such duration and in such manner as may be prescribed.\n\n61. Public to assist the Authority and its employees.- Every person\n\nis bound to assist the Authority and its employees by:\n(a) taking or preventing the escape of any person w hom an employee is empowered to arrest and detain; and (b) preventing a breach 
+
+chunk[41] p=0 len=2280 TEXT=(4) The cost of enforcement shall be r ecovered from offender by the Enforcement Officer. (5) In case, the offender does not pay the cost as determined, the same shall be recovered from auction or sale of confiscated articles or goods, if any. (6) If the cost remains unsatisfied , the same shall be recovered as arrears of land revenue.\n\n65. Cost of i nvestigation.– The Investigation Officer may ge
+
+chunk[42] p=0 len=2123 TEXT=(4) | No sum shall be drawn by the Authorized Officer or Drawing\nand Disbursing Officer from the Fund without prior approval of the Authority.\n(5) The Authority may authorize | the Hearing Officer to withdraw\nthe following and disburse as may be prescribed:\n(a) reward to employees; (b) reward for the Whistle-blower; (c) advance for the cost of enforcement;\n(d) refund of fine in ca se of successful
+
+chunk[43] p=0 len=2260 TEXT=Chapter XVIII MISCELLANOUS\n\n74. Delegation of powers.– The Authority may, by order, delegate any\n\nof its powers or functions to the Board or other body or agency or committee of the Government, or any of its members or employee s, as it considers appropriate for implementation of the provisions of the Act, subject to such conditions and restrictions as may be specified in the order, except the fun
+
+chunk[44] p=0 len=1527 TEXT=78. Power to make rules .– Subject to the provisions of the Act, the\n\nGovernment may, by notification in the official Gazette, make rules for the purposes of the Act.\n\n79. Power to frame regulations.– (1) Subject to the provisions of the\n\nAct and the rules , the Authority may frame regulations as may be necessary to carry out the purposes of the Act.\n(2) | The Government may direct the Authority t
+
+chunk[45] p=0 len=359 TEXT=SCHEDULE [see section 2(1)(rr)]\n\n1. The Colonization of Government Lands (Punjab) Act, 1912 (V of\n\n1912).\n\n2. The Punjab Prevention of Hoarding Act, 2020 (XV of 2020).\n3. The Punjab Price Control of Essential Commodities Act 2024 (VII of\n\n2024).\n\n4. The Punjab Tenancy Act, 1887 (XVI of 1887).\n5. The Punjab Land-Revenue Act 1967 (XVII of 1967).\n\n____________
+
+
+=== SSO chunks ===
+chunk[367] FULL TEXT:
+Position Title: - System Support Officer
+Report To: - | Sub Divisional Enforcement Officer of the Enforcement Station concerned
+Wing: - | Enforcement Station, IT & Communication, Training
+Purpose of the Position:
+The System Support Officer | assist the SDEO with the various functions at Enforcement Stations.
+including providing comprehensive technical and administrative support to ensure smooth operations
+
+and functioning | of IT infrastructure a s well as | office administration. The role involves | addressing
+
+hardware, software, and network-related issues while also handling clerical and administrative tasks such as duty roster management, correspondence, financial record-keeping, and vendor coordination. Areas of Responsibilities:
+ Manage and trou bleshoot hardware components including desktops, laptops, printers, scanners, and other peripheral devices.  Install, configure, and maintain software applications in accordance with PERA’s requirements.  Monitor, manage, and resolve network connectivity issues, ensuring minimal downtime.  Coordinate with external IT support providers and vendors for specialized technical assistance when required.  Maintain records of hardware and software inventory.  Prepare and manage the duty roster for PERA’s personnel, ensuring appropriate coverage.  Draft, manage, and dispatch official correspondence to the Head Office and other external/internal departments.  Maintain systematic filing of official records, memos, and correspondence.  Maintain financial records related to office expenses, vendor payments, and operational budgets.  Process vendor bills and ensure timely payment in compliance with agency procedures.  Manage office supplies inventory and coordinate procurement to maintain adequate stock levels.  Coordinate with vendors for hardware, software, and network maintenance services.  Liaise with internal teams and external departments to ensure seamless operations.  Prepare periodic reports on IT system status, administrative activities, and financial expenditures for management review.
+ Responsible for software and hardware configuration, update and design for | increased
+efficiency of the systems.  Maintain IT and office records (contracts, warranties, service agreements).  Drafting noting & letters as per the requirements of SDEOs.  Liaise with landlords, vendors, and service providers (electricity, internet, maintenance).  Manage courier services, mail distribution, and petty cash reconciliations.  Manage all matters related to Admin, Finance, Procurement & enforcement stations. Qualification and Experience:
+i 16 years’ education, preferably in Computer Science | / Information Technology / Software
+Engineering or any other discipline i.e. Administrative, Management or Social Sciences with adequate Computer Knowledge. ii 2 years of management services experience in reputable organization(s). Note: Experience in private entities shall be accepted if such entity is registered with SECP, Registrar of Firms or any other Public Sector Regulatory Authority. Competencies & Personal Attributes:
+ Good written and verbal communication skills.  Understanding of financial & Admin matters.  Communication Skills.  Analytical skills.  Presentation skills.  Must be proficient in the use of IT and MS office
+
+===END===
+
+chunk[598] FULL TEXT:
+Position Title: - System Support Officer
+Report To: - | Sub Divisional Enforcement Officer, Concerned Wing Head
+Wing: - | Enforcement Station, M&I, IT & Communication, Training
+Purpose of the Position:
+The System Support Officer assist the SDEO with the various functions at Enforcement Stations. including providing comprehensive technical and administrative support to ensure smooth operations and functioning of IT infrastructure as well as office adminis tration. The role involves addressing hardware, software, and network-related issues while also handling clerical and administrative tasks such as duty roster management, correspondence, financial record-keeping, and vendor coordination. Areas of Responsibilities:
+
+• Manage and troubleshoot hardware components including desktops, laptops, printers,
+
+scanners, and other peripheral devices.
+
+• Install, configure, and maintain software applications in accordance with PERA’s requirements.
+• Monitor, manage, and resolve network connectivity issues, ensuring minimal downtime.
+• Coordinate with external IT support providers and vendors for specialized technical assistance
+
+when required.
+
+• Maintain records of hardware and software inventory.
+• Prepare and manage the duty roster for PERA’s personnel, ensuring appropriate coverage.
+• Draft, manage, and dispatch official correspondence to the Head Office and other
+
+external/internal departments.
+
+• Maintain systematic filing of official records, memos, and correspondence.
+• Maintain financial records related to office expenses, vendor payments, and operational
+
+budgets.
+
+• Process vendor bills and ensure timely payment in compliance with agency procedures.
+• Manage office supplies inventory and coordinate procurement to maintain adequate stock
+
+levels.
+
+• Coordinate with vendors for hardware, software, and network maintenance services.
+• Liaise with internal teams and external departments to ensure seamless operations.
+• Prepare periodic reports on IT system status, administrative activities, and financial
+
+expenditures for management review.
+
+• Responsible for software and hardware configuration, update and design for increased
+
+efficiency of the systems.
+
+• Maintain IT and office records (contracts, warranties, service agreements).
+• Drafting noting & letters as per the requirements of SDEOs.
+• Liaise with landlords, vendors, and service providers (electricity, internet, maintenance).
+• Manage courier services, mail distribution, and petty cash reconciliations.
+• Manage all matters related to Admin, Finance, Procurement & enforcement stations.
+
+Qualification and Experience:
+i 16 years’ education, preferably in Computer Science / Information Technology / Software Engineering or any related discipline. ii 2 years of IT interventions, Implementation, Networking or Software Development experience in reputable organization(s). Note: Experience in private entities shall be accepted if such entity is registered with SECP, Registrar of Firms or any other Public Sector Regulatory Authority. Competencies & Personal Attributes:
+
+• Good written and verbal communication skills.
+• Understanding of financial & Admin matters.
+• Communication Skills.
+• Analytical skills.
+• Presentation skills.
+• Must be proficient in the use of IT and MS Office
+• Noting / drafting skills
+
+===END===
+
+
+=== Schedule-III chunk ===
+chunk[404] FULL TEXT:
+Schedule-III Special Pay Package PERA (SPPP) Summary Sr. No. Special Pay Package PERA (SPPP) Minimum Pay per Month (PKR) Maximum Pay per Month (PKR) Fuel Limit (Petrol Liters/Month)
+
+1 SPPP-1* | 350,082 | 1,000,082 | 300
+
+2 SPPP-2* | 296,324 | 746,324 | 250
+
+3 SPPP-3* | 250,051 | 500,051 | 200
+
+4 SPPP-4 | 115,561 | 250,561 | 150
+
+5 SPPP-5 | 90,219 | 200,219 | 100
+
+6 Interns As decided by the Contractual Employment Committee, as per qualification and requirements of the internship. *Special PERA pay package of SPPP-1, SPPP-2 & SPPP-3 shall be approved as per decision of the Authority.
+
+===END===
+
+chunk[643] FULL TEXT:
+Schedule-III Special Pay Package PERA (SPPP) Summary Sr. No. Special Pay Package PERA (SPPP) Minimum Pay per Month (PKR) Maximum Pay per Month (PKR) Fuel Limit (Petrol Liters/Month)
+
+1 SPPP-1 | 350,082 | 1,000,082 | 300
+
+2 SPPP-2 | 296,324 | 746,324 | 250
+
+3 SPPP-3 | 250,051 | 500,051 | 200
+
+4 SPPP-4 | 115,561 | 250,561 | 150
+
+5 SPPP-5 | 90,219 | 200,219 | 100
+
+6 Interns As decided by the Contractual Employment Committee, as per qualification and requirements of the internship. Note: Contractual Employees shall also be entitled for the benefits approved by the Authority through any other regulation(s).
+
+===END===
+
+
+=== CTO chunk ===
+chunk[350] FULL TEXT:
+Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)
+Report To: - | Director General, PERA
+Wing: - | IT & Communication
+Purpose of the Position:
+CTO shall be responsible for providing technical leadership to the team of IT professionals. | He shall
+assist the Director General in ensuring the IT -enabled solutions for all functions of PERA including digitization of processes at the Headquarters and Enforcement Stations level. Areas of Responsibilities:
+ Lead the IT & Communication Wing of PERA and responsible for development, deployment,
+upgradation, upscaling and troubleshooting of all IT-related technical applications | / software
+products.  Monitoring deliverables of software development of the projects by managing development lifecycle.  Responsible for all the activities of the software development team to ensure timely delivery and ensure they adhere to development international standards.  Monitor changes in the technolog
+
+===END===
+
+chunk[581] FULL TEXT:
+Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)
+Report To: - | Director General, PERA
+Wing: - | IT & Communications
+Purpose of the Position:
+CTO shall be responsible for providing technical leadership to the team of IT professionals. He shall assist the Director General in ensuring the IT -enabled solutions for all functions of PERA including digitization of processes at the Headquarters and Enforcement Stations level. Areas of Responsibilities:
+
+• Lead the IT & Communication Wing of PERA and responsible for development, deployment,
+
+upgradation, upscaling and troubleshooting of all IT -related technical applications / software products.
+
+• Monitoring deliverables of software development of the projects by managing development
+
+lifecycle.
+
+• Responsible for all the activities of the software development team to ensure timely delivery
+
+and ensure they adhere to development international standards.
+
+• Monitor changes in the tech
+
+===END===
+
+
+=== Android chunk ===
+chunk[359] FULL TEXT:
+Position Title: - Android Developer
+Report To: - | Manager Development
+Wing: - | IT & Communication
+Purpose of the Position:
+The Android Developer designs, develops, and maintains high-performance Android applications. This role involves working with Kotlin/Java, modern Android frameworks, and best practices to create scalable, secure, and user-friendly mobile apps. Areas of Responsibilities:
+ Experience in Design, Illustrator, Dreamweaver, Photoshop, Figma, Adobe XD etc. Should be well versed in HTML, CSS, Bootstrap and jQuery.  Conduct usability for android apps, testing to gather feedback and make improvements to designs.  Ability to be able to form, prototype and confidently present ideas.  Design and build native Android applications using Kotlin (preferred) or Java.  Implement Jetpack components (ViewModel, LiveData, Room, Compose).  Ensure responsive UI/UX with Material Design guidelines.  Optimize apps for performance, battery efficiency, and memory usage.  Connect Andr
+
+===END===
+
+chunk[590] FULL TEXT:
+Position Title: - Android Developer
+Report To: - | Manager (Development)
+Wing: - | IT & Communication
+Purpose of the Position:
+The Android Developer designs, develops, and maintains high-performance Android applications. This role involves working with Kotlin/Java, modern Android frameworks, and best practices to create scalable, secure, and user-friendly mobile apps. Areas of Responsibilities:
+
+• Experience in Design, Illustrator, Dreamweaver, Photoshop, Figma, Adobe XD etc. Should be
+
+well versed in HTML, CSS, Bootstrap, and jQuery.
+
+• Conduct usability for android apps, testing to gather feedback and make improvements to
+
+designs.
+
+• Ability to be able to form, prototype and confidently present ideas.
+• Design and build native Android applications using Kotlin (preferred) or Java.
+• Implement Jetpack components (ViewModel, LiveData, Room, Compose).
+• Ensure responsive UI/UX with Material Design guidelines.
+• Optimize apps for performance, battery efficiency, and memory usage.
+• Conn
+
+===END===
+
+
+=== Manager Dev chunk ===
+chunk[351] FULL TEXT:
+Position Title: - Manager (Development)
+Report To: - | Chief Technology Officer (CTO)
+Wing: - | IT & Communication
+Purpose of the Position:
+Responsible for maximizing the productivity / performance of IT Applications / Custom Developed Software / Web Portals by directing the daily, weekly, and monthly activities. To provide leadership, motivation, training, and development of the workforce; process and procedure development to achieve operational excellence. Areas of Responsibilities:
+ To create and document a conceptual and detailed design and write a code based on conceptual description of the business logic.  To design and development of database components as per requirement of software.  To compile and write documentation of software development and subsequent revisions inserting comments in the coded instructions.  To facilitate operational and technical personnel to clarify program inten t, identify problems, suggest, and implement changes.  To assist Business, Operational 
+
+===END===
+
+chunk[582] FULL TEXT:
+Position Title: - Manager (Development)
+Report To: - | Chief Technology Officer (CTO)
+Wing: - | IT & Communications
+Purpose of the Position:
+Responsible for maximizing the productivity / performance of IT Applications / Custom Developed Software / Web Portals by directing the daily, weekly, and monthly activities. To provide leadership, motivation, training, and development of the workforce; pr ocess and procedure development to achieve operational excellence. Areas of Responsibilities:
+
+• To create and document a conceptual and detailed design and write a code based on
+
+conceptual description of the business logic.
+
+• To design and development of database components as per requirement of software.
+• To compile and write documentation of software development and subsequent revisions
+
+inserting comments in the coded instructions.
+
+• To facilitate operational and technical personnel to clarify program intent, identify problems,
+
+suggest, and implement changes.
+
+• To assist Business, Oper
+
+===END===
+
+
+=== Notification/Commencement/Establishment chunks ===
+chunk[523] doc=Notificaiton - Commencement of PERA 12.11.2024.pdf TEXT:
+NOTIFICATION No. SO(I&C-1)5-7/2024. In exercise of the powers conferred under subsection (3) of section 1 of the Punjab Enforcement and Regulation Act 2024 (XI of 2024 ), Governor of the Punjab is pleased to declare that the Act ibid., shall come into force in whole of the Punjab, with immediate effect. CHIEF SECRETARY, PUNJAB NO. & DATE EVEN:
+A copy is forwarded for information and necessary action to:
+
+1. The Principal Secretary to Governor, Punjab.
+2. The Principal Secretary to Chief Minister, Punjab.
+3. The Senior Member, Board of Revenue, Punjab.
+4. The Chairman, Planning & Development Board.
+5. The Inspector General of Police, Punjab.
+6. The Accountant General, Punjab.
+7. All Administrative Secretaries to Government of the Punjab.
+8. All Divisional Commissioners in the Punjab.
+9. Additional Secretary (General) / Staff Officer to Chief Secretary.
+10. All Deputy Commissioners in the Punjab.
+11. All Heads of Attached Departments, Punjab.
+12. All Heads of Autonomous Bodies, Punjab.
+13. The Director General Anti-Corruption Punjab.
+14. The Director General, Punjab Enforcement & Regulatory Authority.
+15. PSO to the Additional Chief Secretary, Punjab.
+16. PS to Secretary (I&C), S&GAD.
+
+(SHAHID IQBAL) SECTION OFFICER (I&C-I) GOVERNMENT OF THE PUNJAB SERVICES & GENERAL ADMINISTRATION DEPARTMENT (Implementation & Coordination Wing) Dated Lahore the 12th November, 2024
+
+===END===
+
+chunk[524] doc=Notification - Establishment of PERA Authority 12.11.2024.pdf TEXT:
+P a g e 1 | 2 N OT IF IC AT I O N No.SO(I&C-1)5-7/ 2024. In exercise of the powers conferred under subsection (1) of section 3 of the Punjab Enforcement and Regulation Act 2024 (XI of 2024 ), Governor of the Punjab is pleased to establish the Punjab Enforcement and Regulatory Authority consisting of the following members, with immediate effect:
+(a) | Chief Minister, Punjab Chairperson
+(b) | Chief Secretary, Punjab Vice Chairperson
+(c) | Senior Member, Board of Revenue, Punjab Member
+
+(d) | Secretary, Government of Punjab, | Home
+
+Department Member
+(e) | Provincial Police Officer Member
+(f) | Secretary, Government of Punjab, Finance
+Department Member
+(g) | Secretary (Services), S&GAD Member
+
+(h) | Secretary, Government of Punjab, | LG & CD
+
+Department Member
+(i) | Secretary, Government of Punjab, Public
+Prosecution Department Member
+(j) | Secretary, Government of Punjab, Price Control
+and Commodities Management Department Member (k) Three Members of the Provincial Assembly of the Punjab as required under Section 4(1)(k) of Punjab Enforcement and Regulations Act, 2024 as follows:
+
+I. Ms. Marriyum Aurangzeb, MPA (W-300)
+
+II. Mr. Muhammad Yousaf, MPA (PP-229) III. Ms. Salma Butt, MPA (W-307) Members (l) Four independent members, including one
+female member, | to be appointed on the
+recommendation of the Selection Panel (to be inserted upon selection) Members
+(m) | Director General, Punjab Enforcement and
+Regulatory Authority (PERA) Member I Secretary CHIEF SECRETARY, PUNJAB GOVERNMENT OF THE PUNJAB SERVICES & GENERAL ADMINISTRATION DEPARTMENT (Implementation & Coordination Wing) Dated Lahore the 12th November, 2024
+
+===END===
+
+chunk[525] doc=Notification - Establishment of PERA Authority 12.11.2024.pdf TEXT:
+P a g e 2 | 2 NO. & DATE EVEN:
+A copy is forwarded for information and necessary action to:
+
+1. The Principal Secretary to Governor, Punjab.
+2. The Principal Secretary to Chief Minister, Punjab.
+3. The Senior Member, Board of Revenue, Punjab.
+4. The Chairman, Planning & Development Board.
+5. The Inspector General of Police, Punjab.
+6. The Accountant General, Punjab.
+7. All Administrative Secretaries to Government of the Punjab.
+8. All Divisional Commissioners in the Punjab.
+9. Additional Secretary (Gen) / Staff Officer to Chief Secretary
+10. All Deputy Commissioners in the Punjab.
+11. All Heads of Attached Departments, Punjab.
+12. All Heads of Autonomous Bodies, Punjab.
+13. The Director General Anti-Corruption Punjab.
+14. The Director General, Punjab Enforcement & Regulatory
+
+Authority
+
+15. All Members of Punjab Enforcement & Regulatory Authority
+16. PSO to the Additional Chief Secretary, Punjab.
+17. PS to Secretary (I&C), S&GAD.
+
+(SHAHID IQBAL) SECTION OFFICER (I&C-I)
+
+===END===
+

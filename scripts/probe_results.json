@@ -1,0 +1,1797 @@
+[
+  {
+    "label": "greeting_en",
+    "question": "Hello, how are you?",
+    "expected": "greeting response, no citations",
+    "verdict": "✅",
+    "decision": "refuse",
+    "intent_classify": "GENERAL_PERA",
+    "intent_registry": "FALLBACK",
+    "registry_meta": {},
+    "rewritten_query": "How can I assist you today?",
+    "answer_preview": "I'm sorry, I couldn't find specific information about that in the PERA documents.",
+    "refs_count": 0,
+    "refs": [],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 277,
+        "page_start": 247,
+        "page_end": 247,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Address: ____________________________________ Contact No.: _____________________"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 366,
+        "page_start": 362,
+        "page_end": 362,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Position Title: - Associate Social Media\nReport To: - | Creative Lead\nWing: - | "
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 342,
+        "page_start": 325,
+        "page_end": 325,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Schedule-V Transfer and Posting of the Employees Sr. No Position Grade Competent"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 332,
+        "page_start": 315,
+        "page_end": 315,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Position Title: - | Executive Assistant\nReports to: | DG / Directors / Deputy Di"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 377,
+        "page_start": 373,
+        "page_end": 373,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Position Title: - Assistant Manager Protocol\nReport To: - | Deputy Director Admi"
+      }
+    ],
+    "extracted_claims": [],
+    "extraction_debug": {
+      "extractor_raw_json": "{\"claims\": []}",
+      "localized_quotes": [],
+      "dropped_claims": []
+    },
+    "elapsed_s": 5.86
+  },
+  {
+    "label": "greeting_ur",
+    "question": "assalam o alaikum",
+    "expected": "greeting response, no citations",
+    "verdict": "✅",
+    "decision": "refuse",
+    "intent_classify": "GENERAL_PERA",
+    "intent_registry": "FALLBACK",
+    "registry_meta": {},
+    "rewritten_query": "What information is available in the PERA documents?",
+    "answer_preview": "I'm sorry, I couldn't find any information about that in the PERA documents.",
+    "refs_count": 0,
+    "refs": [],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 445,
+        "page_start": 440,
+        "page_end": 440,
+        "tier": "vector",
+        "score": 0.696,
+        "text_preview": "1.3 Scope & Applicability This Manual applies to all categories of PERA employee"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 457,
+        "page_start": 452,
+        "page_end": 452,
+        "tier": "vector",
+        "score": 0.6809,
+        "text_preview": "4.5 Dress Code All PERA employees are expected to maintain a professional appear"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 104,
+        "page_start": 58,
+        "page_end": 58,
+        "tier": "vector",
+        "score": 0.679,
+        "text_preview": "Timelines\n5 | June - Inauguration of PERA in LAHORE\nDivision by Honorable CM th "
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 127,
+        "page_start": 81,
+        "page_end": 81,
+        "tier": "vector",
+        "score": 0.6783,
+        "text_preview": "P r o c u r e m e n t T r a i n i n g R e c a p o f 1 A u t h o r i t y M e e t "
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 449,
+        "page_start": 444,
+        "page_end": 444,
+        "tier": "vector",
+        "score": 0.6745,
+        "text_preview": "• Deputationists: If an employee joins on deputation from another government dep"
+      }
+    ],
+    "extracted_claims": [],
+    "extraction_debug": {},
+    "elapsed_s": 5.46
+  },
+  {
+    "label": "out_of_scope",
+    "question": "What's the weather in Lahore today?",
+    "expected": "refuse, no citations",
+    "verdict": "✅",
+    "decision": "refuse",
+    "intent_classify": "OUT_OF_SCOPE",
+    "intent_registry": "FALLBACK",
+    "registry_meta": {},
+    "rewritten_query": "What is the current weather in Lahore today?",
+    "answer_preview": "I'm sorry, this question is outside my scope. I can only answer questions related to PERA (Punjab Enforcement and Regulatory Authority) based on official PERA documents. Please ask a PERA-related ques",
+    "refs_count": 0,
+    "refs": [],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 96,
+        "page_start": 50,
+        "page_end": 50,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "motorbikes and insurance coverage of all the Vehicles of the Authority is import"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 100,
+        "page_start": 54,
+        "page_end": 54,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Commissioner has requested land acquisition for establishment of ES Kot Chutta ("
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 107,
+        "page_start": 61,
+        "page_end": 61,
+        "tier": "vector",
+        "score": 0.3637,
+        "text_preview": "Timeline 14 August 2025th Launch PERA in all Div/District HQs (53 Tehsils) Launc"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 106,
+        "page_start": 60,
+        "page_end": 60,
+        "tier": "vector",
+        "score": 0.331,
+        "text_preview": "Tentative Program of Inauguration Event Activity Time Guest Arrival & Seating 10"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 167,
+        "page_start": 140,
+        "page_end": 140,
+        "tier": "vector",
+        "score": 0.3307,
+        "text_preview": "Approval For Electric Bikes In Lahore (Agenda 10) PERA is committed to environme"
+      }
+    ],
+    "extracted_claims": [],
+    "extraction_debug": {},
+    "elapsed_s": 2.72
+  },
+  {
+    "label": "pera_what",
+    "question": "What is PERA?",
+    "expected": "answer with 1+ citations",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "DOC_LOOKUP",
+    "intent_registry": "PERA_DEFINITION",
+    "registry_meta": {
+      "sub": "what"
+    },
+    "rewritten_query": "What is the Punjab Enforcement and Regulatory Authority?",
+    "answer_preview": "- **PERA** stands for the **Punjab Enforcement and Regulatory Authority**.\n- It is established to provide procedures for efficient and effective implementation and enforcement of special laws througho",
+    "refs_count": 1,
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=1",
+        "snippet": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe pr",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 364,
+        "page_start": 360,
+        "page_end": 360,
+        "tier": "vector",
+        "score": 0.75,
+        "text_preview": "Position Title: - Graphic Designer\nReport To: - | Creative Lead\nWing: - | IT & C"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf",
+        "chunk_id": 597,
+        "page_start": 37,
+        "page_end": 37,
+        "tier": "vector",
+        "score": 0.75,
+        "text_preview": "Position Title: - Associate Social Media\nReport To: - | Creative Lead\nWing: - | "
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf",
+        "chunk_id": 670,
+        "page_start": 2,
+        "page_end": 2,
+        "tier": "vector",
+        "score": 0.7044,
+        "text_preview": ".................................................................. 41 (48) Use o"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf",
+        "chunk_id": 678,
+        "page_start": 6,
+        "page_end": 6,
+        "tier": "vector",
+        "score": 0.701,
+        "text_preview": "(I) \"Act\" means the Punjab Enforcement and Regulation Act, 2024 | (Act XI of\n202"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - GRATUITY - REGULATIONS 2025.pdf",
+        "chunk_id": 657,
+        "page_start": 1,
+        "page_end": 1,
+        "tier": "vector",
+        "score": 0.6918,
+        "text_preview": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (GRATUITY) REGULATIONS, 2025 CON"
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "PERA is the Punjab Enforcement and Regulatory Authority",
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page": 1,
+        "page_end": 1,
+        "chunk_id": 7,
+        "quote": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe procedures for efficient and effective implementation and enforcement of special laws throughout Punjab. It is expedient , in the public interest , to establish overarching provincial enforcement authority and procedures in Punjab; to improve coordination and cooperation between existing regulatory ag",
+        "quote_offsets": [
+          0,
+          500
+        ],
+        "_source": "act_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "act_registry",
+        "sub": "definition"
+      }
+    },
+    "elapsed_s": 10.53
+  },
+  {
+    "label": "pera_kya",
+    "question": "PERA kya hai?",
+    "expected": "answer with 1+ citations (Urdu)",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "DOC_LOOKUP",
+    "intent_registry": "PERA_DEFINITION",
+    "registry_meta": {
+      "sub": "what"
+    },
+    "rewritten_query": "What is the Punjab Enforcement and Regulatory Authority?",
+    "answer_preview": "- **PERA** ka matlab hai **Punjab Enforcement and Regulatory Authority**.\n- Yeh khaas qanoon ki behtar amal daramad aur enforcement ke liye tareeqe faraham karne ke liye qaim kiya gaya hai.\n- Yeh auth",
+    "refs_count": 1,
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=1",
+        "snippet": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe pr",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 364,
+        "page_start": 360,
+        "page_end": 360,
+        "tier": "vector",
+        "score": 0.75,
+        "text_preview": "Position Title: - Graphic Designer\nReport To: - | Creative Lead\nWing: - | IT & C"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf",
+        "chunk_id": 597,
+        "page_start": 37,
+        "page_end": 37,
+        "tier": "vector",
+        "score": 0.75,
+        "text_preview": "Position Title: - Associate Social Media\nReport To: - | Creative Lead\nWing: - | "
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf",
+        "chunk_id": 670,
+        "page_start": 2,
+        "page_end": 2,
+        "tier": "vector",
+        "score": 0.7044,
+        "text_preview": ".................................................................. 41 (48) Use o"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf",
+        "chunk_id": 678,
+        "page_start": 6,
+        "page_end": 6,
+        "tier": "vector",
+        "score": 0.701,
+        "text_preview": "(I) \"Act\" means the Punjab Enforcement and Regulation Act, 2024 | (Act XI of\n202"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - GRATUITY - REGULATIONS 2025.pdf",
+        "chunk_id": 657,
+        "page_start": 1,
+        "page_end": 1,
+        "tier": "vector",
+        "score": 0.6918,
+        "text_preview": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (GRATUITY) REGULATIONS, 2025 CON"
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "PERA is the Punjab Enforcement and Regulatory Authority",
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page": 1,
+        "page_end": 1,
+        "chunk_id": 7,
+        "quote": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe procedures for efficient and effective implementation and enforcement of special laws throughout Punjab. It is expedient , in the public interest , to establish overarching provincial enforcement authority and procedures in Punjab; to improve coordination and cooperation between existing regulatory ag",
+        "quote_offsets": [
+          0,
+          500
+        ],
+        "_source": "act_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "act_registry",
+        "sub": "definition"
+      }
+    },
+    "elapsed_s": 6.37
+  },
+  {
+    "label": "schedule_1",
+    "question": "Show me Schedule-I offences and fines",
+    "expected": "deterministic table hit",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "DOC_LOOKUP",
+    "intent_registry": "SCHEDULE_LOOKUP",
+    "registry_meta": {
+      "schedule_num": "1"
+    },
+    "rewritten_query": "What are the Schedule-I offences and corresponding fines under the Punjab Enforcement and Regulatory Authority?",
+    "answer_preview": "Insufficient information is available regarding Schedule-I offences and fines.",
+    "refs_count": 2,
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 273,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=273",
+        "snippet": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) REGULATIONS, 2025 CONTENTS\n\n1. Short Title and Commencement\n2. Definitions\n3. Appointment and Conditions `of Ser",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 275,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=275",
+        "snippet": "Regulatory Authority (Appointment and Conditions of Service for Contractual Employees) Regulations, 2025” and mentioned in these Regulations to the extent of organizational structure only;\n(g) “Direct",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ],
+    "total_hits": 231,
+    "top_hits": [
+      {
+        "doc": "Annex L PERA Squads and Weapons Regulations.pdf",
+        "chunk_id": null,
+        "page_start": 1,
+        "page_end": 1,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (SQUADS AND WEAPONS) REGULATIONS"
+      },
+      {
+        "doc": "Annex L PERA Squads and Weapons Regulations.pdf",
+        "chunk_id": null,
+        "page_start": 6,
+        "page_end": 6,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(e) Squad types and minimum composition; (f) Buddy system and verification proce"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 3,
+        "page_end": 3,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "expiry of period of lease or license, continues to remain in the occupation of t"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 4,
+        "page_end": 4,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(mm) “reference” means a reference made by a Department wherein any violation or"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 12,
+        "page_end": 12,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(b) confiscation of articles, carts or vehicles; (c) sealing of any premises; (d"
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "Schedule-I organizational structure",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 273,
+        "page_end": 273,
+        "chunk_id": 303,
+        "quote": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) REGULATIONS, 2025 CONTENTS\n\n1. Short Title and Commencement\n2. Definitions\n3. Appointment and Conditions `of Service\n4. Terms of Reference of Service\n5. Eligibility for Appointment\n6. Initial Recruitment\n7. Probation, Training and Departmental Examination\n8. Transfer and Posting\n9. Promotion\n10. Seniority\n11. Resignation\n12. Retirement\n13. Deputation\n14. Recruitment Committees and Deputationist Screening Pane",
+        "quote_offsets": [
+          0,
+          500
+        ],
+        "_source": "schedule_registry",
+        "tier": "registry"
+      },
+      {
+        "answer_span": "Schedule-I organizational structure",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 275,
+        "page_end": 275,
+        "chunk_id": 305,
+        "quote": "Regulatory Authority (Appointment and Conditions of Service for Contractual Employees) Regulations, 2025” and mentioned in these Regulations to the extent of organizational structure only;\n(g) “Directorate General ” means responsible for management | and\nsupervision of different wings of PERA under the Director General, PERA as provided in Section 2 (1) (l) and Section 8 of the Act; (h) “Employee” means an Officer, staff or any other person recruited by the Authority under Section 11 of the Act,",
+        "quote_offsets": [
+          0,
+          500
+        ],
+        "_source": "schedule_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "schedule_registry",
+        "schedule": "I"
+      }
+    },
+    "elapsed_s": 2.33
+  },
+  {
+    "label": "schedule_3",
+    "question": "What is the salary table in Schedule-III?",
+    "expected": "deterministic table hit",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "DOC_LOOKUP",
+    "intent_registry": "SCHEDULE_LOOKUP",
+    "registry_meta": {
+      "schedule_num": "3"
+    },
+    "rewritten_query": "What are the pay and allowances listed in Schedule-III?",
+    "answer_preview": "The salary table in **Schedule-III Special Pay Package (SPPP)** is as follows:\n\n- **SPPP-1**: \n  - Minimum Pay per Month: **PKR 350,082**\n  - Maximum Pay per Month: **PKR 1,000,082**\n  - Fuel Limit: *",
+    "refs_count": 1,
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 329,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=329",
+        "snippet": "Schedule-III Special Pay Package PERA (SPPP) Summary\nSr. No. | SPPP | Minimum Pay per Month (PKR) | Maximum Pay per Month (PKR) | Fuel Limit (Petrol Liters/Month)\n1 | SPPP-1 | 350,082 | 1,000,082 | 30",
+        "quote_offsets": [
+          0,
+          413
+        ]
+      }
+    ],
+    "total_hits": 231,
+    "top_hits": [
+      {
+        "doc": "Annex L PERA Squads and Weapons Regulations.pdf",
+        "chunk_id": null,
+        "page_start": 1,
+        "page_end": 1,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (SQUADS AND WEAPONS) REGULATIONS"
+      },
+      {
+        "doc": "Annex L PERA Squads and Weapons Regulations.pdf",
+        "chunk_id": null,
+        "page_start": 6,
+        "page_end": 6,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(e) Squad types and minimum composition; (f) Buddy system and verification proce"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 3,
+        "page_end": 3,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "expiry of period of lease or license, continues to remain in the occupation of t"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 4,
+        "page_end": 4,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(mm) “reference” means a reference made by a Department wherein any violation or"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 12,
+        "page_end": 12,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(b) confiscation of articles, carts or vehicles; (c) sealing of any premises; (d"
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "Schedule-III SPPP pay table",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 329,
+        "page_end": 329,
+        "chunk_id": 346,
+        "quote": "Schedule-III Special Pay Package PERA (SPPP) Summary\nSr. No. | SPPP | Minimum Pay per Month (PKR) | Maximum Pay per Month (PKR) | Fuel Limit (Petrol Liters/Month)\n1 | SPPP-1 | 350,082 | 1,000,082 | 300\n2 | SPPP-2 | 296,324 | 746,324 | 250\n3 | SPPP-3 | 250,051 | 500,051 | 200\n4 | SPPP-4 | 115,561 | 250,561 | 150\n5 | SPPP-5 | 90,219 | 200,219 | 100\n6 | Interns | As decided by the Contractual Employment Committee",
+        "quote_offsets": [
+          0,
+          413
+        ],
+        "_source": "schedule_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "schedule_registry",
+        "schedule": "III"
+      }
+    },
+    "elapsed_s": 7.43
+  },
+  {
+    "label": "sppp_salary",
+    "question": "SPPP-1 salary kitni hai?",
+    "expected": "table registry + salary figures",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "DOC_LOOKUP",
+    "intent_registry": "SCHEDULE_LOOKUP",
+    "registry_meta": {
+      "schedule_num": "3",
+      "sppp_row": "1"
+    },
+    "rewritten_query": "What is the salary for SPPP-1 in the Schedule-III Special Pay Package?",
+    "answer_preview": "**SPPP-1** ki salary:\n\n- **Minimum Pay per Month**: **PKR 350,082**\n- **Maximum Pay per Month**: **PKR 1,000,082**",
+    "refs_count": 1,
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 329,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=329",
+        "snippet": "Schedule-III Special Pay Package PERA (SPPP) Summary\nSPPP-1 | Minimum Pay per Month (PKR): 350,082 | Maximum Pay per Month (PKR): 1,000,082 | Fuel Limit: 300 Liters/Month",
+        "quote_offsets": [
+          0,
+          170
+        ]
+      }
+    ],
+    "total_hits": 231,
+    "top_hits": [
+      {
+        "doc": "Annex L PERA Squads and Weapons Regulations.pdf",
+        "chunk_id": null,
+        "page_start": 1,
+        "page_end": 1,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (SQUADS AND WEAPONS) REGULATIONS"
+      },
+      {
+        "doc": "Annex L PERA Squads and Weapons Regulations.pdf",
+        "chunk_id": null,
+        "page_start": 6,
+        "page_end": 6,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(e) Squad types and minimum composition; (f) Buddy system and verification proce"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 3,
+        "page_end": 3,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "expiry of period of lease or license, continues to remain in the occupation of t"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 4,
+        "page_end": 4,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(mm) “reference” means a reference made by a Department wherein any violation or"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 12,
+        "page_end": 12,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(b) confiscation of articles, carts or vehicles; (c) sealing of any premises; (d"
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "Schedule-III SPPP pay table (SPPP-1)",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 329,
+        "page_end": 329,
+        "chunk_id": 346,
+        "quote": "Schedule-III Special Pay Package PERA (SPPP) Summary\nSPPP-1 | Minimum Pay per Month (PKR): 350,082 | Maximum Pay per Month (PKR): 1,000,082 | Fuel Limit: 300 Liters/Month",
+        "quote_offsets": [
+          0,
+          170
+        ],
+        "_source": "schedule_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "schedule_registry",
+        "schedule": "III",
+        "sppp_row": "1"
+      }
+    },
+    "elapsed_s": 3.36
+  },
+  {
+    "label": "jd_cto",
+    "question": "What is the job description of CTO?",
+    "expected": "JD for Chief Technology Officer",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "JOB_ROLE",
+    "intent_registry": "JD_LOOKUP",
+    "registry_meta": {
+      "job_title": "Chief Technology Officer",
+      "aspect": "general"
+    },
+    "rewritten_query": "What is the job description of the Chief Technology Officer?",
+    "answer_preview": "The job description of the **Chief Technology Officer (CTO)** includes:\n\n- Responsible for providing **technical leadership** to the team of IT professionals.\n- Assist the **Director General** in ensu",
+    "refs_count": 1,
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 346,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=346",
+        "snippet": "Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communication\nPurpose of the Position:\n",
+        "quote_offsets": [
+          0,
+          600
+        ]
+      }
+    ],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 183,
+        "page_start": 157,
+        "page_end": 157,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Organizational Structure Director General /BS-19/20 (1) Dir. Finance BS-19 (08) "
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 353,
+        "page_start": 349,
+        "page_end": 349,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Position Title: - Manager (Infrastructure & Networks)\nReport To: - | Chief Techn"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 300,
+        "page_start": 270,
+        "page_end": 270,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Amount Due Reason for Recovery (Rent / Penalty / Illegal Gains / Costs) Date of "
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 305,
+        "page_start": 275,
+        "page_end": 275,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Regulatory Authority (Appointment and Conditions of Service for Contractual Empl"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 421,
+        "page_start": 417,
+        "page_end": 417,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "DIRECTORATE GENERAL PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY LAHORE (iii) In "
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "Chief Technology Officer job description",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 346,
+        "page_end": 346,
+        "chunk_id": 350,
+        "quote": "Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communication\nPurpose of the Position:\nCTO shall be responsible for providing technical leadership to the team of IT professionals. | He shall\nassist the Director General in ensuring the IT -enabled solutions for all functions of PERA including digitization of processes at the Headquarters and Enforcement Stations level. Areas of Responsibilities:\n Lead the IT & Communication Wing of PERA and responsible for development, deployment,\nu",
+        "quote_offsets": [
+          0,
+          600
+        ],
+        "_source": "jd_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "jd_registry",
+        "title": "Chief Technology Officer",
+        "aspect": "general"
+      }
+    },
+    "elapsed_s": 4.75
+  },
+  {
+    "label": "jd_dg",
+    "question": "DG ki responsibilities kya hain?",
+    "expected": "JD for Director General",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "GENERAL_PERA",
+    "intent_registry": "FALLBACK",
+    "registry_meta": {},
+    "rewritten_query": "What are the responsibilities of the Director General?",
+    "answer_preview": "**Director General (DG)** ki responsibilities hain:\n\n- Assist the Authority in its functions and operations.\n- Monitor the implementation of the Authority's decisions.\n- Assist the Authority in framin",
+    "refs_count": 3,
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 300,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=300",
+        "snippet": "He will be responsible for assisting the Authority",
+        "quote_offsets": [
+          134,
+          184
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 301,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=301",
+        "snippet": "He shall assist the Director General in management",
+        "quote_offsets": [
+          263,
+          313
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 304,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=304",
+        "snippet": "He shall assist the Director General in preparation of SOPs,",
+        "quote_offsets": [
+          335,
+          395
+        ]
+      }
+    ],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 317,
+        "page_start": 300,
+        "page_end": 300,
+        "tier": "vector",
+        "score": 0.65,
+        "text_preview": "Schedule-III Terms and Reference for Service\nPosition Title: | Director General "
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 389,
+        "page_start": 385,
+        "page_end": 385,
+        "tier": "vector",
+        "score": 0.4906,
+        "text_preview": " Ensure the Authority’s reporting obligations are fulfilled with clarity, timel"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 320,
+        "page_start": 303,
+        "page_end": 303,
+        "tier": "vector",
+        "score": 0.4897,
+        "text_preview": "Position Title: | Director (Personnel)\nReports To: | Director General\nPurpose of"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf",
+        "chunk_id": 549,
+        "page_start": 35,
+        "page_end": 35,
+        "tier": "vector",
+        "score": 0.4872,
+        "text_preview": "strict confidentiality, secure record-keeping, and controlled dissemination of i"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 314,
+        "page_start": 297,
+        "page_end": 297,
+        "tier": "vector",
+        "score": 0.4863,
+        "text_preview": "12 Office Assistant (BS-14) Director General At least BA / BBA or equivalent deg"
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "The Director General assists the Authority in its functions and operations.",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 300,
+        "chunk_id": 317,
+        "quote": "He will be responsible for assisting the Authority",
+        "quote_offsets": [
+          134,
+          184
+        ],
+        "_source": "llm_needle"
+      },
+      {
+        "answer_span": "The Director General monitors the implementation of the Authority's decisions.",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 300,
+        "chunk_id": 317,
+        "quote": "He will monitor the implementation of decisions of the Authority.",
+        "quote_offsets": [
+          680,
+          745
+        ],
+        "_source": "llm_needle"
+      },
+      {
+        "answer_span": "The Director General assists in creating rules and regulations for the Authority.",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 300,
+        "chunk_id": 317,
+        "quote": "He will assist the Authority in framing rules, regulations",
+        "quote_offsets": [
+          818,
+          876
+        ],
+        "_source": "llm_needle"
+      },
+      {
+        "answer_span": "The Director General provides decision-making support to the Authority.",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 300,
+        "chunk_id": 317,
+        "quote": "He will provide decision support to the authority.",
+        "quote_offsets": [
+          2040,
+          2090
+        ],
+        "_source": "llm_needle"
+      },
+      {
+        "answer_span": "The Director (Administration & HR) assists the Director General in management tasks.",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 301,
+        "chunk_id": 318,
+        "quote": "He shall assist the Director General in management",
+        "quote_offsets": [
+          263,
+          313
+        ],
+        "_source": "llm_needle"
+      },
+      {
+        "answer_span": "The Director (Monitoring & Implementation) assists the Director General in preparing SOPs.",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 304,
+        "chunk_id": 321,
+        "quote": "He shall assist the Director General in preparation of SOPs,",
+        "quote_offsets": [
+          335,
+          395
+        ],
+        "_source": "llm_needle"
+      },
+      {
+        "answer_span": "The Director General assists in managing the Authority's financial matters.",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 300,
+        "chunk_id": 317,
+        "quote": "He will assist the authority in dealing with all of the financial matters",
+        "quote_offsets": [
+          1531,
+          1604
+        ],
+        "_source": "llm_needle"
+      },
+      {
+        "answer_span": "The Director General oversees the daily operations of the Authority.",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 300,
+        "chunk_id": 317,
+        "quote": "He will be responsible for overseeing day-to-day operations",
+        "quote_offsets": [
+          1660,
+          1719
+        ],
+        "_source": "llm_needle"
+      }
+    ],
+    "extraction_debug": {
+      "extractor_raw_json": "{\"claims\": [\n  {\"doc\": \"Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf\", \"page\": 300, \"chunk_id\": 317, \"needle\": \"He will be responsible for assisting the Authority\", \"answer_span_summary\": \"The Director General assists the Authority in its functions and operations.\"},\n  {\"doc\": \"Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf\", \"page\": 300, \"chunk_id\": 317, \"needle\": \"He will monitor the implementation of decisions of the Authority\", \"answer_span_summary\": \"The Director General monitors the implementation of the Authority's decisions.\"},\n  {\"doc\": \"Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf\", \"page\": 300, \"chunk_id\": 317, \"needle\": \"He will assist the Authority in framing rules, regulations\", \"answer_span_summary\": \"The Director General assists in creating rules and regulations for the Authority.\"},\n  {\"doc\": \"Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf\", \"page\": 300, \"chunk_id\": 317, \"needle\": \"He will provide decision support to the authority\", \"answer_span_summary\": \"The Director General provides decision-making support to the Authority.\"},\n  {\"doc\": \"Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf\", \"page\": 301, \"chunk_id\": 318, \"needle\": \"He shall assist the Director General in management\", \"answer_span_summary\": \"The Director (Administration & HR) assists the Director General in management tasks.\"},\n  {\"doc\": \"Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf\", \"page\": 304, \"chunk_id\": 321, \"needle\": \"He shall assist the Director General in preparation of SOPs\", \"answer_span_summary\": \"The Director (Monitoring & Implementation) assists the Director General in preparing SOPs.\"},\n  {\"doc\": \"Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf\", \"page\": 300, \"chunk_id\": 317, \"needle\": \"He will assist the authority in dealing with all of the financial matters\", \"answer_span_summary\": \"The Director General assists in managing the Authority's financial matters.\"},\n  {\"doc\": \"Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf\", \"page\": 300, \"chunk_id\": 317, \"needle\": \"He will be responsible for overseeing day-to-day operations\", \"answer_span_summary\": \"The Director General oversees the daily operations of the Authority.\"}\n]}",
+      "localized_quotes": [
+        {
+          "needle": "He will be responsible for assisting the Authority",
+          "quote": "He will be responsible for assisting the Authority",
+          "offsets": [
+            134,
+            184
+          ],
+          "similarity": "exact"
+        },
+        {
+          "needle": "He will monitor the implementation of decisions of the Authority",
+          "quote": "He will monitor the implementation of decisions of the Authority.",
+          "offsets": [
+            680,
+            745
+          ],
+          "similarity": "exact"
+        },
+        {
+          "needle": "He will assist the Authority in framing rules, regulations",
+          "quote": "He will assist the Authority in framing rules, regulations",
+          "offsets": [
+            818,
+            876
+          ],
+          "similarity": "exact"
+        },
+        {
+          "needle": "He will provide decision support to the authority",
+          "quote": "He will provide decision support to the authority.",
+          "offsets": [
+            2040,
+            2090
+          ],
+          "similarity": "exact"
+        },
+        {
+          "needle": "He shall assist the Director General in management",
+          "quote": "He shall assist the Director General in management",
+          "offsets": [
+            263,
+            313
+          ],
+          "similarity": "exact"
+        },
+        {
+          "needle": "He shall assist the Director General in preparation of SOPs",
+          "quote": "He shall assist the Director General in preparation of SOPs,",
+          "offsets": [
+            335,
+            395
+          ],
+          "similarity": "exact"
+        },
+        {
+          "needle": "He will assist the authority in dealing with all of the financial matters",
+          "quote": "He will assist the authority in dealing with all of the financial matters",
+          "offsets": [
+            1531,
+            1604
+          ],
+          "similarity": "exact"
+        },
+        {
+          "needle": "He will be responsible for overseeing day-to-day operations",
+          "quote": "He will be responsible for overseeing day-to-day operations",
+          "offsets": [
+            1660,
+            1719
+          ],
+          "similarity": "exact"
+        }
+      ],
+      "dropped_claims": []
+    },
+    "elapsed_s": 20.03
+  },
+  {
+    "label": "jd_sso",
+    "question": "SSO ka kya kaam hai?",
+    "expected": "JD for System Support Officer (NOT Senior Staff Officer)",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "JOB_ROLE",
+    "intent_registry": "JD_LOOKUP",
+    "registry_meta": {
+      "job_title": "System Support Officer",
+      "aspect": "role"
+    },
+    "rewritten_query": "What are the responsibilities of the Single Sign-On (SSO) system?",
+    "answer_preview": "**System Support Officer (SSO)** ka kaam hai:\n\n- **Technical aur administrative support** dena Enforcement Stations par.\n- **IT infrastructure** ki smooth operations aur functioning ko ensure karna.\n-",
+    "refs_count": 1,
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 363,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=363",
+        "snippet": "Position Title: - System Support Officer\nReport To: - | Sub Divisional Enforcement Officer of the Enforcement Station concerned\nWing: - | Enforcement Station, IT & Communication, Training\nPurpose of t",
+        "quote_offsets": [
+          0,
+          600
+        ]
+      }
+    ],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 368,
+        "page_start": 364,
+        "page_end": 364,
+        "tier": "vector",
+        "score": 0.3675,
+        "text_preview": " Noting / drafting skills Appointment:\nAppointment shall be made by Director Ge"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 340,
+        "page_start": 323,
+        "page_end": 323,
+        "tier": "vector",
+        "score": 0.324,
+        "text_preview": "Position Title: | Sergeant\nReports To: | SDEO, EO, IO and Senior Sergeant\nPurpos"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 336,
+        "page_start": 319,
+        "page_end": 319,
+        "tier": "vector",
+        "score": 0.3214,
+        "text_preview": "Position Title: | Enforcement Officer\nReports To: | Sub-Divisional Enforcement O"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 194,
+        "page_start": 168,
+        "page_end": 168,
+        "tier": "vector",
+        "score": 0.3206,
+        "text_preview": "Snr Sergeant BS 09 SDEO BS 17 Secretary District Board - BS 18 Sergeant BS 07 IO"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 192,
+        "page_start": 166,
+        "page_end": 166,
+        "tier": "vector",
+        "score": 0.3201,
+        "text_preview": "Internal Audit Audit Officer /BS-17 (1) Auditor /BS-16 (1) Head Count\n• BS 17 - "
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "System Support Officer role and responsibilities",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 363,
+        "page_end": 363,
+        "chunk_id": 367,
+        "quote": "Position Title: - System Support Officer\nReport To: - | Sub Divisional Enforcement Officer of the Enforcement Station concerned\nWing: - | Enforcement Station, IT & Communication, Training\nPurpose of the Position:\nThe System Support Officer | assist the SDEO with the various functions at Enforcement Stations.\nincluding providing comprehensive technical and administrative support to ensure smooth operations\n\nand functioning | of IT infrastructure a s well as | office administration. The role involves | addressing\n\nhardware, software, and network-related issues while also handling clerical and ad",
+        "quote_offsets": [
+          0,
+          600
+        ],
+        "_source": "jd_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "jd_registry",
+        "title": "System Support Officer",
+        "aspect": "role"
+      }
+    },
+    "elapsed_s": 5.08
+  },
+  {
+    "label": "act_section_5",
+    "question": "What does Section 5 of the PERA Act say?",
+    "expected": "Act section content",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "ENFORCEMENT_LEGAL",
+    "intent_registry": "ACT_SECTION",
+    "registry_meta": {
+      "section_num": "5"
+    },
+    "rewritten_query": "What does Section 5 of the Public Employment Relations Act state?",
+    "answer_preview": "There is insufficient information in the claims regarding the content of Section 5 of the PERA Act.",
+    "refs_count": 2,
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 52,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=52",
+        "snippet": "Enforcement Stations, development of regulations, procurement, training, and other operational initiatives. These efforts have enabled PERA to reach the stage of immediate operationalization in Lahore",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 209,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=209",
+        "snippet": "(2) Upon receipt of such information as whistle -blower disclosure, either directly or as forwarded by the Authority, Directorate General, Board or the Enforcement Station through the SDEO concerned, ",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 454,
+        "page_start": 449,
+        "page_end": 449,
+        "tier": "vector",
+        "score": 0.4704,
+        "text_preview": "Chapter IV: Work Environment 4.1 Equal Employment Opportunity (EEO) and Non-disc"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf",
+        "chunk_id": 533,
+        "page_start": 6,
+        "page_end": 6,
+        "tier": "vector",
+        "score": 0.4597,
+        "text_preview": "12. Retirement. - (1) An employee shall stand retired from the service in accord"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 349,
+        "page_start": 332,
+        "page_end": 332,
+        "tier": "vector",
+        "score": 0.4588,
+        "text_preview": "Schedule-I ORGANIZATIONAL STRUCTURE"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf",
+        "chunk_id": 579,
+        "page_start": 5,
+        "page_end": 5,
+        "tier": "vector",
+        "score": 0.4554,
+        "text_preview": "10 Savings: - All acts done, decisions made , and actions taken including appoin"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 346,
+        "page_start": 329,
+        "page_end": 329,
+        "tier": "vector",
+        "score": 0.4534,
+        "text_preview": "(i) “Organizational Structure ” means the organizational structure g iven in Sch"
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "PERA Act section reference",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 52,
+        "page_end": 52,
+        "chunk_id": 98,
+        "quote": "Enforcement Stations, development of regulations, procurement, training, and other operational initiatives. These efforts have enabled PERA to reach the stage of immediate operationalization in Lahore Division, with expansion planned across Punjab. Further, members of the Sub -Committee constituted by Law Secretary for vetting of draft Operations and Procedures Code has worked tirelessly for completion of this most important task. In recognition of their tireless contributions and sustained work",
+        "quote_offsets": [
+          0,
+          500
+        ],
+        "_source": "act_registry",
+        "tier": "registry"
+      },
+      {
+        "answer_span": "PERA Act section reference",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 209,
+        "page_end": 209,
+        "chunk_id": 239,
+        "quote": "(2) Upon receipt of such information as whistle -blower disclosure, either directly or as forwarded by the Authority, Directorate General, Board or the Enforcement Station through the SDEO concerned, the Hearing Officer shall assess and verify the information so disclosed. (3) If upon receipt of information as whistle-blower disclosure, the Hearing Officer, after assessing and verifying the information so disclosed determines that the same was false, frivolous, or vexatious, he shall issue a Sho",
+        "quote_offsets": [
+          0,
+          500
+        ],
+        "_source": "act_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "act_registry",
+        "section": "5"
+      }
+    },
+    "elapsed_s": 3.79
+  },
+  {
+    "label": "act_section_21",
+    "question": "Section 21 PERA Act",
+    "expected": "Act section content",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "ENFORCEMENT_LEGAL",
+    "intent_registry": "ACT_SECTION",
+    "registry_meta": {
+      "section_num": "21"
+    },
+    "rewritten_query": "What does Section 21 of the Public Employment Relations Act state?",
+    "answer_preview": "There is insufficient information in the claims regarding the content of Section 21 of the PERA Act.",
+    "refs_count": 1,
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 37,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=37",
+        "snippet": "Chapter XVIII MISCELLANOUS\n\n74. Delegation of powers.– The Authority may, by order, delegate any\n\nof its powers or functions to the Board or other body or agency or committee of the Government, or any",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 48,
+        "page_start": 3,
+        "page_end": 3,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "expiry of period of lease or license, continues to remain in the occupation of t"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 82,
+        "page_start": 37,
+        "page_end": 37,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Chapter XVIII MISCELLANOUS\n\n74. Delegation of powers.– The Authority may, by ord"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 223,
+        "page_start": 193,
+        "page_end": 193,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "(5) The Hearing Officer shall also decide complaints filed by any person\naggriev"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 49,
+        "page_start": 4,
+        "page_end": 4,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "(mm) “reference” means a reference made by a Department wherein any violation or"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 454,
+        "page_start": 449,
+        "page_end": 449,
+        "tier": "vector",
+        "score": 0.4798,
+        "text_preview": "Chapter IV: Work Environment 4.1 Equal Employment Opportunity (EEO) and Non-disc"
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "PERA Act section reference",
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page": 37,
+        "page_end": 37,
+        "chunk_id": 43,
+        "quote": "Chapter XVIII MISCELLANOUS\n\n74. Delegation of powers.– The Authority may, by order, delegate any\n\nof its powers or functions to the Board or other body or agency or committee of the Government, or any of its members or employee s, as it considers appropriate for implementation of the provisions of the Act, subject to such conditions and restrictions as may be specified in the order, except the function to:\n(a) frame, amend or repeal the regulations; (b) formulate or grant approval for any policy",
+        "quote_offsets": [
+          0,
+          500
+        ],
+        "_source": "act_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "act_registry",
+        "section": "21"
+      }
+    },
+    "elapsed_s": 3.57
+  },
+  {
+    "label": "followup_salary",
+    "question": "uski salary kitni hai?",
+    "expected": "should use entity from previous turn",
+    "verdict": "✅",
+    "decision": "refuse",
+    "intent_classify": "JOB_ROLE",
+    "intent_registry": "FALLBACK",
+    "registry_meta": {},
+    "rewritten_query": "What is the pay and allowances for the position mentioned in Section 21 of the PERA Act?",
+    "answer_preview": "I'm sorry, this question is outside my scope. I can only answer questions related to PERA (Punjab Enforcement and Regulatory Authority) based on official PERA documents. Please ask a PERA-related ques",
+    "refs_count": 0,
+    "refs": [],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 465,
+        "page_start": 460,
+        "page_end": 460,
+        "tier": "vector",
+        "score": 0.6983,
+        "text_preview": "compensation for agility and expertise, and deputationists maintain their establ"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 406,
+        "page_start": 402,
+        "page_end": 402,
+        "tier": "vector",
+        "score": 0.685,
+        "text_preview": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (EFFICIENCY & DISCIPLINE) REGULA"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 344,
+        "page_start": 327,
+        "page_end": 327,
+        "tier": "vector",
+        "score": 0.6735,
+        "text_preview": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF S"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 468,
+        "page_start": 463,
+        "page_end": 463,
+        "tier": "vector",
+        "score": 0.6705,
+        "text_preview": "Chapter VII: Contract Renewal, Termination and Resignation of Contractual Employ"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 467,
+        "page_start": 462,
+        "page_end": 462,
+        "tier": "vector",
+        "score": 0.6704,
+        "text_preview": "• Professional Tax / Other Government Deductions: Professional Tax will be deduc"
+      }
+    ],
+    "extracted_claims": [],
+    "extraction_debug": {},
+    "elapsed_s": 2.73
+  },
+  {
+    "label": "named_person",
+    "question": "Who is the current DG of PERA?",
+    "expected": "named person or refusal",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "GENERAL_PERA",
+    "intent_registry": "FALLBACK",
+    "registry_meta": {},
+    "rewritten_query": "Who is the current Director General of the Punjab Enforcement and Regulatory Authority?",
+    "answer_preview": "The current **Director General** of PERA is **Capt. Farrukh Atiq Khan (Rtd.)**.",
+    "refs_count": 1,
+    "refs": [
+      {
+        "document": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf",
+        "page_start": 61,
+        "open_url": "https://ask.pera.gop.pk/assets/data/THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf#page=61",
+        "snippet": "Director General Capt. Farrukh Atiq Khan (Rtd.)",
+        "quote_offsets": [
+          671,
+          718
+        ]
+      }
+    ],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - PERFORMANCE APPRAISAL - AMENDED REGULATIONS 2025.pdf",
+        "chunk_id": 768,
+        "page_start": 7,
+        "page_end": 7,
+        "tier": "vector",
+        "score": 0.7,
+        "text_preview": "Schedule-II: Hierarchy of Performance Appraisal for Contractual Employees Sr No."
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf",
+        "chunk_id": 549,
+        "page_start": 35,
+        "page_end": 35,
+        "tier": "vector",
+        "score": 0.6825,
+        "text_preview": "strict confidentiality, secure record-keeping, and controlled dissemination of i"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf",
+        "chunk_id": 546,
+        "page_start": 33,
+        "page_end": 33,
+        "tier": "vector",
+        "score": 0.6703,
+        "text_preview": "Position Title: | Deputy Director (Administration & HR)\nReports To: | Additional"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf",
+        "chunk_id": 538,
+        "page_start": 25,
+        "page_end": 25,
+        "tier": "vector",
+        "score": 0.666,
+        "text_preview": "5 Deputy Director (BS-18) Chief Secretary - By Transfer from amongst the Officer"
+      },
+      {
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf",
+        "chunk_id": 544,
+        "page_start": 31,
+        "page_end": 31,
+        "tier": "vector",
+        "score": 0.6657,
+        "text_preview": "Position Title: | Director (Personnel)\nReports To: | Director General\nPurpose of"
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "The current Director General of PERA is Capt. Farrukh Atiq Khan (Rtd.).",
+        "doc": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf",
+        "page": 61,
+        "chunk_id": 574,
+        "quote": "Director General Capt. Farrukh Atiq Khan (Rtd.)",
+        "quote_offsets": [
+          671,
+          718
+        ],
+        "_source": "llm_needle"
+      }
+    ],
+    "extraction_debug": {
+      "extractor_raw_json": "{\"claims\": [\n  {\"doc\": \"THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf\", \"page\": 61, \"chunk_id\": 574, \"needle\": \"Director General Capt. Farrukh Atiq Khan (Rtd.)\", \"answer_span_summary\": \"The current Director General of PERA is Capt. Farrukh Atiq Khan (Rtd.).\"}\n]}",
+      "localized_quotes": [
+        {
+          "needle": "Director General Capt. Farrukh Atiq Khan (Rtd.)",
+          "quote": "Director General Capt. Farrukh Atiq Khan (Rtd.)",
+          "offsets": [
+            671,
+            718
+          ],
+          "similarity": "exact"
+        }
+      ],
+      "dropped_claims": []
+    },
+    "elapsed_s": 20.18
+  },
+  {
+    "label": "typo_salary",
+    "question": "sallary of CTO",
+    "expected": "handle typo -> salary of CTO",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "JOB_ROLE",
+    "intent_registry": "JD_LOOKUP",
+    "registry_meta": {
+      "job_title": "Chief Technology Officer",
+      "aspect": "general"
+    },
+    "rewritten_query": "What is the pay and allowances of the Chief Technology Officer?",
+    "answer_preview": "I'm sorry, this question is outside my scope. I can only answer questions related to PERA (Punjab Enforcement and Regulatory Authority) based on official PERA documents. Please ask a PERA-related ques",
+    "refs_count": 1,
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 346,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=346",
+        "snippet": "Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communication\nPurpose of the Position:\n",
+        "quote_offsets": [
+          0,
+          600
+        ]
+      }
+    ],
+    "total_hits": 20,
+    "top_hits": [
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 183,
+        "page_start": 157,
+        "page_end": 157,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Organizational Structure Director General /BS-19/20 (1) Dir. Finance BS-19 (08) "
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 307,
+        "page_start": 277,
+        "page_end": 277,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "7. Probation, Training and Departmental Examination . - (1) Employees of the\n\nAu"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 191,
+        "page_start": 165,
+        "page_end": 165,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Head Count\n\n• SPPP - 14\n• BS 16 - 01\n• Total - 15Chief Technology\n\nOfficer / SPP"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 305,
+        "page_start": 275,
+        "page_end": 275,
+        "tier": "vector",
+        "score": 0.55,
+        "text_preview": "Regulatory Authority (Appointment and Conditions of Service for Contractual Empl"
+      },
+      {
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "chunk_id": 351,
+        "page_start": 347,
+        "page_end": 347,
+        "tier": "vector",
+        "score": 0.5365,
+        "text_preview": "Position Title: - Manager (Development)\nReport To: - | Chief Technology Officer "
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "Chief Technology Officer job description",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 346,
+        "page_end": 346,
+        "chunk_id": 350,
+        "quote": "Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communication\nPurpose of the Position:\nCTO shall be responsible for providing technical leadership to the team of IT professionals. | He shall\nassist the Director General in ensuring the IT -enabled solutions for all functions of PERA including digitization of processes at the Headquarters and Enforcement Stations level. Areas of Responsibilities:\n Lead the IT & Communication Wing of PERA and responsible for development, deployment,\nu",
+        "quote_offsets": [
+          0,
+          600
+        ],
+        "_source": "jd_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "jd_registry",
+        "title": "Chief Technology Officer",
+        "aspect": "general"
+      }
+    },
+    "elapsed_s": 4.12
+  },
+  {
+    "label": "typo_schedule",
+    "question": "sehdule 1",
+    "expected": "handle typo -> Schedule-I",
+    "verdict": "✅",
+    "decision": "answer",
+    "intent_classify": "DOC_LOOKUP",
+    "intent_registry": "SCHEDULE_LOOKUP",
+    "registry_meta": {
+      "schedule_num": "1"
+    },
+    "rewritten_query": "What is the salary structure for the Chief Technology Officer as outlined in Schedule 1 of the relevant documents?",
+    "answer_preview": "**Schedule-I** outlines the **organizational structure** of the Punjab Enforcement and Regulatory Authority (PERA). It includes the following sections:\n\n1. Short Title and Commencement\n2. Definitions\n",
+    "refs_count": 2,
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 273,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=273",
+        "snippet": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) REGULATIONS, 2025 CONTENTS\n\n1. Short Title and Commencement\n2. Definitions\n3. Appointment and Conditions `of Ser",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 275,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=275",
+        "snippet": "Regulatory Authority (Appointment and Conditions of Service for Contractual Employees) Regulations, 2025” and mentioned in these Regulations to the extent of organizational structure only;\n(g) “Direct",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ],
+    "total_hits": 231,
+    "top_hits": [
+      {
+        "doc": "Annex L PERA Squads and Weapons Regulations.pdf",
+        "chunk_id": null,
+        "page_start": 1,
+        "page_end": 1,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (SQUADS AND WEAPONS) REGULATIONS"
+      },
+      {
+        "doc": "Annex L PERA Squads and Weapons Regulations.pdf",
+        "chunk_id": null,
+        "page_start": 6,
+        "page_end": 6,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(e) Squad types and minimum composition; (f) Buddy system and verification proce"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 3,
+        "page_end": 3,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "expiry of period of lease or license, continues to remain in the occupation of t"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 4,
+        "page_end": 4,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(mm) “reference” means a reference made by a Department wherein any violation or"
+      },
+      {
+        "doc": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "chunk_id": null,
+        "page_start": 12,
+        "page_end": 12,
+        "tier": "?",
+        "score": 1.0,
+        "text_preview": "(b) confiscation of articles, carts or vehicles; (c) sealing of any premises; (d"
+      }
+    ],
+    "extracted_claims": [
+      {
+        "answer_span": "Schedule-I organizational structure",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 273,
+        "page_end": 273,
+        "chunk_id": 303,
+        "quote": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) REGULATIONS, 2025 CONTENTS\n\n1. Short Title and Commencement\n2. Definitions\n3. Appointment and Conditions `of Service\n4. Terms of Reference of Service\n5. Eligibility for Appointment\n6. Initial Recruitment\n7. Probation, Training and Departmental Examination\n8. Transfer and Posting\n9. Promotion\n10. Seniority\n11. Resignation\n12. Retirement\n13. Deputation\n14. Recruitment Committees and Deputationist Screening Pane",
+        "quote_offsets": [
+          0,
+          500
+        ],
+        "_source": "schedule_registry",
+        "tier": "registry"
+      },
+      {
+        "answer_span": "Schedule-I organizational structure",
+        "doc": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page": 275,
+        "page_end": 275,
+        "chunk_id": 305,
+        "quote": "Regulatory Authority (Appointment and Conditions of Service for Contractual Employees) Regulations, 2025” and mentioned in these Regulations to the extent of organizational structure only;\n(g) “Directorate General ” means responsible for management | and\nsupervision of different wings of PERA under the Director General, PERA as provided in Section 2 (1) (l) and Section 8 of the Act; (h) “Employee” means an Officer, staff or any other person recruited by the Authority under Section 11 of the Act,",
+        "quote_offsets": [
+          0,
+          500
+        ],
+        "_source": "schedule_registry",
+        "tier": "registry"
+      }
+    ],
+    "extraction_debug": {
+      "registry": {
+        "source": "schedule_registry",
+        "schedule": "I"
+      }
+    },
+    "elapsed_s": 4.98
+  }
+]

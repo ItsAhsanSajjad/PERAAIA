@@ -1,0 +1,1092 @@
+[  6] Annex L PERA Squads and Weapons Regulations.pdf
+[  1] Annex P ENFORCEMENT COST FORMULA.pdf
+[ 39] Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf
+[428] Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf
+[  1] Flag-L; Weapons.pdf
+[ 42] Human_Resource_Manual_May_2025.pdf
+[  6] Minutes_of_Meeting_Selection_Panel_for_Independent_Members_of_PERA.pdf
+[  1] Notificaiton - Commencement of PERA 12.11.2024.pdf
+[  2] Notification - Establishment of PERA Authority 12.11.2024.pdf
+[  1] PERA Special Allowaance Advice 19-01-2026.pdf
+[  1] Procedure_for_Seeking_Approval_of_Members_of_PERA_Through_Circulation.pdf
+[ 47] THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf
+[ 70] THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf
+[ 12] THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - EFFICIENCY AND DISCIPLINE - REGULATIONS 2025.pdf
+[  4] THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - GRATUITY - REGULATIONS 2025.pdf
+[  6] THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - MEDICAL POLICY 2025.pdf
+[ 95] THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf
+[ 14] THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - PERFORMANCE APPRAISAL - AMENDED REGULATIONS 2025.pdf
+[  7] THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - UNIFORM - REGULATIONS 2025.pdf
+
+Total: 783 chunks, 19 docs
+
+=== SCHEDULE chunks ===
+  chunk[322] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1992
+    TEXT: Position Title: | Deputy Director (Administration & HR)\nReports To: | Director (Administration & HR)\nPurpose of the Position:\nTo assist Director (Administration & HR) | in carrying out Human Resource Management at Head Quarter and\nEnforcement Stations of PERA and m anaging activities such as recruit
+
+  chunk[323] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2296
+    TEXT: Position Title: | Deputy Director (Finance)\nReports to: | Director Finance\nPurpose of the Position:\nTo assist Director (Finance) in carrying out all functions related to financial management, planning, budgeting and accounts of PERA at Headquarter as well as at Enforcement Stations. Areas of Respons
+
+  chunk[324] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2034
+    TEXT: Position Title: | Deputy Director (Implementation)\nReports to: | Director (Monitoring & Implementation)\nPurpose of the Position:\nTo assist the Director (Monitoring & Implementation ) in carrying out all functions related to implementation of\nlaw, rules and regulations laid down by the Government, Au
+
+  chunk[325] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1906
+    TEXT: Position Title: - Assistant Director (Administration & HR)\nReports To: | Deputy Director (Administration & HR)\nPurpose of the Position:\nTo assist the Deputy Director (Administration & HR) | in organizing, coordinating, and managing PERA’s\nemployees to carry out its vision and goals through recruitin
+
+  chunk[326] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2788
+    TEXT: Position Title: | Assistant Director Finance (Budget)\nReports to: | Deputy Director (Finance)\nPurpose of the Position:\nResponsible for assisting the Deputy Director (Finance) in implementing, budgeting and financial record keeping procedures to ensure efficient coordination of various departmental g
+
+  chunk[327] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2440
+    TEXT: Position Title: - Assistant Director (Logistics & Inventory)\nReports To: | Director (Administration & HR)\nPurpose of the Position:\nHe will assist the Director (Administration & HR) in ensuring optimal utilization of logistical resources of PERA. He will deal with the matters related to logistical pl
+
+  chunk[328] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2165
+    TEXT: Position Title: | Assistant Director (Discipline)\nReports To: | Director Personnel\nPurpose of the Position:\nHe shall be responsible for dealing with the matters related to conduct and discipline of Sergeants | and Senior\nSergeants. Areas of Responsibilities:\n\n• Receive, record, and process all compl
+
+  chunk[329] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2632
+    TEXT: Position Title: | Assistant Director (Personnel)\nReports To: | Director Personnel\nPurpose of the Position:\nHe shall be responsible for dealing with the matters related to requisition of services of Constables, Head\nConstables or other equivalent personnel on deputation basis and their placement as |
+
+  chunk[330] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1869
+    TEXT: Position Title: | Audit Officer\nReport to: | Director General\nPurpose of the Position:\nAudit Officer will be responsible for supervision of all the audit functions and payment cases. The person shall be responsible for internal audit and analyzing risk based internal audit plans. The person will be 
+
+  chunk[331] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1764
+    TEXT: Position Title: | Auditor\nReports to: | Audit Officer\nPurpose of the Position:\nAuditor will be responsible for preparing all the audit functions and payment cases. The person shall be responsible for preparing internal audit reports and analyzing risk-based internal audit plans. The person will be r
+
+  chunk[332] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2554
+    TEXT: Position Title: - | Executive Assistant\nReports to: | DG / Directors / Deputy Directors\nPurpose of the Position:\nTo maintain a pool of HR that can be posted within the Directorate General by the DG as PAs, MTO, Caretakers, Accountants. Areas of Responsibilities:\n\n• He will be personally responsible 
+
+  chunk[333] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2183
+    TEXT: Position Title: - | Office Assistant\nReports to: | Executive Assistants\nPurpose of the Position:\nTo maintain a pool of HR that can be posted within the Directorate General by the DG as office Assistant. Areas of Responsibilities:\n\n• He will assist the reporting Officer to carry out his day-to-day op
+
+  chunk[334] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3059
+    TEXT: Position Title: | Secretary, District Enforcement & Regulatory Board\nReports To: | District Enforcement & Regulatory Board concerned\nPurpose of the Position:\nTo act as Secretary of the District Enforcement & Regulatory Board for the administration, coordination, and oversight of enforcement operatio
+
+  chunk[335] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2826
+    TEXT: Position Title: | Sub-Divisional Enforcement Officer\nReports To: | Chairperson and Secretary of the District Enforcement & Regulatory Board\nand Hearing Officer concerned. Purpose of the Position:\nTo perform general supervision of various field operations for enforcement of the Act and the scheduled 
+
+  chunk[338] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2736
+    TEXT: Position Title: | Investigation Officer\nReports To: | Sub-Divisional Enforcement Officer and Enforcement Officer\nPurpose of the Position:\nTo assist and enable the SDEO and EO in exercising their powers and performing their duties related to implementation of the Act and the scheduled laws, through i
+
+  chunk[339] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2724
+    TEXT: Position Title: | Senior Sergeant\nReports To: | SDEO, Enforcement Officer and Investigation Officer\nPurpose of the Position:\nTo assist and enable the SDEO in exercising their powers and performing their duties related to implementation of scheduled laws, provide operational readiness and logistical 
+
+  chunk[340] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2950
+    TEXT: Position Title: | Sergeant\nReports To: | SDEO, EO, IO and Senior Sergeant\nPurpose of the Position:\nTo assist and enable the SDEO, EO and IO in exercising their powers and performing their duties related to implementation of scheduled laws, provide operational readiness and logistical support for enf
+
+  chunk[344] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=619
+    TEXT: THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES) REGULATIONS, 2025 CONTENTS\n\n1. Short title and Commencement\n2. Definitions\n3. Terms of Reference of Service for Contractual Employees\n4. Contractual Employment Committee\n5. Duration and 
+
+  chunk[346] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2847
+    TEXT: (i) “Organizational Structure ” means the organizational structure g iven in Schedule-I of these Regulations and includes employees, contractual employees and contingent paid staff; (j) “Recognized University ” means any University recognized by Higher Education Commission of Pakistan; (k) “Regulati
+
+  chunk[350] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2989
+    TEXT: Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communication\nPurpose of the Position:\nCTO shall be responsible for providing technical leadership to the team of IT professionals. | He sh
+
+  chunk[352] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=211
+    TEXT: Appointment shall be made by the Director General on the recommendation of the Contractual Employment Committee. Salary and Benefits:\nSPPP-3 + any other benefit admissible to SPPP-3 as mentioned in Schedule-III.
+
+  chunk[354] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=262
+    TEXT:  Strong Knowledge of Contract Management Appointment:\nAppointment shall be made by the Director General on the recommendation of Contractual Employment Committee. Salary and Benefits:\nSPPP-3 + any other benefit admissible to SPPP-3 as mentioned in Schedule-III.
+
+  chunk[355] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2829
+    TEXT: Position Title: - Manager (Digital Strategy & Communication)\nReport To: - | Chief Technology Officer\nWing: - | IT & Communication\nPurpose of the Position:\nTo assist Chief Technology Officer in designing and implementing the communication strategy of PERA through electronic, print and social media. T
+
+  chunk[356] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2608
+    TEXT: Position Title: - Assistant Manager (Network)\nReport To: - | Manager (Infrastructure & Networks)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT Networks and provide, training, and development of the workforce; process and procedure development 
+
+  chunk[357] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2399
+    TEXT: Position Title: - Assistant Manager (IT Infrastructure)\nReport To: - | Manager (Infrastructure & Networks)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT Networks and provide, training, and development of the workforce; Process and procedure de
+
+  chunk[358] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3041
+    TEXT: Position Title: - Web & Software Developer\nReport To: - | Manager (Development)\nWing: - | IT & Communication\nPurpose of the Position:\nHe shall design, develop, and maintain web and software applications to meet business and user requirements. This role involves working across front -end, back -end, 
+
+  chunk[359] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2766
+    TEXT: Position Title: - Android Developer\nReport To: - | Manager Development\nWing: - | IT & Communication\nPurpose of the Position:\nThe Android Developer designs, develops, and maintains high-performance Android applications. This role involves working with Kotlin/Java, modern Android frameworks, and best 
+
+  chunk[361] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=409
+    TEXT:  Strong leadership, team building and problem-solving abilities  Inquisitive and detailed oriented with strong analytical skills  Excellent communication skills, i.e. written and verbal Appointment:\nAppointment shall be made by Director General on the recommendations of the Contractual Employment
+
+  chunk[363] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=223
+    TEXT: Appointment:\nAppointment shall be made by Director Ge neral on the recommendation s of the C ontractual Employment Committee. Salary and Benefits:\nSPPP-4 + any other benefit admissible to SPPP-4 as mentioned in Schedule-III
+
+  chunk[364] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3263
+    TEXT: Position Title: - Graphic Designer\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Graphic Designer will assist Creative Lead | and play a crucial role in enhancing the visual\ncommunication of the Punjab Enforcement Regulatory Authority. This position is respon
+
+  chunk[365] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3267
+    TEXT: Position Title: - Content / Script Writer\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Content/Script Writer will be responsible for developing clear, engaging, and informative written content for the Punjab Enforcement Regulatory Authority. This includes cr
+
+  chunk[366] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3326
+    TEXT: Position Title: - Associate Social Media\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Associate social media will be responsible for managing the Punjab Enforcement Regulatory Authority's social media presence, ensuring effective communication and engagement
+
+  chunk[368] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=249
+    TEXT:  Noting / drafting skills Appointment:\nAppointment shall be made by Director General on the recommendation s of the C ontractual Employment Committee. Salary and Benefits:\nSPPP-5 + any other benefit admissible to SPPP-5 as mentioned in Schedule-III
+
+  chunk[369] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2874
+    TEXT: Position Title: - Head Procurement & Contracting\nReport To: - | Director Administration & HR\nWing: - | Administration & HR\nPurpose of the Position:\nResponsible for ensuring that procurement & contracting activities are managed effectively and efficiently for the smooth working of the supply chain of
+
+  chunk[370] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3146
+    TEXT: Position Title: - Deputy Manager HR\nReport To: - | Assistant Director Admin. & HR\nWing: - | Administration & HR\nPurpose of the Position:\nThe Deputy Manager – Human Resources plays | a critical role in supporting the Assistant Director\n(Admin. & HR) in executing core HR functions. This includes recru
+
+  chunk[371] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2872
+    TEXT: Position Title: - Deputy Manager Inventory & Warehousing\nReport To: - | Assistant Director Logistics & Inventory\nWing: - | Administration & HR\nPurpose of the Position:\nThe Deputy Manager – Inventory & Warehousing supports the Assistant Director – Logistics & Inventory in ensuring that all inventory 
+
+  chunk[372] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2882
+    TEXT: Position Title: - Assistant Manager Logistics\nReport To: - | Deputy Manager Inventory & Warehousing\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager Logistics assists the Assistant Director Logistics & Inventory in\nmanaging day-to-day logistics operations. The role involv
+
+  chunk[373] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2579
+    TEXT: Position Title: - Assistant Manager Stores\nReport To: - | Deputy Manager Inventory & Warehousing\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager Stores assists the Deputy Manager Inventory & Warehousing in managing daily store operations. The role involves maintaining st
+
+  chunk[374] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2595
+    TEXT: Position Title: - Assistant Manager HR\nReport To: - | Deputy Manager HR\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager HR supports the Deputy Manager – HR in the execution of day-to-day\nHR functions. Key responsibilities include assisting with | employee onboarding and 
+
+  chunk[375] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3010
+    TEXT: Position Title: - Assistant Manager Admin\nReport To: - | Assistant Director Admin. & HR\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager Admin is responsible for ensuring the efficient functioning of daily office operations. This includes managing facilities, handling doc
+
+  chunk[376] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2451
+    TEXT: Position Title: - Assistant Manager Procurement\nReport To: - | Head Procurement\nWing: - | Administration & HR\nPurpose of the Position:\nTo assist the Head Procurement in managing the sourcing, purchasing activities in PERA as per the Rules, Regulations, policies, procedures, procurement manual guidel
+
+  chunk[377] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2726
+    TEXT: Position Title: - Assistant Manager Protocol\nReport To: - | Deputy Director Administration & HR\nWing: - | Administration & HR\nPurpose of the Position:\nAssistant Manager Protocol is responsible for ensuring that all official events, ceremonies, and visits are conducted in accordance with established 
+
+  chunk[378] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3958
+    TEXT: Position Title: - Assistant Manager Finance\nReport To: - | Assistant Director Finance\nWing: - Finance Purpose of the Position:\nThe Assistant Manager Finance is responsible to support the Finance Wing of PERA in financial management of PERA Headquarters and Enforcement Stations, including the prepara
+
+  chunk[379] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1700
+    TEXT:  Provide technical support in interpreting and applying | financial policies, circulars, and\nnotifications issued by the Finance Department, Government of Punjab.\n\n Support the | closure of accounts , ensuring the accuracy of | journal entries, accruals, and\n\nadjustments in line with the Accountin
+
+  chunk[380] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3208
+    TEXT: Position Title: - Assistant Manager Personnel\nReport To: - | Assistant Director (Personnel)\nWing: - Personnel Purpose of the Position:\nAssistant Manager (Personnel) will assist Assistant Director ( Personnel) in management & coordination of all the activities related to Enforcement Officers, Investi
+
+  chunk[382] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=452
+    TEXT:  Thorough knowledge of Govt’s Field Offices and Department’s Business and its importance.  Understands Govt’s Hierarchy very well.  Should possess understanding of Govt special laws and procedures in ambient of Authority. Appointment:\nAppointment shall be made by Director General on the recommend
+
+  chunk[384] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=228
+    TEXT: Appointment:\nAppointment shall be made by Director General on the reco mmendation of contractual employment committee-I. Salary and Benefits:\nSPPP-2 Pay Scale + any other benefit admissible to SPPP-2 as mentioned in Schedule-III
+
+  chunk[385] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2739
+    TEXT: Position Title: - Assistant Manager Legal\nReport To: - | Head Legal & Prosecution\nWing: - | Legal & Prosecution\nPurpose of the Position:\nAssistant Manager Legal shall assist the Head Legal & Prosecution in drafting and maintaining legal documents and records. Areas of Responsibilities:\n He will be 
+
+  chunk[386] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1913
+    TEXT: Position Title: - Assistant Manager Prosecution\nReport To: - | Head Legal & Prosecution\nWing: - | Legal & Prosecution\nPurpose of the Position:\nAssistant Manager Prosecution shall assist the Head Legal & Prosecution in drafting and maintaining\n\nprosecution related | documents and records | for facili
+
+  chunk[387] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2704
+    TEXT: Position Title: - Prosecutor\nReport To: - | Sub-Divisional Enforcement Officer\nWing: - | Enforcement Stations\nPurpose of the Position:\nThe Prosecutor shall be responsible for managing and overseeing the investigation and prosecution of legal matters related to Enforcement Station and ensuring that a
+
+  chunk[389] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1642
+    TEXT:  Ensure the Authority’s reporting obligations are fulfilled with clarity, timeliness, and strategic relevance.   Access to any digital or manual data available at any Enforcement station or PERA head office.  Providing input for the development of software used for monitoring purposes.  Using a
+
+  chunk[391] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=227
+    TEXT: Appointment:\nAppointment shall be made by Director General on the recommendation of contractual employment committee-I. Salary and Benefits:\nSPPP-3 Pay Scale + any other benefit admissible to SPPP-3 as mentioned in Schedule-III
+
+  chunk[392] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3072
+    TEXT: Position Title: Manager (Research & Implementation)\nReport To: | Deputy Director (Implementation)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nManager (Research & Implementation) is responsible for ensuring compliance with PERA’s regulations developed overtime and overseeing the im
+
+  chunk[393] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2601
+    TEXT: Position Title: - Business Analyst\nReport To: - | Head Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Business Analyst | is responsible for tracking organizational performance metrics, analyzing\noperational data, and generating insights to drive continuous 
+
+  chunk[394] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2703
+    TEXT: Position Title: - Assistant Manager Monitoring\nReport To: - | Head Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Assistant Manager Monitoring is responsible for managing and maintaining Management Information Systems (MIS) and Geographic Information System
+
+  chunk[395] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2631
+    TEXT: Position Title: - Assistant Manager GIS\nReport To: - | Head Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nAssistant Manager GIS is responsible for data management and dispersion of reports by analyzing and displaying geographically referenced information. Area
+
+  chunk[396] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3208
+    TEXT: Position Title: Assistant Manager (Research & Implementation)\nReport To: | Manager (Research & Implementation)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nAssistant Manager (Research & Implementation) is responsible for assisting the Manager (Research & Implementation) in ensuring
+
+  chunk[397] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2940
+    TEXT: Position Title: - Chief Instructor\nReport To: - | Director General\nWing: - Training Purpose of the Position:\nThe Chief Training Officer is responsible | for overseeing and directing all aspects of training for\nenforcement station officers. This role is pivotal in ensuring that the officers are adequ
+
+  chunk[398] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2761
+    TEXT: Position Title: - Senior Manager Training & Admin\nReport To: - | Chief Training Officer\nWing: - Training Purpose of the Position:\nThe Senior Manager Trainings & Admin | is responsible for overseeing and directing all aspects of\ntraining for enforcement station officers. This role is pivotal in ensur
+
+  chunk[399] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2904
+    TEXT: Position Title: - Senior Manager Academics\nReport To: - | Chief Training Officer\nWing: - Training Purpose of the Position:\nThe Senior Manager Academics is responsible for overseeing and directing all aspects of training for enforcement station officers. This role is pivotal in ensuring that the offi
+
+  chunk[400] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2734
+    TEXT: Position Title: - Deputy Manager Training\nReport To: - | Senior Manager Training & Admin\nWing: - Training Purpose of the Position:\nThe Deputy Manager Training is responsible for planning, coordinating, and overseeing training and professional development programs for law enforcement personnel. This 
+
+  chunk[401] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3093
+    TEXT: Position Title: - Deputy Manager Academics\nReport To: - | Senior Manager Academics\nWing: - Training Purpose of the Position:\nThe Deputy Manager Academics is responsible for overseeing the academic operations of a law enforcement training institution. This role includes developing and maintaining cur
+
+  chunk[402] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2914
+    TEXT: Position Title: - Assistant Manager Admin & Logistics\nReport To: - | Senior Manager Training & Admin\nWing: - Training Purpose of the Position:\nThe Assistant Manager Admin & Logistics is responsible in ensuring the smooth operation of training programs by managing administrative processes, facility l
+
+  chunk[403] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3065
+    TEXT: Position Title: - Assistant Manager IT & LMS\nReport To: - | Senior Manager Academics\nWing: - Training Purpose of the Position:\nThe Assistant Manager IT & LMS is responsible for managing the digital infrastructure and e-learning ecosystem of PERA’s training station . This includes overseeing the depl
+
+  chunk[404] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=590
+    TEXT: Schedule-III Special Pay Package PERA (SPPP) Summary Sr. No. Special Pay Package PERA (SPPP) Minimum Pay per Month (PKR) Maximum Pay per Month (PKR) Fuel Limit (Petrol Liters/Month)\n\n1 SPPP-1* | 350,082 | 1,000,082 | 300\n\n2 SPPP-2* | 296,324 | 746,324 | 250\n\n3 SPPP-3* | 250,051 | 500,051 | 200\n\n4 SP
+
+  chunk[428] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2273
+    TEXT: DIRECTORATE GENERAL PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY LAHORE\n\n(ii) The employee must attain a minimum threshold score of 60 out of 100 to qualify for confirmation. (iii) The Reporting Officer will conduct the initial assessment, which will be reviewed by the Countersigning Officer before a
+
+  chunk[546] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2029
+    TEXT: Position Title: | Deputy Director (Administration & HR)\nReports To: | Additional Director General (Administration & HR)\nPurpose of the Position:\nTo assist Additional Director General (Administration & HR) | in carrying out Human Resource Management at\nHead Quarter and Enforcement Stations of PERA an
+
+  chunk[547] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2334
+    TEXT: Position Title: | Deputy Director (Finance)\nReports to: | Additional Director General Finance\nPurpose of the Position:\nTo assist Additional Director General | (Finance) in carrying out all functions related to financial management,\nplanning, budgeting and accounts of PERA at Headquarter as well as a
+
+  chunk[550] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=220
+    TEXT: Appointment:\nAs explained in column 5 of Schedule-II. Salary and Benefits:\nPay & Allowances equivalent to BPS-18 + PERA Special Allowance or Deputation Allowance + Vehicle + any other benefit admissible to this position.
+
+  chunk[554] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=460
+    TEXT: • An understanding of Rules of Business, Contract appointment policy, Recruitment policy, Deputation\n\nPolicy, PPRA rules, Conduct rules, etc.\n\n• Should have proficiency in the use of IT\n• Integrity and Empathy\n• Conflict Management skills\n\nAppointment:\nAs explained in column 5 of Schedule-II. Salary
+
+  chunk[555] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2786
+    TEXT: Position Title: | Assistant Director Finance (Budget)\nReports to: | Deputy Director (Finance)\nPurpose of the Position:\nResponsible for assisting the Deputy Director (Finance) in implementing, budgeting and financial record keeping procedures to ensure efficient coordination of various departmental g
+
+  chunk[556] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2440
+    TEXT: Position Title: - Assistant Director (Logistics & Inventory)\nReports To: | Director (Administration & HR)\nPurpose of the Position:\nHe will assist the Director (Administration & HR) in ensuring optimal utilization of logistical resources of PERA. He will deal with the matters related to logistical pl
+
+  chunk[557] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2165
+    TEXT: Position Title: | Assistant Director (Discipline)\nReports To: | Director Personnel\nPurpose of the Position:\nHe shall be responsible for dealing with the matters related to conduct and discipline of Sergeants | and Senior\nSergeants. Areas of Responsibilities:\n\n• Receive, record, and process all compl
+
+  chunk[558] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2630
+    TEXT: Position Title: | Assistant Director (Personnel)\nReports To: | Director Personnel\nPurpose of the Position:\nHe shall be responsible for dealing with the matters related to requisition of services of Constables, Head\nConstables or other equivalent personnel on deputation basis and their placement as |
+
+  chunk[559] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=1870
+    TEXT: Position Title: | Audit Officer\nReport to: | Director General\nPurpose of the Position:\nAudit Officer will be responsible for supervision of all the audit functions and payment cases. The person shall be responsible for internal audit and analyzing risk based internal audit plans. The person will be 
+
+  chunk[560] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=1764
+    TEXT: Position Title: | Auditor\nReports to: | Audit Officer\nPurpose of the Position:\nAuditor will be responsible for preparing all the audit functions and payment cases. The person shall be responsible for preparing internal audit reports and analyzing risk-based internal audit plans. The person will be r
+
+  chunk[561] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2553
+    TEXT: Position Title: - | Executive Assistant\nReports to: | DG / Directors / Deputy Directors\nPurpose of the Position:\nTo maintain a pool of HR that can be posted within the Directorate General by the DG as PAs, MTO, Caretakers, Accountants. Areas of Responsibilities:\n\n• He will be personally responsible 
+
+  chunk[562] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2182
+    TEXT: Position Title: - | Office Assistant\nReports to: | Executive Assistants\nPurpose of the Position:\nTo maintain a pool of HR that can be posted within the Directorate General by the DG as office Assistant. Areas of Responsibilities:\n\n• He will assist the reporting Officer to carry out his day-to-day op
+
+  chunk[563] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=3058
+    TEXT: Position Title: | Secretary, District Enforcement & Regulatory Board\nReports To: | District Enforcement & Regulatory Board concerned\nPurpose of the Position:\nTo act as Secretary of the District Enforcement & Regulatory Board for the administration, coordination, and oversight of enforcement operatio
+
+  chunk[570] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2724
+    TEXT: Position Title: | Senior Sergeant\nReports To: | SDEO, Enforcement Officer and Investigation Officer\nPurpose of the Position:\nTo assist and enable the SDEO in exercising their powers and performing their duties related to implementation of scheduled laws, provide operational readiness and logistical 
+
+  chunk[571] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2948
+    TEXT: Position Title: | Sergeant\nReports To: | SDEO, EO, IO and Senior Sergeant\nPurpose of the Position:\nTo assist and enable the SDEO, EO and IO in exercising their powers and performing their duties related to implementation of scheduled laws, provide operational readiness and logistical support for enf
+
+  chunk[575] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=660
+    TEXT: THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES) (AMENDED) REGULATIONS, 2025 CONTENTS\n\n1. Short title and Commencement\n2. Definitions\n3. Terms of Reference of Service for Contractual Employees\n4. Contractual Employment Committee\n5. Dur
+
+  chunk[577] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3042
+    TEXT: (l) “Schedule” means the Schedule(s) appended to these Regulations; (m) “SPPP” means Special Pay Package of PERA as detailed in Schedule-III. (n) “Terms of Reference of Service” means purpose of employment, job description, area of responsibility, qualification, experience, competence, personal attr
+
+  chunk[581] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2997
+    TEXT: Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communications\nPurpose of the Position:\nCTO shall be responsible for providing technical leadership to the team of IT professionals. He sha
+
+  chunk[583] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=224
+    TEXT: Appointment:\nAppointment shall be made by the Director General on the recommendation of the Contractual Employment Committee. Salary and Benefits:\nSPPP-3 + any other benefit admissible to SPPP-3 as mentioned in Schedule-III.
+
+  chunk[585] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=263
+    TEXT: • Strong Knowledge of Contract Management\n\nAppointment:\nAppointment shall be made by the Director General on the recommendation of Contractual Employment Committee. Salary and Benefits:\nSPPP-3 + any other benefit admissible to SPPP-3 as mentioned in Schedule-III.
+
+  chunk[586] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2853
+    TEXT: Position Title: - Manager (Digital Strategy & Communication)\nReport To: - | Chief Technology Officer\nWing: - | IT & Communication\nPurpose of the Position:\nTo assist Chief Technology Officer in designing and implementing the communication strategy of PERA through electronic, print and social media. T
+
+  chunk[587] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2618
+    TEXT: Position Title: - Assistant Manager (Network)\nReport To: - | Manager (Infrastructure & Networks)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT Networks and provide, training, and development of the workforce; process and procedure development 
+
+  chunk[588] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2408
+    TEXT: Position Title: - Assistant Manager (IT Infrastructure)\nReport To: - | Manager (Infrastructure & Networks)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT Networks and provide, training, and development of the workforce; Process and procedure de
+
+  chunk[589] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3012
+    TEXT: Position Title: - Web & Software Developer\nReport To: - | Manager (Development)\nWing: - | IT & Communication\nPurpose of the Position:\nHe shall design, develop, and maintain web and software applications to meet business and user requirements. This role involves working across front -end, back -end, 
+
+  chunk[590] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2774
+    TEXT: Position Title: - Android Developer\nReport To: - | Manager (Development)\nWing: - | IT & Communication\nPurpose of the Position:\nThe Android Developer designs, develops, and maintains high-performance Android applications. This role involves working with Kotlin/Java, modern Android frameworks, and bes
+
+  chunk[592] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=528
+    TEXT: • Experience in data preparation, visualization, analysis, and dashboard development using\n\nTableau/ MS Power BI.\n\n• Strong leadership, team building and problem-solving abilities.\n• Inquisitive and detailed oriented with strong analytical skills.\n• Excellent communication skills, i.e. written and v
+
+  chunk[594] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=220
+    TEXT: Appointment:\nAppointment shall be made by Director General on the recommendations of the Contractual Employment Committee. Salary and Benefits:\nSPPP-4 + any other benefit admissible to SPPP-4 as mentioned in Schedule-III
+
+  chunk[595] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3276
+    TEXT: Position Title: - Graphic Designer\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Graphic Designer will assist Creative Lead and play a crucial role in enhancing the visual communication of the Punjab Enforcement Regulatory Authority. This position is responsi
+
+  chunk[596] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3285
+    TEXT: Position Title: - Content / Script Writer\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Content/Script Writer will be responsible for developing clear, engaging, and informative written content for the Punjab Enforcement Regulatory Authority. This includes cr
+
+  chunk[597] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3328
+    TEXT: Position Title: - Associate Social Media\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Associate social media will be responsible for managing the Punjab Enforcement Regulatory Authority's social media presence, ensuring effective communication and engagement
+
+  chunk[599] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=220
+    TEXT: Appointment:\nAppointment shall be made by Director General on the recommendations of the Contractual Employment Committee. Salary and Benefits:\nSPPP-5 + any other benefit admissible to SPPP-5 as mentioned in Schedule-III
+
+  chunk[600] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2887
+    TEXT: Position Title: - Head (Procurement & Contracting)\nReport To: - | ADG (Admin & HR)\nWing: - | Administration & HR\nPurpose of the Position:\nResponsible for ensuring that procurement & contracting activities are managed effectively and efficiently for the smooth working of the supply chain of the Autho
+
+  chunk[601] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3197
+    TEXT: Position Title: - Manager (HR & Talent Acquisition)\nReport To: - | Deputy Director (Admin. & HR)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Manager (HR & Talent Acquisition) Specialist supports the Deputy Director Administration & HR in the execution of talent acquisition and organiz
+
+  chunk[602] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3106
+    TEXT: Position Title: - Deputy Manager (HR)\nReport To: - | Manager (HR & Talent Acquisition)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Deputy Manager – Human Resources plays a critical role in supporting the Manager (HR & Talent Acquisition) in executing core HR functions. This includes r
+
+  chunk[603] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2875
+    TEXT: Position Title: - Deputy Manager (Inventory & Warehousing)\nReport To: - | Assistant Director (Admin & Logistics)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Deputy Manager (Inventory & Warehousing ) supports the Assistant Director (Admin & Logistics) in ensuring that all inventory and
+
+  chunk[604] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2898
+    TEXT: Position Title: - Assistant Manager (Logistics)\nReport To: - | Deputy Manager (Inventory & Warehousing)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager Logistics assists the Assistant Director Logistics & Inventory in managing day-to-day logistics operations. The role in
+
+  chunk[605] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2595
+    TEXT: Position Title: - Assistant Manager (Stores)\nReport To: - | Deputy Manager (Inventory & Warehousing)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager (Stores) assists the Deputy Manager (Inventory & Warehousing ) in managing daily store operations. The role involves maint
+
+  chunk[606] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2659
+    TEXT: Position Title: - Assistant Manager (HR)\nReport To: - | Deputy Manager (HR & Talent Acquisition)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager (HR) supports the Deputy Manager (HR & Talent Acquisition ) in the execution of day-to-day HR functions. Key responsibilities 
+
+  chunk[607] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3158
+    TEXT: Position Title: - Assistant Manager (Talent Acquisition)\nReport To: - | Deputy Manager (HR & Talent Acquisition)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager (Talent Acquisition ) supports the Deputy Manager (HR & Talent Acquisition) in the execution of talent acquisi
+
+  chunk[608] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3033
+    TEXT: Position Title: - Assistant Manager (Admin.)\nReport To: - | Assistant Director (Admin. & Logistics)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager Admin is responsible for ensuring the efficient functioning of daily office operations. This includes managing facilities, 
+
+  chunk[609] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2493
+    TEXT: Position Title: - Assistant Manager (Procurement)\nReport To: - | Head (Procurement & Contracting)\nWing: - | Administration & HR\nPurpose of the Position:\nTo assist the Head Procurement & Contracting in managing the sourcing, purchasing activities in PERA as per the Rules, Regulations, policies, proce
+
+  chunk[610] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2744
+    TEXT: Position Title: - Assistant Manager (Protocol)\nReport To: - | Deputy Director (Administration & HR)\nWing: - | Administration & HR\nPurpose of the Position:\nAssistant Manager Protocol is responsible for ensuring that all official events, ceremonies, and visits are conducted in accordance with establis
+
+  chunk[612] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=274
+    TEXT: • Regulatory Knowledge\n• Financial Acumen\n\nAppointment:\nAppointment shall be made by the Director General on the recommendation of contractual employment committee-I. Salary and Benefits:\nSPPP-3 Pay Scale + any other benefit admissible to SPPP-3 as mentioned in Schedule-III
+
+  chunk[613] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3788
+    TEXT: Position Title: - Assistant Manager (Finance)\nReport To: - | Assistant Director (Finance)\nWing: - Finance Purpose of the Position:\nThe Assistant Manager Finance is responsible to support the Finance Wing of PERA in financial management of PERA Headquarters and Enforcement Stations, including the pre
+
+  chunk[614] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=1841
+    TEXT: • Assist in the preparation of Monthly, Quarterly, and Annual Financial Management Reports ,\n\nincluding physical and financial performance dashboards.\n\n• Provide technical support in interpreting and applying financial policies, circulars, and\n\nnotifications issued by the Finance Department, Governm
+
+  chunk[615] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3216
+    TEXT: Position Title: - Assistant Manager (Personnel)\nReport To: - | Assistant Director (Personnel)\nWing: - Personnel Purpose of the Position:\nAssistant Manager (Personnel) will assist Assistant Director (Personnel) in management & coordination of all the activities related to Enforcement Officers, Invest
+
+  chunk[617] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=483
+    TEXT: • Reporting and coordination.\n• Thorough knowledge of Govt’s Field Offices and Department’s Business and its importance.\n• Understands Govt’s Hierarchy very well.\n• Should possess understanding of Govt special laws and procedures in ambient of Authority.\n\nAppointment:\nAppointment shall be made by Di
+
+  chunk[619] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=285
+    TEXT: • Should possess understanding of scheduled laws of PERA\n\nAppointment:\nAppointment shall be made by Director General on the recommendation of contractual employment committee-I. Salary and Benefits:\nSPPP-2 Pay Scale + any other benefit admissible to SPPP-2 as mentioned in Schedule-III
+
+  chunk[620] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2758
+    TEXT: Position Title: - Assistant Manager (Legal)\nReport To: - | Head (Legal & Prosecution)\nWing: - | Legal & Prosecution\nPurpose of the Position:\nAssistant Manager Legal shall assist the Head Legal & Prosecution in drafting and maintaining legal documents and records. Areas of Responsibilities:\n\n• He wil
+
+  chunk[621] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=1918
+    TEXT: Position Title: - Assistant Manager (Prosecution)\nReport To: - | Head (Legal & Prosecution)\nWing: - | Legal & Prosecution\nPurpose of the Position:\nAssistant Manager Prosecution shall assist the Head Legal & Prosecution in drafting and maintaining prosecution related documents and records for facilit
+
+  chunk[623] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=1284
+    TEXT: Enforcement Officer\n\n• Any other duty and responsibility assigned by the Competent Authority.\n\nQualification and Experience:\ni Bachelors in Law (LLB) from a recognized university. ii 05 years’ practice as an advocate. Competencies & Personal Attributes:\n\n• Experience in case management, legal resear
+
+  chunk[625] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=1647
+    TEXT: • Ensure the Authority’s reporting obligations are fulfilled with clarity, timeliness, and strategic\n\nrelevance. •\n\n• Access to any digital or manual data available at any Enforcement station or PERA head office.\n• Providing input for the development of software used for monitoring purposes.\n• Using
+
+  chunk[627] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=227
+    TEXT: Appointment:\nAppointment shall be made by Director General on the recommendation of contractual employment committee-I. Salary and Benefits:\nSPPP-3 Pay Scale + any other benefit admissible to SPPP-3 as mentioned in Schedule-III
+
+  chunk[628] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3090
+    TEXT: Position Title: Manager (Research & Implementation)\nReport To: | Assistant Director (Implementation)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nManager (Research & Implementation) is responsible for ensuring compliance with PERA’s regulations developed overtime and overseeing the
+
+  chunk[629] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2606
+    TEXT: Position Title: - Business Analyst\nReport To: - | Manager Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Business Analyst is responsible for tracking organizational performance metrics, analyzing operational data, and generating insights to drive continuous
+
+  chunk[630] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2723
+    TEXT: Position Title: - Assistant Manager (Monitoring)\nReport To: - | Manager Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Assistant Manager Monitoring is responsible for managing and maintaining Management Information Systems (MIS) and Geographic Information S
+
+  chunk[631] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2650
+    TEXT: Position Title: - Assistant Manager (GIS)\nReport To: - | Manager Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nAssistant Manager GIS is responsible for data management and dispersion of reports by analyzing and displaying geographically referenced information.
+
+  chunk[632] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3230
+    TEXT: Position Title: Assistant Manager (Research & Implementation)\nReport To: | Manager (Research & Implementation)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nAssistant Manager (Research & Implementation) is responsible for assisting the Manager (Research & Implementation) in ensuring
+
+  chunk[633] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2916
+    TEXT: Position Title: - Chief Instructor\nReport To: - | Director General\nWing: - Training Purpose of the Position:\nThe Chief Instructor is responsible for overseeing and directing all aspects of training for enforcement station officers. This role is pivotal in ensuring that the officers are adequately tr
+
+  chunk[634] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2929
+    TEXT: Position Title: - Senior Manager (Training & Admin)\nReport To: - | Chief Instructor\nWing: - Training Purpose of the Position:\nThe Senior Manager (Training & Admin ) is responsible for overseeing and directing all aspects of training for enforcement station officers and HQ employees. This role is piv
+
+  chunk[635] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3028
+    TEXT: Position Title: - Senior Manager (Academics)\nReport To: - | Chief Instructor\nWing: - Training Purpose of the Position:\nThe Senior Manager (Academics) is responsible for overseeing and directing all aspects of training for PERA. This role is pivotal in ensuring that the officers are adequately traine
+
+  chunk[636] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2818
+    TEXT: Position Title: - Deputy Manager (Training)\nReport To: - | Senior Manager (Training & Admin)\nWing: - Training Purpose of the Position:\nThe Deputy Manager (Training) is responsible for planning, coordinating, and overseeing training and professional development programs for PERA. This role ensures th
+
+  chunk[637] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3113
+    TEXT: Position Title: - Deputy Manager (Academics)\nReport To: - | Senior Manager (Academics)\nWing: - Training Purpose of the Position:\nThe Deputy Manager (Academics) is responsible for overseeing the academic operations of PERA. This role includes developing and maintaining curriculum standards, coordinat
+
+  chunk[638] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2873
+    TEXT: Position Title: - Assistant Manager (Admin. & Logistics)\nReport To: - | Deputy Manager (Training & Admin)\nWing: - Training Purpose of the Position:\nThe Assistant Manager (Admin & Logistics) is responsible in ensuring the smooth operation of training programs by managing administrative processes, fac
+
+  chunk[639] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2954
+    TEXT: Position Title: - Assistant Manager (IT & LMS)\nReport To: - | Deputy Manager (Academics)\nWing: - Training Purpose of the Position:\nThe Assistant Manager (IT & LMS) is responsible for managing the digital infrastructure and e-learning ecosystem of PERA’s training station. This includes overseeing the
+
+  chunk[641] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=207
+    TEXT: Appointment shall be made by Director General on the recommendations of the Contractual Employment Committee. Salary and Benefits:\nSPPP-4 + any other benefit admissible to SPPP-4 as mentioned in Schedule-III
+
+  chunk[642] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2895
+    TEXT: Position Title: | Sergeant (Strike)\nReports To: SDEO\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nTo assist and enable the SDEO, EO and IO in exercising their powers and performing their duties related to implementation of scheduled laws, provide operational readiness and logistica
+
+  chunk[643] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=609
+    TEXT: Schedule-III Special Pay Package PERA (SPPP) Summary Sr. No. Special Pay Package PERA (SPPP) Minimum Pay per Month (PKR) Maximum Pay per Month (PKR) Fuel Limit (Petrol Liters/Month)\n\n1 SPPP-1 | 350,082 | 1,000,082 | 300\n\n2 SPPP-2 | 296,324 | 746,324 | 250\n\n3 SPPP-3 | 250,051 | 500,051 | 200\n\n4 SPPP-
+
+  chunk[663] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - MEDICAL POLICY 2025.pdf p=0 len=2519
+    TEXT: Enforcement and Regulatory Authority (Appointment and Conditions of Service) (Amended) Regulations, 2025; (f) “Schedule” means the Schedule appended hereunder; (g) “SPPP” means Special Pay Packages for PERA as defined in Regulations; (h) “Service” mean s the service of a person serving in the Punjab
+
+  chunk[665] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - MEDICAL POLICY 2025.pdf p=0 len=391
+    TEXT: Schedule I Inpatient Department (IPD) Limits (excluding Deputationist) * Total IPD benefit per employee, including his dependents. BS / SPPP IPD* Room Limit Per Day Normal Delivery Complicated Delivery SPPP-1 900,000 20,000 200,000 300,000 SPPP-2 750,000 17,000 180,000 270,000 SPPP-3 650,000 15,000 
+
+  chunk[666] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - MEDICAL POLICY 2025.pdf p=0 len=216
+    TEXT: Schedule II Group Life Insurance (GLI) Limits for Contractual Employees of PERA excluding Deputationists SPPP Group Life Insurance SPPP-1 10,000,000 SPPP-2 8,000,000 SPPP-3 7,000,000 SPPP-4 6,000,000 SPPP-5 5,000,000
+
+  chunk[764] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - PERFORMANCE APPRAISAL - AMENDED REGULATIONS 2025.pdf p=0 len=2830
+    TEXT: 4. Appraisal Mechanism. – (1) SMART goals shall be set in the start of each calendar year,\n\nthese goals shall be consistent and aligned with organizational goals/objective s with the employee in agreement with the head of department. (2) subject to clause (1), an employee shall submit a self-evaluat
+
+  chunk[768] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - PERFORMANCE APPRAISAL - AMENDED REGULATIONS 2025.pdf p=0 len=1000
+    TEXT: Schedule-II: Hierarchy of Performance Appraisal for Contractual Employees Sr No. SPPP Grade/Title Reporting Officer 1st Countersigning officer 2nd Countersigning officer Appellate Authority 1 SPPP-1 Director General - - Secretary I & C 2 Head Legal (SPPP-2) Director General - - Secretary I & C 2 SPP
+
+
+=== JD chunks ===
+  chunk[317] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2668
+    TEXT: Schedule-III Terms and Reference for Service\nPosition Title: | Director General PERA\nReports To: | Authority\nPurpose of the Position:\nHe will be responsible for assisting the Authority in performing its functions and exercising its powers as mentioned in the Act. He will carry out overall supervisio
+
+  chunk[318] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2947
+    TEXT: Position Title: | Director (Administration & HR)\nReports To: | Director General\nPurpose of the Position:\nHe is responsible for managing all the activities of Administration, HR, Procurement & Logistics as per the desired standards, policies, rules & regulations. He shall assist the Director General 
+
+  chunk[319] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2311
+    TEXT: Position Title: | Director (Finance)\nReports To: | Director General\nPurpose of the Position:\nHe is responsible for managing all the activities related to financial management a s per the desired standards\nof governance in accordance with policies, rules & regulations. The | person assists the Direct
+
+  chunk[320] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2103
+    TEXT: Position Title: | Director (Personnel)\nReports To: | Director General\nPurpose of the Position:\nHe is responsible for coordination with the Enforcement Stations regarding efficient and effective administration of the enforcement personnel deployed at the ESs in order to fulfil the desired standards i
+
+  chunk[321] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2650
+    TEXT: Position Title: | Director (Monitoring & Implementation)\nReports To: | Director General\nPurpose of the Position:\nHe shall be responsible for coordination with District Enforcement and Regulatory Boards and Enforcement\nStations, across Punjab | in order t o monitor implementation of standardized proc
+
+  chunk[322] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1992
+    TEXT: Position Title: | Deputy Director (Administration & HR)\nReports To: | Director (Administration & HR)\nPurpose of the Position:\nTo assist Director (Administration & HR) | in carrying out Human Resource Management at Head Quarter and\nEnforcement Stations of PERA and m anaging activities such as recruit
+
+  chunk[323] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2296
+    TEXT: Position Title: | Deputy Director (Finance)\nReports to: | Director Finance\nPurpose of the Position:\nTo assist Director (Finance) in carrying out all functions related to financial management, planning, budgeting and accounts of PERA at Headquarter as well as at Enforcement Stations. Areas of Respons
+
+  chunk[324] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2034
+    TEXT: Position Title: | Deputy Director (Implementation)\nReports to: | Director (Monitoring & Implementation)\nPurpose of the Position:\nTo assist the Director (Monitoring & Implementation ) in carrying out all functions related to implementation of\nlaw, rules and regulations laid down by the Government, Au
+
+  chunk[325] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1906
+    TEXT: Position Title: - Assistant Director (Administration & HR)\nReports To: | Deputy Director (Administration & HR)\nPurpose of the Position:\nTo assist the Deputy Director (Administration & HR) | in organizing, coordinating, and managing PERA’s\nemployees to carry out its vision and goals through recruitin
+
+  chunk[326] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2788
+    TEXT: Position Title: | Assistant Director Finance (Budget)\nReports to: | Deputy Director (Finance)\nPurpose of the Position:\nResponsible for assisting the Deputy Director (Finance) in implementing, budgeting and financial record keeping procedures to ensure efficient coordination of various departmental g
+
+  chunk[327] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2440
+    TEXT: Position Title: - Assistant Director (Logistics & Inventory)\nReports To: | Director (Administration & HR)\nPurpose of the Position:\nHe will assist the Director (Administration & HR) in ensuring optimal utilization of logistical resources of PERA. He will deal with the matters related to logistical pl
+
+  chunk[328] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2165
+    TEXT: Position Title: | Assistant Director (Discipline)\nReports To: | Director Personnel\nPurpose of the Position:\nHe shall be responsible for dealing with the matters related to conduct and discipline of Sergeants | and Senior\nSergeants. Areas of Responsibilities:\n\n• Receive, record, and process all compl
+
+  chunk[329] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2632
+    TEXT: Position Title: | Assistant Director (Personnel)\nReports To: | Director Personnel\nPurpose of the Position:\nHe shall be responsible for dealing with the matters related to requisition of services of Constables, Head\nConstables or other equivalent personnel on deputation basis and their placement as |
+
+  chunk[330] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1869
+    TEXT: Position Title: | Audit Officer\nReport to: | Director General\nPurpose of the Position:\nAudit Officer will be responsible for supervision of all the audit functions and payment cases. The person shall be responsible for internal audit and analyzing risk based internal audit plans. The person will be 
+
+  chunk[331] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1764
+    TEXT: Position Title: | Auditor\nReports to: | Audit Officer\nPurpose of the Position:\nAuditor will be responsible for preparing all the audit functions and payment cases. The person shall be responsible for preparing internal audit reports and analyzing risk-based internal audit plans. The person will be r
+
+  chunk[332] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2554
+    TEXT: Position Title: - | Executive Assistant\nReports to: | DG / Directors / Deputy Directors\nPurpose of the Position:\nTo maintain a pool of HR that can be posted within the Directorate General by the DG as PAs, MTO, Caretakers, Accountants. Areas of Responsibilities:\n\n• He will be personally responsible 
+
+  chunk[333] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2183
+    TEXT: Position Title: - | Office Assistant\nReports to: | Executive Assistants\nPurpose of the Position:\nTo maintain a pool of HR that can be posted within the Directorate General by the DG as office Assistant. Areas of Responsibilities:\n\n• He will assist the reporting Officer to carry out his day-to-day op
+
+  chunk[334] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3059
+    TEXT: Position Title: | Secretary, District Enforcement & Regulatory Board\nReports To: | District Enforcement & Regulatory Board concerned\nPurpose of the Position:\nTo act as Secretary of the District Enforcement & Regulatory Board for the administration, coordination, and oversight of enforcement operatio
+
+  chunk[335] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2826
+    TEXT: Position Title: | Sub-Divisional Enforcement Officer\nReports To: | Chairperson and Secretary of the District Enforcement & Regulatory Board\nand Hearing Officer concerned. Purpose of the Position:\nTo perform general supervision of various field operations for enforcement of the Act and the scheduled 
+
+  chunk[336] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2730
+    TEXT: Position Title: | Enforcement Officer\nReports To: | Sub-Divisional Enforcement Officer\nPurpose of the Position:\nTo perform all enforcement and regulatory field operations for implementation of the Act and the scheduled laws including inspections and punitive actions in his area of jurisdiction. Area
+
+  chunk[338] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2736
+    TEXT: Position Title: | Investigation Officer\nReports To: | Sub-Divisional Enforcement Officer and Enforcement Officer\nPurpose of the Position:\nTo assist and enable the SDEO and EO in exercising their powers and performing their duties related to implementation of the Act and the scheduled laws, through i
+
+  chunk[339] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2724
+    TEXT: Position Title: | Senior Sergeant\nReports To: | SDEO, Enforcement Officer and Investigation Officer\nPurpose of the Position:\nTo assist and enable the SDEO in exercising their powers and performing their duties related to implementation of scheduled laws, provide operational readiness and logistical 
+
+  chunk[340] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2950
+    TEXT: Position Title: | Sergeant\nReports To: | SDEO, EO, IO and Senior Sergeant\nPurpose of the Position:\nTo assist and enable the SDEO, EO and IO in exercising their powers and performing their duties related to implementation of scheduled laws, provide operational readiness and logistical support for enf
+
+  chunk[350] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2989
+    TEXT: Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communication\nPurpose of the Position:\nCTO shall be responsible for providing technical leadership to the team of IT professionals. | He sh
+
+  chunk[351] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3461
+    TEXT: Position Title: - Manager (Development)\nReport To: - | Chief Technology Officer (CTO)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the productivity / performance of IT Applications / Custom Developed Software / Web Portals by directing the daily, weekly, and month
+
+  chunk[353] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3189
+    TEXT: Position Title: - Manager (Infrastructure & Networks)\nReport To: - | Chief Technology Officer (CTO)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT infrastructure by directing the daily, weekly, and monthly activities. To provide leadership, mot
+
+  chunk[355] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2829
+    TEXT: Position Title: - Manager (Digital Strategy & Communication)\nReport To: - | Chief Technology Officer\nWing: - | IT & Communication\nPurpose of the Position:\nTo assist Chief Technology Officer in designing and implementing the communication strategy of PERA through electronic, print and social media. T
+
+  chunk[356] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2608
+    TEXT: Position Title: - Assistant Manager (Network)\nReport To: - | Manager (Infrastructure & Networks)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT Networks and provide, training, and development of the workforce; process and procedure development 
+
+  chunk[357] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2399
+    TEXT: Position Title: - Assistant Manager (IT Infrastructure)\nReport To: - | Manager (Infrastructure & Networks)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT Networks and provide, training, and development of the workforce; Process and procedure de
+
+  chunk[358] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3041
+    TEXT: Position Title: - Web & Software Developer\nReport To: - | Manager (Development)\nWing: - | IT & Communication\nPurpose of the Position:\nHe shall design, develop, and maintain web and software applications to meet business and user requirements. This role involves working across front -end, back -end, 
+
+  chunk[359] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2766
+    TEXT: Position Title: - Android Developer\nReport To: - | Manager Development\nWing: - | IT & Communication\nPurpose of the Position:\nThe Android Developer designs, develops, and maintains high-performance Android applications. This role involves working with Kotlin/Java, modern Android frameworks, and best 
+
+  chunk[360] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3269
+    TEXT: Position Title: - Database Administrator\nReport To: - | Manager Development\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for demonstrating database administration, advanced performance analysis and tuning skills. Design and development of database, data warehouse and multi-Dimen
+
+  chunk[362] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3461
+    TEXT: Position Title: - Creative Lead\nReport To: - | Manager Digital Strategy & Communication\nWing: - | IT & Communication\nPurpose of the Position:\nThe Creative Lead is responsible for driving the creative vision, strategy, and execution of all media content and brand communications. They manage a multidi
+
+  chunk[364] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3263
+    TEXT: Position Title: - Graphic Designer\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Graphic Designer will assist Creative Lead | and play a crucial role in enhancing the visual\ncommunication of the Punjab Enforcement Regulatory Authority. This position is respon
+
+  chunk[365] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3267
+    TEXT: Position Title: - Content / Script Writer\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Content/Script Writer will be responsible for developing clear, engaging, and informative written content for the Punjab Enforcement Regulatory Authority. This includes cr
+
+  chunk[366] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3326
+    TEXT: Position Title: - Associate Social Media\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Associate social media will be responsible for managing the Punjab Enforcement Regulatory Authority's social media presence, ensuring effective communication and engagement
+
+  chunk[367] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3322
+    TEXT: Position Title: - System Support Officer\nReport To: - | Sub Divisional Enforcement Officer of the Enforcement Station concerned\nWing: - | Enforcement Station, IT & Communication, Training\nPurpose of the Position:\nThe System Support Officer | assist the SDEO with the various functions at Enforcement 
+
+  chunk[369] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2874
+    TEXT: Position Title: - Head Procurement & Contracting\nReport To: - | Director Administration & HR\nWing: - | Administration & HR\nPurpose of the Position:\nResponsible for ensuring that procurement & contracting activities are managed effectively and efficiently for the smooth working of the supply chain of
+
+  chunk[370] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3146
+    TEXT: Position Title: - Deputy Manager HR\nReport To: - | Assistant Director Admin. & HR\nWing: - | Administration & HR\nPurpose of the Position:\nThe Deputy Manager – Human Resources plays | a critical role in supporting the Assistant Director\n(Admin. & HR) in executing core HR functions. This includes recru
+
+  chunk[371] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2872
+    TEXT: Position Title: - Deputy Manager Inventory & Warehousing\nReport To: - | Assistant Director Logistics & Inventory\nWing: - | Administration & HR\nPurpose of the Position:\nThe Deputy Manager – Inventory & Warehousing supports the Assistant Director – Logistics & Inventory in ensuring that all inventory 
+
+  chunk[372] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2882
+    TEXT: Position Title: - Assistant Manager Logistics\nReport To: - | Deputy Manager Inventory & Warehousing\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager Logistics assists the Assistant Director Logistics & Inventory in\nmanaging day-to-day logistics operations. The role involv
+
+  chunk[373] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2579
+    TEXT: Position Title: - Assistant Manager Stores\nReport To: - | Deputy Manager Inventory & Warehousing\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager Stores assists the Deputy Manager Inventory & Warehousing in managing daily store operations. The role involves maintaining st
+
+  chunk[374] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2595
+    TEXT: Position Title: - Assistant Manager HR\nReport To: - | Deputy Manager HR\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager HR supports the Deputy Manager – HR in the execution of day-to-day\nHR functions. Key responsibilities include assisting with | employee onboarding and 
+
+  chunk[375] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3010
+    TEXT: Position Title: - Assistant Manager Admin\nReport To: - | Assistant Director Admin. & HR\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager Admin is responsible for ensuring the efficient functioning of daily office operations. This includes managing facilities, handling doc
+
+  chunk[376] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2451
+    TEXT: Position Title: - Assistant Manager Procurement\nReport To: - | Head Procurement\nWing: - | Administration & HR\nPurpose of the Position:\nTo assist the Head Procurement in managing the sourcing, purchasing activities in PERA as per the Rules, Regulations, policies, procedures, procurement manual guidel
+
+  chunk[377] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2726
+    TEXT: Position Title: - Assistant Manager Protocol\nReport To: - | Deputy Director Administration & HR\nWing: - | Administration & HR\nPurpose of the Position:\nAssistant Manager Protocol is responsible for ensuring that all official events, ceremonies, and visits are conducted in accordance with established 
+
+  chunk[378] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3958
+    TEXT: Position Title: - Assistant Manager Finance\nReport To: - | Assistant Director Finance\nWing: - Finance Purpose of the Position:\nThe Assistant Manager Finance is responsible to support the Finance Wing of PERA in financial management of PERA Headquarters and Enforcement Stations, including the prepara
+
+  chunk[380] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3208
+    TEXT: Position Title: - Assistant Manager Personnel\nReport To: - | Assistant Director (Personnel)\nWing: - Personnel Purpose of the Position:\nAssistant Manager (Personnel) will assist Assistant Director ( Personnel) in management & coordination of all the activities related to Enforcement Officers, Investi
+
+  chunk[381] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2897
+    TEXT: Position Title: - Assistant Manager Discipline\nReport To: - | Assistant Director (Discipline)\nWing: - Personnel Purpose of the Position:\nThe Assistant Manager (Discipline) supports the Assistant Director (Discipline) in managing disciplinary and conduct-related matters of Investigation Officers, Sen
+
+  chunk[383] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3449
+    TEXT: Position Title: - Head Legal & Prosecution\nReport To: - | Director General\nWing: - | Legal & Prosecution\nPurpose of the Position:\nHead Legal & Prosecution is responsible for coordination of all the legal issues / activities of District Boards & Enforcement Stations of PERA. The person assists the Di
+
+  chunk[385] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2739
+    TEXT: Position Title: - Assistant Manager Legal\nReport To: - | Head Legal & Prosecution\nWing: - | Legal & Prosecution\nPurpose of the Position:\nAssistant Manager Legal shall assist the Head Legal & Prosecution in drafting and maintaining legal documents and records. Areas of Responsibilities:\n He will be 
+
+  chunk[386] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=1913
+    TEXT: Position Title: - Assistant Manager Prosecution\nReport To: - | Head Legal & Prosecution\nWing: - | Legal & Prosecution\nPurpose of the Position:\nAssistant Manager Prosecution shall assist the Head Legal & Prosecution in drafting and maintaining\n\nprosecution related | documents and records | for facili
+
+  chunk[387] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2704
+    TEXT: Position Title: - Prosecutor\nReport To: - | Sub-Divisional Enforcement Officer\nWing: - | Enforcement Stations\nPurpose of the Position:\nThe Prosecutor shall be responsible for managing and overseeing the investigation and prosecution of legal matters related to Enforcement Station and ensuring that a
+
+  chunk[388] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3648
+    TEXT: Position Title: - Head Monitoring (MIS & GIS)\nReport To: - | Director Monitoring & Implementation\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nTo lead, supervise, and manage the Monitoring Information System (MIS) and Geographical Information System (GIS) functions of the Authority
+
+  chunk[390] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3638
+    TEXT: Position Title: - Manager Monitoring\nReport To: - | Head Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Manager Monitoring is responsible for assisting in the planning, execution, and management of monitoring activities. The role focuses on ensuring effecti
+
+  chunk[392] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3072
+    TEXT: Position Title: Manager (Research & Implementation)\nReport To: | Deputy Director (Implementation)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nManager (Research & Implementation) is responsible for ensuring compliance with PERA’s regulations developed overtime and overseeing the im
+
+  chunk[393] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2601
+    TEXT: Position Title: - Business Analyst\nReport To: - | Head Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Business Analyst | is responsible for tracking organizational performance metrics, analyzing\noperational data, and generating insights to drive continuous 
+
+  chunk[394] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2703
+    TEXT: Position Title: - Assistant Manager Monitoring\nReport To: - | Head Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Assistant Manager Monitoring is responsible for managing and maintaining Management Information Systems (MIS) and Geographic Information System
+
+  chunk[395] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2631
+    TEXT: Position Title: - Assistant Manager GIS\nReport To: - | Head Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nAssistant Manager GIS is responsible for data management and dispersion of reports by analyzing and displaying geographically referenced information. Area
+
+  chunk[396] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3208
+    TEXT: Position Title: Assistant Manager (Research & Implementation)\nReport To: | Manager (Research & Implementation)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nAssistant Manager (Research & Implementation) is responsible for assisting the Manager (Research & Implementation) in ensuring
+
+  chunk[397] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2940
+    TEXT: Position Title: - Chief Instructor\nReport To: - | Director General\nWing: - Training Purpose of the Position:\nThe Chief Training Officer is responsible | for overseeing and directing all aspects of training for\nenforcement station officers. This role is pivotal in ensuring that the officers are adequ
+
+  chunk[398] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2761
+    TEXT: Position Title: - Senior Manager Training & Admin\nReport To: - | Chief Training Officer\nWing: - Training Purpose of the Position:\nThe Senior Manager Trainings & Admin | is responsible for overseeing and directing all aspects of\ntraining for enforcement station officers. This role is pivotal in ensur
+
+  chunk[399] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2904
+    TEXT: Position Title: - Senior Manager Academics\nReport To: - | Chief Training Officer\nWing: - Training Purpose of the Position:\nThe Senior Manager Academics is responsible for overseeing and directing all aspects of training for enforcement station officers. This role is pivotal in ensuring that the offi
+
+  chunk[400] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2734
+    TEXT: Position Title: - Deputy Manager Training\nReport To: - | Senior Manager Training & Admin\nWing: - Training Purpose of the Position:\nThe Deputy Manager Training is responsible for planning, coordinating, and overseeing training and professional development programs for law enforcement personnel. This 
+
+  chunk[401] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3093
+    TEXT: Position Title: - Deputy Manager Academics\nReport To: - | Senior Manager Academics\nWing: - Training Purpose of the Position:\nThe Deputy Manager Academics is responsible for overseeing the academic operations of a law enforcement training institution. This role includes developing and maintaining cur
+
+  chunk[402] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=2914
+    TEXT: Position Title: - Assistant Manager Admin & Logistics\nReport To: - | Senior Manager Training & Admin\nWing: - Training Purpose of the Position:\nThe Assistant Manager Admin & Logistics is responsible in ensuring the smooth operation of training programs by managing administrative processes, facility l
+
+  chunk[403] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf p=0 len=3065
+    TEXT: Position Title: - Assistant Manager IT & LMS\nReport To: - | Senior Manager Academics\nWing: - Training Purpose of the Position:\nThe Assistant Manager IT & LMS is responsible for managing the digital infrastructure and e-learning ecosystem of PERA’s training station . This includes overseeing the depl
+
+  chunk[541] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2669
+    TEXT: Schedule-III Terms and Reference for Service\nPosition Title: | Director General PERA\nReports To: | Authority\nPurpose of the Position:\nHe will be responsible for assisting the Authority in performing its functions and exercising its powers as mentioned in the Act. He will carry out overall supervisio
+
+  chunk[542] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2966
+    TEXT: Position Title: | Additional Director General (Administration & HR)\nReports To: | Director General\nPurpose of the Position:\nHe is responsible for managing all the activities of Administration, HR, Procurement & Logistics as per the desired standards, policies, rules & regulations. He shall assist th
+
+  chunk[543] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2328
+    TEXT: Position Title: | Additional Director General (Finance)\nReports To: | Director General\nPurpose of the Position:\nHe is responsible for managing all the activities related to financial management a s per the desired standards of governance in accordance with policies, rules & regulations. The person a
+
+  chunk[544] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2101
+    TEXT: Position Title: | Director (Personnel)\nReports To: | Director General\nPurpose of the Position:\nHe is responsible for coordination with the Enforcement Stations regarding efficient and effective administration of the enforcement personnel deployed at the ESs in order to fulfil the desired standards i
+
+  chunk[545] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2657
+    TEXT: Position Title: | Additional Director General (Monitoring & Implementation)\nReports To: | Director General\nPurpose of the Position:\nHe shall be responsible for coordination with District Enforcement and Regulatory Boards and Enforcement\nStations, across Punjab | in order t o monitor implementation o
+
+  chunk[546] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2029
+    TEXT: Position Title: | Deputy Director (Administration & HR)\nReports To: | Additional Director General (Administration & HR)\nPurpose of the Position:\nTo assist Additional Director General (Administration & HR) | in carrying out Human Resource Management at\nHead Quarter and Enforcement Stations of PERA an
+
+  chunk[547] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2334
+    TEXT: Position Title: | Deputy Director (Finance)\nReports to: | Additional Director General Finance\nPurpose of the Position:\nTo assist Additional Director General | (Finance) in carrying out all functions related to financial management,\nplanning, budgeting and accounts of PERA at Headquarter as well as a
+
+  chunk[548] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=3757
+    TEXT: Position Title: | Deputy Director (Implementation)\nReports to: | Additional Director General (Monitoring & Implementation)\nPurpose of the Position:\nThe Deputy Director (Implementation) shall be responsible for ensuring the effective enforcement of PERA’s mandate across the province, maintaining oper
+
+  chunk[551] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=3336
+    TEXT: Position Title: - Assistant Director (Administration & Logistics)\nReports To: | Deputy Director (Administration & HR)\nPurpose of the Position:\nTo assist the Deputy Director (Administration & Logistics) | in organizing, coordinating, and managing PERA’s\nemployees to carry out its vision and goals thr
+
+  chunk[553] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=3836
+    TEXT: Position Title: - Assistant Director (Implementation)\nReports To: | Deputy Director (Implementation)\nPurpose of the Position:\nThe Assistant Director (Implementation) shall support the Deputy Director (Implementation) in supervising enforcement operations, ensuring uniform implementation of procedure
+
+  chunk[555] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2786
+    TEXT: Position Title: | Assistant Director Finance (Budget)\nReports to: | Deputy Director (Finance)\nPurpose of the Position:\nResponsible for assisting the Deputy Director (Finance) in implementing, budgeting and financial record keeping procedures to ensure efficient coordination of various departmental g
+
+  chunk[556] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2440
+    TEXT: Position Title: - Assistant Director (Logistics & Inventory)\nReports To: | Director (Administration & HR)\nPurpose of the Position:\nHe will assist the Director (Administration & HR) in ensuring optimal utilization of logistical resources of PERA. He will deal with the matters related to logistical pl
+
+  chunk[557] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2165
+    TEXT: Position Title: | Assistant Director (Discipline)\nReports To: | Director Personnel\nPurpose of the Position:\nHe shall be responsible for dealing with the matters related to conduct and discipline of Sergeants | and Senior\nSergeants. Areas of Responsibilities:\n\n• Receive, record, and process all compl
+
+  chunk[558] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2630
+    TEXT: Position Title: | Assistant Director (Personnel)\nReports To: | Director Personnel\nPurpose of the Position:\nHe shall be responsible for dealing with the matters related to requisition of services of Constables, Head\nConstables or other equivalent personnel on deputation basis and their placement as |
+
+  chunk[559] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=1870
+    TEXT: Position Title: | Audit Officer\nReport to: | Director General\nPurpose of the Position:\nAudit Officer will be responsible for supervision of all the audit functions and payment cases. The person shall be responsible for internal audit and analyzing risk based internal audit plans. The person will be 
+
+  chunk[560] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=1764
+    TEXT: Position Title: | Auditor\nReports to: | Audit Officer\nPurpose of the Position:\nAuditor will be responsible for preparing all the audit functions and payment cases. The person shall be responsible for preparing internal audit reports and analyzing risk-based internal audit plans. The person will be r
+
+  chunk[561] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2553
+    TEXT: Position Title: - | Executive Assistant\nReports to: | DG / Directors / Deputy Directors\nPurpose of the Position:\nTo maintain a pool of HR that can be posted within the Directorate General by the DG as PAs, MTO, Caretakers, Accountants. Areas of Responsibilities:\n\n• He will be personally responsible 
+
+  chunk[562] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2182
+    TEXT: Position Title: - | Office Assistant\nReports to: | Executive Assistants\nPurpose of the Position:\nTo maintain a pool of HR that can be posted within the Directorate General by the DG as office Assistant. Areas of Responsibilities:\n\n• He will assist the reporting Officer to carry out his day-to-day op
+
+  chunk[563] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=3058
+    TEXT: Position Title: | Secretary, District Enforcement & Regulatory Board\nReports To: | District Enforcement & Regulatory Board concerned\nPurpose of the Position:\nTo act as Secretary of the District Enforcement & Regulatory Board for the administration, coordination, and oversight of enforcement operatio
+
+  chunk[564] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2639
+    TEXT: Position Title: | Sub-Divisional Enforcement Officer\nReports To: | Chairperson and Secretary of the District Enforcement & Regulatory Board\nand Hearing Officer concerned. Purpose of the Position:\nTo perform general supervision of various field operations for enforcement of the Act and the scheduled 
+
+  chunk[566] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2730
+    TEXT: Position Title: | Enforcement Officer\nReports To: | Sub-Divisional Enforcement Officer\nPurpose of the Position:\nTo perform all enforcement and regulatory field operations for implementation of the Act and the scheduled laws including inspections and punitive actions in his area of jurisdiction. Area
+
+  chunk[568] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2577
+    TEXT: Position Title: | Investigation Officer\nReports To: | Sub-Divisional Enforcement Officer and Enforcement Officer\nPurpose of the Position:\nTo assist and enable the SDEO and EO in exercising their powers and performing their duties related to implementation of the Act and the scheduled laws, through i
+
+  chunk[570] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2724
+    TEXT: Position Title: | Senior Sergeant\nReports To: | SDEO, Enforcement Officer and Investigation Officer\nPurpose of the Position:\nTo assist and enable the SDEO in exercising their powers and performing their duties related to implementation of scheduled laws, provide operational readiness and logistical 
+
+  chunk[571] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2948
+    TEXT: Position Title: | Sergeant\nReports To: | SDEO, EO, IO and Senior Sergeant\nPurpose of the Position:\nTo assist and enable the SDEO, EO and IO in exercising their powers and performing their duties related to implementation of scheduled laws, provide operational readiness and logistical support for enf
+
+  chunk[581] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2997
+    TEXT: Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communications\nPurpose of the Position:\nCTO shall be responsible for providing technical leadership to the team of IT professionals. He sha
+
+  chunk[582] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3466
+    TEXT: Position Title: - Manager (Development)\nReport To: - | Chief Technology Officer (CTO)\nWing: - | IT & Communications\nPurpose of the Position:\nResponsible for maximizing the productivity / performance of IT Applications / Custom Developed Software / Web Portals by directing the daily, weekly, and mont
+
+  chunk[584] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3201
+    TEXT: Position Title: - Manager (Infrastructure & Networks)\nReport To: - | Chief Technology Officer (CTO)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT infrastructure by directing the daily, weekly, and monthly activities. To provide leadership, mot
+
+  chunk[586] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2853
+    TEXT: Position Title: - Manager (Digital Strategy & Communication)\nReport To: - | Chief Technology Officer\nWing: - | IT & Communication\nPurpose of the Position:\nTo assist Chief Technology Officer in designing and implementing the communication strategy of PERA through electronic, print and social media. T
+
+  chunk[587] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2618
+    TEXT: Position Title: - Assistant Manager (Network)\nReport To: - | Manager (Infrastructure & Networks)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT Networks and provide, training, and development of the workforce; process and procedure development 
+
+  chunk[588] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2408
+    TEXT: Position Title: - Assistant Manager (IT Infrastructure)\nReport To: - | Manager (Infrastructure & Networks)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT Networks and provide, training, and development of the workforce; Process and procedure de
+
+  chunk[589] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3012
+    TEXT: Position Title: - Web & Software Developer\nReport To: - | Manager (Development)\nWing: - | IT & Communication\nPurpose of the Position:\nHe shall design, develop, and maintain web and software applications to meet business and user requirements. This role involves working across front -end, back -end, 
+
+  chunk[590] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2774
+    TEXT: Position Title: - Android Developer\nReport To: - | Manager (Development)\nWing: - | IT & Communication\nPurpose of the Position:\nThe Android Developer designs, develops, and maintains high-performance Android applications. This role involves working with Kotlin/Java, modern Android frameworks, and bes
+
+  chunk[591] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3177
+    TEXT: Position Title: - Database Administrator\nReport To: - | Manager (Development)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for demonstrating database administration, advanced performance analysis and tuning skills. Design and development of database, data warehouse and multi-Dim
+
+  chunk[593] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3483
+    TEXT: Position Title: - Creative Lead\nReport To: - | Manager (Digital Strategy & Communication)\nWing: - | IT & Communication\nPurpose of the Position:\nThe Creative Lead is responsible for driving the creative vision, strategy, and execution of all media content and brand communications. They manage a multi
+
+  chunk[595] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3276
+    TEXT: Position Title: - Graphic Designer\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Graphic Designer will assist Creative Lead and play a crucial role in enhancing the visual communication of the Punjab Enforcement Regulatory Authority. This position is responsi
+
+  chunk[596] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3285
+    TEXT: Position Title: - Content / Script Writer\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Content/Script Writer will be responsible for developing clear, engaging, and informative written content for the Punjab Enforcement Regulatory Authority. This includes cr
+
+  chunk[597] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3328
+    TEXT: Position Title: - Associate Social Media\nReport To: - | Creative Lead\nWing: - | IT & Communication\nPurpose of the Position:\nThe Associate social media will be responsible for managing the Punjab Enforcement Regulatory Authority's social media presence, ensuring effective communication and engagement
+
+  chunk[598] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3307
+    TEXT: Position Title: - System Support Officer\nReport To: - | Sub Divisional Enforcement Officer, Concerned Wing Head\nWing: - | Enforcement Station, M&I, IT & Communication, Training\nPurpose of the Position:\nThe System Support Officer assist the SDEO with the various functions at Enforcement Stations. inc
+
+  chunk[600] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2887
+    TEXT: Position Title: - Head (Procurement & Contracting)\nReport To: - | ADG (Admin & HR)\nWing: - | Administration & HR\nPurpose of the Position:\nResponsible for ensuring that procurement & contracting activities are managed effectively and efficiently for the smooth working of the supply chain of the Autho
+
+  chunk[601] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3197
+    TEXT: Position Title: - Manager (HR & Talent Acquisition)\nReport To: - | Deputy Director (Admin. & HR)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Manager (HR & Talent Acquisition) Specialist supports the Deputy Director Administration & HR in the execution of talent acquisition and organiz
+
+  chunk[602] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3106
+    TEXT: Position Title: - Deputy Manager (HR)\nReport To: - | Manager (HR & Talent Acquisition)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Deputy Manager – Human Resources plays a critical role in supporting the Manager (HR & Talent Acquisition) in executing core HR functions. This includes r
+
+  chunk[603] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2875
+    TEXT: Position Title: - Deputy Manager (Inventory & Warehousing)\nReport To: - | Assistant Director (Admin & Logistics)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Deputy Manager (Inventory & Warehousing ) supports the Assistant Director (Admin & Logistics) in ensuring that all inventory and
+
+  chunk[604] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2898
+    TEXT: Position Title: - Assistant Manager (Logistics)\nReport To: - | Deputy Manager (Inventory & Warehousing)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager Logistics assists the Assistant Director Logistics & Inventory in managing day-to-day logistics operations. The role in
+
+  chunk[605] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2595
+    TEXT: Position Title: - Assistant Manager (Stores)\nReport To: - | Deputy Manager (Inventory & Warehousing)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager (Stores) assists the Deputy Manager (Inventory & Warehousing ) in managing daily store operations. The role involves maint
+
+  chunk[606] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2659
+    TEXT: Position Title: - Assistant Manager (HR)\nReport To: - | Deputy Manager (HR & Talent Acquisition)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager (HR) supports the Deputy Manager (HR & Talent Acquisition ) in the execution of day-to-day HR functions. Key responsibilities 
+
+  chunk[607] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3158
+    TEXT: Position Title: - Assistant Manager (Talent Acquisition)\nReport To: - | Deputy Manager (HR & Talent Acquisition)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager (Talent Acquisition ) supports the Deputy Manager (HR & Talent Acquisition) in the execution of talent acquisi
+
+  chunk[608] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3033
+    TEXT: Position Title: - Assistant Manager (Admin.)\nReport To: - | Assistant Director (Admin. & Logistics)\nWing: - | Administration & HR\nPurpose of the Position:\nThe Assistant Manager Admin is responsible for ensuring the efficient functioning of daily office operations. This includes managing facilities, 
+
+  chunk[609] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2493
+    TEXT: Position Title: - Assistant Manager (Procurement)\nReport To: - | Head (Procurement & Contracting)\nWing: - | Administration & HR\nPurpose of the Position:\nTo assist the Head Procurement & Contracting in managing the sourcing, purchasing activities in PERA as per the Rules, Regulations, policies, proce
+
+  chunk[610] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2744
+    TEXT: Position Title: - Assistant Manager (Protocol)\nReport To: - | Deputy Director (Administration & HR)\nWing: - | Administration & HR\nPurpose of the Position:\nAssistant Manager Protocol is responsible for ensuring that all official events, ceremonies, and visits are conducted in accordance with establis
+
+  chunk[611] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3012
+    TEXT: Position Title: - Manager (Receipts)\nReport To: - | ADG (Finance)\nWing: - Finance Purpose of the Position:\nThe position of Manager Receipt is created to strengthen PERA’s financial autonomy by developing and implementing mechanisms that enhance the Authority’s capacity to generate its own revenue. T
+
+  chunk[613] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3788
+    TEXT: Position Title: - Assistant Manager (Finance)\nReport To: - | Assistant Director (Finance)\nWing: - Finance Purpose of the Position:\nThe Assistant Manager Finance is responsible to support the Finance Wing of PERA in financial management of PERA Headquarters and Enforcement Stations, including the pre
+
+  chunk[615] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3216
+    TEXT: Position Title: - Assistant Manager (Personnel)\nReport To: - | Assistant Director (Personnel)\nWing: - Personnel Purpose of the Position:\nAssistant Manager (Personnel) will assist Assistant Director (Personnel) in management & coordination of all the activities related to Enforcement Officers, Invest
+
+  chunk[616] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2882
+    TEXT: Position Title: - Assistant Manager (Discipline)\nReport To: - | Assistant Director (Discipline)\nWing: - Personnel Purpose of the Position:\nThe Assistant Manager (Discipline) supports the Assistant Director (Discipline) in managing disciplinary and conduct-related matters of Investigation Officers, S
+
+  chunk[618] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3419
+    TEXT: Position Title: - Head (Legal & Prosecution)\nReport To: - | Director General\nWing: - | Legal & Prosecution\nPurpose of the Position:\nHead Legal & Prosecution is responsible for coordination of all the legal issues / activities of District Boards & Enforcement Stations of PERA. The person assists the 
+
+  chunk[620] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2758
+    TEXT: Position Title: - Assistant Manager (Legal)\nReport To: - | Head (Legal & Prosecution)\nWing: - | Legal & Prosecution\nPurpose of the Position:\nAssistant Manager Legal shall assist the Head Legal & Prosecution in drafting and maintaining legal documents and records. Areas of Responsibilities:\n\n• He wil
+
+  chunk[621] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=1918
+    TEXT: Position Title: - Assistant Manager (Prosecution)\nReport To: - | Head (Legal & Prosecution)\nWing: - | Legal & Prosecution\nPurpose of the Position:\nAssistant Manager Prosecution shall assist the Head Legal & Prosecution in drafting and maintaining prosecution related documents and records for facilit
+
+  chunk[622] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=1433
+    TEXT: Position Title: - Prosecutor\nReport To: - | Sub-Divisional Enforcement Officer\nWing: - | Enforcement Stations\nPurpose of the Position:\nThe Prosecutor shall be responsible for managing and overseeing the investigation and prosecution of legal matters related to Enforcement Station and ensuring that a
+
+  chunk[624] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3687
+    TEXT: Position Title: - Head Monitoring (MIS & GIS)\nReport To: - | ADG (Monitoring & Implementation)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nTo lead, supervise, and manage the Monitoring Information System (MIS) and Geographical Information System (GIS) functions of the Authority. T
+
+  chunk[626] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3649
+    TEXT: Position Title: - Manager (Monitoring)\nReport To: - | Head Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Manager Monitoring is responsible for assisting in the planning, execution, and management of monitoring activities. The role focuses on ensuring effec
+
+  chunk[628] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3090
+    TEXT: Position Title: Manager (Research & Implementation)\nReport To: | Assistant Director (Implementation)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nManager (Research & Implementation) is responsible for ensuring compliance with PERA’s regulations developed overtime and overseeing the
+
+  chunk[629] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2606
+    TEXT: Position Title: - Business Analyst\nReport To: - | Manager Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Business Analyst is responsible for tracking organizational performance metrics, analyzing operational data, and generating insights to drive continuous
+
+  chunk[630] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2723
+    TEXT: Position Title: - Assistant Manager (Monitoring)\nReport To: - | Manager Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Assistant Manager Monitoring is responsible for managing and maintaining Management Information Systems (MIS) and Geographic Information S
+
+  chunk[631] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2650
+    TEXT: Position Title: - Assistant Manager (GIS)\nReport To: - | Manager Monitoring (MIS & GIS)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nAssistant Manager GIS is responsible for data management and dispersion of reports by analyzing and displaying geographically referenced information.
+
+  chunk[632] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3230
+    TEXT: Position Title: Assistant Manager (Research & Implementation)\nReport To: | Manager (Research & Implementation)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nAssistant Manager (Research & Implementation) is responsible for assisting the Manager (Research & Implementation) in ensuring
+
+  chunk[633] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2916
+    TEXT: Position Title: - Chief Instructor\nReport To: - | Director General\nWing: - Training Purpose of the Position:\nThe Chief Instructor is responsible for overseeing and directing all aspects of training for enforcement station officers. This role is pivotal in ensuring that the officers are adequately tr
+
+  chunk[634] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2929
+    TEXT: Position Title: - Senior Manager (Training & Admin)\nReport To: - | Chief Instructor\nWing: - Training Purpose of the Position:\nThe Senior Manager (Training & Admin ) is responsible for overseeing and directing all aspects of training for enforcement station officers and HQ employees. This role is piv
+
+  chunk[635] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3028
+    TEXT: Position Title: - Senior Manager (Academics)\nReport To: - | Chief Instructor\nWing: - Training Purpose of the Position:\nThe Senior Manager (Academics) is responsible for overseeing and directing all aspects of training for PERA. This role is pivotal in ensuring that the officers are adequately traine
+
+  chunk[636] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2818
+    TEXT: Position Title: - Deputy Manager (Training)\nReport To: - | Senior Manager (Training & Admin)\nWing: - Training Purpose of the Position:\nThe Deputy Manager (Training) is responsible for planning, coordinating, and overseeing training and professional development programs for PERA. This role ensures th
+
+  chunk[637] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3113
+    TEXT: Position Title: - Deputy Manager (Academics)\nReport To: - | Senior Manager (Academics)\nWing: - Training Purpose of the Position:\nThe Deputy Manager (Academics) is responsible for overseeing the academic operations of PERA. This role includes developing and maintaining curriculum standards, coordinat
+
+  chunk[638] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2873
+    TEXT: Position Title: - Assistant Manager (Admin. & Logistics)\nReport To: - | Deputy Manager (Training & Admin)\nWing: - Training Purpose of the Position:\nThe Assistant Manager (Admin & Logistics) is responsible in ensuring the smooth operation of training programs by managing administrative processes, fac
+
+  chunk[639] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2954
+    TEXT: Position Title: - Assistant Manager (IT & LMS)\nReport To: - | Deputy Manager (Academics)\nWing: - Training Purpose of the Position:\nThe Assistant Manager (IT & LMS) is responsible for managing the digital infrastructure and e-learning ecosystem of PERA’s training station. This includes overseeing the
+
+  chunk[640] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2789
+    TEXT: Position Title: | Senior Sergeant (STRIKE)\nReports To: SDEO\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nThe Senior Sergeant shall serve as a field supervisor within the STRIKE Unit, responsible for tactical coordination, operational readiness, and command over assigned Sergeants. 
+
+  chunk[642] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2895
+    TEXT: Position Title: | Sergeant (Strike)\nReports To: SDEO\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nTo assist and enable the SDEO, EO and IO in exercising their powers and performing their duties related to implementation of scheduled laws, provide operational readiness and logistica
+
+
+=== ACT SECTION chunks ===
+  chunk[529] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2041
+    TEXT: GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY Lahore, Dated the 12th November, 2025 THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) (AMENDED) REGULATIONS, 2025 NOTIFICATION No.DG(PERA)/1-1/2025(SRs).- In exercise of the powers conferred 
+
+  chunk[530] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2342
+    TEXT: Regulatory Authority (Appointment and Conditions of Service for Contractual Employees) Regulations, 2025” and mentioned in these Regulations to the extent of organizational structure only; (g) “Directorate General” means responsible for management and supervision of different wings of PERA under the
+
+  chunk[532] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2643
+    TEXT: provided that the Appointing Authority may extend the period of probation for another year, not further extendable.\n\n(2) | No employee shall be confirmed in the Service | unless he has successfully\n\ncompleted such training, probation and qualified the departmental examination, as may be required. (3
+
+  chunk[533] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2351
+    TEXT: 12. Retirement. - (1) An employee shall stand retired from the service in accordance\n\nwith the relevant general rules or policies issued by the Government. (2) In case of failure to maintain the requisite medical and physical fitness, he shall be discharged or retired from the Service by the compete
+
+  chunk[561] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2553
+    TEXT: Position Title: - | Executive Assistant\nReports to: | DG / Directors / Deputy Directors\nPurpose of the Position:\nTo maintain a pool of HR that can be posted within the Directorate General by the DG as PAs, MTO, Caretakers, Accountants. Areas of Responsibilities:\n\n• He will be personally responsible 
+
+  chunk[562] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=2182
+    TEXT: Position Title: - | Office Assistant\nReports to: | Executive Assistants\nPurpose of the Position:\nTo maintain a pool of HR that can be posted within the Directorate General by the DG as office Assistant. Areas of Responsibilities:\n\n• He will assist the reporting Officer to carry out his day-to-day op
+
+  chunk[572] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE - AMENDED REGULATIONS 2025.pdf p=0 len=436
+    TEXT: Schedule-IV Rules / Regulations Adopted by the Authority\n\n1. PEEDA Act, 2006.\n2. Deputation Policy, 1998.\n3. Punjab Civil Servants (Conduct) Rules, 1966.\n4. Punjab Civil Servants (Pension), Rules, as amended from time to time.\n5. Punjab Revised Leave Rules, 1981.\n6. Punjab Police (E&D), Rules, 1975,
+
+  chunk[576] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2553
+    TEXT: GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY Lahore, Dated the 12th November, 2025 N O T I F I C A T I O N THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES) (AMENDED) REGULATIONS, 2025 No.DG(PERA)1-1/2025(SRs/Con
+
+  chunk[578] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3559
+    TEXT: (5) | All contractual employments of the Authority governed under these Regulations shall\nalso be subject to all other notified Regulations of the Authority including but not limited to service, efficiency and discipline, p erformance appraisal and welfare regulations, with all due exceptions and ex
+
+  chunk[613] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=3788
+    TEXT: Position Title: - Assistant Manager (Finance)\nReport To: - | Assistant Director (Finance)\nWing: - Finance Purpose of the Position:\nThe Assistant Manager Finance is responsible to support the Finance Wing of PERA in financial management of PERA Headquarters and Enforcement Stations, including the pre
+
+  chunk[620] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES - AMENDED REGULATIONS 2025.pdf p=0 len=2758
+    TEXT: Position Title: - Assistant Manager (Legal)\nReport To: - | Head (Legal & Prosecution)\nWing: - | Legal & Prosecution\nPurpose of the Position:\nAssistant Manager Legal shall assist the Head Legal & Prosecution in drafting and maintaining legal documents and records. Areas of Responsibilities:\n\n• He wil
+
+  chunk[646] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - EFFICIENCY AND DISCIPLINE - REGULATIONS 2025.pdf p=0 len=1775
+    TEXT: GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY\nLahore, Dated the May | , 2025\nN O T I F I C A T I O N THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (EFFICIENCY & DISCIPLINE) REGULATIONS, 2025 No.xxxxxxx (Director Admin).- In exercise of the powers conferred under section 79 r
+
+  chunk[651] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - EFFICIENCY AND DISCIPLINE - REGULATIONS 2025.pdf p=0 len=2130
+    TEXT: recommendations regarding exoneration or, imposition of penalty or penalties, to the competent authority within thirty days of the initiation of inquiry:\nProvided that where the inquiry cannot be completed within thirty days, the Inquiry Officer or the Inquiry Committee, as the case may be, shall se
+
+  chunk[658] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - GRATUITY - REGULATIONS 2025.pdf p=0 len=1964
+    TEXT: GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY Lahore, Dated the 12th November, 2025 N O T I F I C A T I O N THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (GRATUITY) REGULATIONS, 2025 No.DG(PERA)1-1/2025(Gratuity):- In exercise of the powers conferred under section 79 of the 
+
+  chunk[659] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - GRATUITY - REGULATIONS 2025.pdf p=0 len=2813
+    TEXT: (2) Minimum two (02) continuous service years with the A uthority after completing probation period shall be mandatory for being eligible for gratuity. (3) Subject to sub -section (1), the gratuity shall be admissible for each completed service year, and any part of service year thereof exceeding si
+
+  chunk[660] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - GRATUITY - REGULATIONS 2025.pdf p=0 len=286
+    TEXT: 9. Fund. – Subject to provisions of section 69 of the Act, the Director General shall\n\ncreate, administer and manage a separate gratuity fund, subject to concurrence of the Finance Department, Government of the Punjab. Director General Punjab Enforcement and Regulatory Authority Lahore
+
+  chunk[662] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - MEDICAL POLICY 2025.pdf p=0 len=2203
+    TEXT: GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY Lahore, Dated the 12th November, 2025 N O T I F I C A T I O N THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (MEDICAL) POLICY, 2025 No.DG(PERA)1-1/2025(Medical):- The Punjab Enforcement & Regulatory Authority is committed to provi
+
+  chunk[663] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - MEDICAL POLICY 2025.pdf p=0 len=2519
+    TEXT: Enforcement and Regulatory Authority (Appointment and Conditions of Service) (Amended) Regulations, 2025; (f) “Schedule” means the Schedule appended hereunder; (g) “SPPP” means Special Pay Packages for PERA as defined in Regulations; (h) “Service” mean s the service of a person serving in the Punjab
+
+  chunk[677] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1531
+    TEXT: Form 12: Recovery Through Land Revenue Request Form .................................................................. 86 Form 13: Unauthorized Identity Disclosure Complaint Form ............................................................. 87 Form 14: Unsealing Authorization and Compliance Certific
+
+  chunk[678] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1448
+    TEXT: (I) "Act" means the Punjab Enforcement and Regulation Act, 2024 | (Act XI of\n2024); (II) “Auction Procedure” shall be the procedure, including logistic arrangements for the purpose, as notified by the Director General, PERA, from time to time. (III) "Authority" means the Punjab Enforcement and Regul
+
+  chunk[681] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1656
+    TEXT: i. Against the fine imposed by an Enforcement Officer, under the\n\nAct or the Scheduled Laws; ii. Against confiscation of articles, carts, or vehicle over which any title or possessory right or claim is asserted; iii. Against sealing of any premises over which any title or possessory right or claim i
+
+  chunk[682] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1826
+    TEXT: (5) The Hearing Officer shall also decide complaints filed by any person\naggrieved by a public nuisance directly or | indirectly, or perceives to be aggrieved\ndue to such nuisance in the near future [see Form 3.1] [see Form 3.2]. (6) The Hearing Officer shall also decide complaints filed by any pers
+
+  chunk[686] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1799
+    TEXT: (a) the prima facie case set up by the aggrieved person or offender supported by the documents furnished in support of the representation; (b) whether refusal to grant such interim relief shall preclude the grant of final relief in case the representation succeeds due to irreparable or irreversible 
+
+  chunk[687] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1767
+    TEXT: fixed for hearing in any proceedings pending before the him, the Hearing Officer shall have the power to dismiss the proceedings for default; Provided that the Hearing Officer shall not exercise such power if the complainant is an Officer or Employee appearing on behalf of the Authority, the Board, 
+
+  chunk[688] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1616
+    TEXT: far as practicable and relevant, in the manner and the mode as prescribed in [see Form 3.7] as per provisions of Chapter VIII of the Act. (6) The Employee shall file reply to the complaint and the allegations raised therein, within the time prescribed by the Hearing Officer , which shall be supporte
+
+  chunk[689] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1931
+    TEXT: (3) Insofar as practicable, the complaint shall state the details including the location and nature of the public nuisance; the illegal act or omission violating the Act or the Scheduled laws; the common injury, danger, or annoyance to the public or to the people who dwell and occupy property in the
+
+  chunk[690] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1791
+    TEXT: (3) The complaint shall be supported by an affidavit and all documents available with the complainant. (4) Upon receipt of such complaint, the Hearing Officer shall go through the complaint and after hearing the complainant , shall proceed either to dismiss the complaint through a well -reasoned wri
+
+  chunk[691] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1833
+    TEXT: encroachment needs removal under the law , then he shall submit a report\nthrough the SDEO concerned to the | Hearing Officer in accordance with the\nprovisions of Section 39 of the Act; Provided that when the Enforcement Officer and the SDEO are of the opinion\nthat the case is not further proceedable
+
+  chunk[692] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=2008
+    TEXT: occupant/encroacher in his reply, especially with respect to his legal right or entitlement over the public property in question. (8) After assessing the documents, evidence and the contents of the report of the Enforcement Officer, and after hearing the Enforcement Officer and the alleged illegal o
+
+  chunk[693] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1781
+    TEXT: outsourced services under Punjab Procurement Rules, 2014 through the relevant District Enforcement & Regulatory Board. (2) In pursuance of action taken by the Enforcement Officer with respect to\nremoval of public nuisance under Section 3 5 of the Act; | or removal of movable\nencroachment under Secti
+
+  chunk[694] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1969
+    TEXT: Provided that where no such rate of rent has been notified, the prevalent market\nrate of rent of similar buildings and area in the vicinity may be considered | upon\nrecommendations of the SDEO concerned. (5) Similarly, in determining the Costs of Enforcement in relation to any action undertaken by t
+
+  chunk[697] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1530
+    TEXT: (23) Utilization of Auction Proceeds : (1) Proceeds of the auction shall be deposited into the Punjab Enforcement and Regulatory Authority Fund as per provisions of Section 69 (2) of the Act. (2) As per provisions of Section 69 (5) of the Act, the Hearing Officer may withdraw the following and disbu
+
+  chunk[698] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=2012
+    TEXT: (2) Upon receipt of such information as whistle -blower disclosure, either directly or as forwarded by the Authority, Directorate General, Board or the Enforcement Station through the SDEO concerned, the Hearing Officer shall assess and verify the information so disclosed. (3) If upon receipt of inf
+
+  chunk[699] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1993
+    TEXT: provided in the whistle -blower disclosure to the Sub Divisional Enforcement Officer, but after further probe and inquiry, the Sub -Divisional Officer reports that the information provided in the whistle -blower disclosure had turned out to be false, frivolous, or vexatious; Provided that the Sub -D
+
+  chunk[700] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1699
+    TEXT: way of imputation, the identity of the person who has made a whistle -blower disclosure, or how such disclosure or reveal was authorized. (4) The Hearing Officer, after receiving such reply may allow the person an opportunity to be heard in person on a date specified by him. (5) If the person does n
+
+  chunk[705] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1618
+    TEXT: (2) The Director General, PERA may authorize the Board or the Hearing Officer for financial arrangements after such procurement is completed and the vendor is deployed.\n(34) Storage for items collected as evidence: | (1) The Enforcement Station shall\nhave ample and sufficient space to accommodate st
+
+  chunk[710] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1604
+    TEXT: (42) Grounds and Authorization for Arrest: | (1) The power to arrest under this\nCode shall be exercised only by an officer duly authorized for this purpose, and solely on the grounds specified in Section 31 of the Punjab Enforcement and Regulation Act, 2024. (2) The officer supervising the arrest sh
+
+  chunk[720] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=782
+    TEXT: Schedule 1 2 3 4 5 6 Section Description of Offence Nature of Offence Fine Up to (in Rs.) Officer/Board Competent to impose fine By what Court tri-able in case of punishment of imprisonment. Offence committed by any private person Cognizable/ Nonbailable 300,000/- District Enforcement & Regulatory B
+
+  chunk[722] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=935
+    TEXT: Form 1.1: Digital Evidence Intake and Hash Verification Form Legal Basis: PERA Rules 50–52 Under section 62-64 of PERA (O&P) Code Field Details / Input Digital Evidence ID Linked Case or Seizure ID Type of Digital Evidence (Video, Audio, Image, File Dump, etc.) Device Captured From (Bodycam ID, CCTV
+
+  chunk[723] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=966
+    TEXT: Form 1.2: Emergency Prohibition Order (EPO) u/s 23, 35 of the PERA Act, 2024\n\nPART A – | LEGAL AUTHORITY\nField Input Observation ID __________________________ Date and Time of Observation __________________________ Name of Observing Officer __________________________ Designation and Enforcement Stat
+
+  chunk[724] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1441
+    TEXT: Type of Evidence Attached (Y/N) Reference/Hash Code Photographs ☐ __________________________ Field Notes ☐ __________________________ Inspection Report ☐ __________________________ Witness Statement(s) ☐ __________________________ Audio/Video Recording ☐ __________________________ Complaint Document
+
+  chunk[726] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1423
+    TEXT: | Closure Date | ________________________ | | Closure Verified By | ________________________ | | MIS Entry Updated | ☐ Yes ☐ No | | Signature of Closing Officer | ________________________ | Form 1.3: Compliance Report on EPO Closure Legal Basis: PERA Act Section 38; PERA Rules Rule 46(7–8) incorrect
+
+  chunk[727] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1316
+    TEXT: Name, Findings) Status of Compliance (Ceased / Partially / Not Ceased) Photo/Video Documentation Attached (Yes/No) Warnings Issued During Monitoring (Yes/No) Violation Escalation Required (Y/N, Detail) Recommended Action (Extension / Hearing / Sealing / Prosecution) Remarks and Observations\n\nSignatu
+
+  chunk[728] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1002
+    TEXT: ____________\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________ Form 2.2- Enforcement Station Daily Activity Log Under section 32 of the code SECTION A – ENFORCEMENT STATION HEADER Field Input Station Name __________________________ District / Tehsi
+
+  chunk[729] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1152
+    TEXT: Sr. No. Action Type UIN / Case ID Location (GPS) Start Time End Time Status Remarks 4 ☐ Sealing / Unsealing ______________ ______________ : : ☐ Complete ☐ Partial _____________ 5 ☐ Recovery Attempt ______________ ______________ : : ☐ Paid ☐ Escalated _____________ 6 ☐ Evidence Capture ______________
+
+  chunk[730] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1107
+    TEXT: Agency Name Coordination Type Contact Person Action Taken Reference Code Follow-up Required ___________ ☐ Police ☐ Revenue ☐ Municipal ☐ EPA ☐ DERB _______________ ________________ ______________ ☐ Yes ☐ No SECTION E – BODYCAM / DEVICE RECORDING LOG Device ID Officer Using Date Time Location Action 
+
+  chunk[731] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=861
+    TEXT: Field Entry Prepared By (Name & Designation) __________________________ Verified By (SDEO / Supervisor) __________________________ Digital Submission to MIS ☐ Yes ☐ No DERB Notified (If Applicable) ☐ Yes ☐ No Signature (Officer) __________________________ Signature (SDEO) __________________________ 
+
+  chunk[732] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1360
+    TEXT: Hearing) Date of Final Action Complainant Notified of Outcome (Yes/No) Feedback from Complainant (If Received) Reason for Closure (Resolved / Not Valid / Forwarded) Appeal or Review Pending (Yes/No) Remarks and Follow-up Notes Forwarded to MIS / DERB / Archive (Specify)\n\nSignature: _________________
+
+  chunk[733] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1287
+    TEXT: ____________\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________ Form 3.3: Inventory Sheet (Movable Property) Legal Basis: PERA Rules 50–52, PERA Act Section 39 under section 46 of the Code Field Details / Input Enforcement Station Name Date & Time o
+
+  chunk[735] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=920
+    TEXT: ☐ Affidavit (if required) ☐ Power of Attorney (if filing through representative) ☐ Any other relevant document: __________________ PART V – DECLARATION BY APPLICANT I hereby declare that the information provided is true to the best of my knowledge and belief. I understand that any false or misleadin
+
+  chunk[736] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1102
+    TEXT: Address: ____________________________________ Contact No.: ________________________________ Subject: Notice of Hearing under Section 36 of the Punjab Enforcement and Regulation Act, 2024 Mr. / Ms. You are hereby informed that a representation has been filed under the Punjab Enforcement and Regulatio
+
+  chunk[737] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1233
+    TEXT: Form 3.6: Hearing Proceedings and Order Sheet Legal Basis: PERA Act Section 43; PERA Rules 25–26 u/s 16 of the Act and 9-10 of the code Field Details / Input Hearing Proceedings ID Case Reference Number Name and CNIC of Respondent Date and Time of Hearing Location of Hearing Name and Designation of 
+
+  chunk[739] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1373
+    TEXT: Form 3.9: Legal Reference and Scheduled Law Citation Sheet Legal Basis: PERA Act Section 2(e), 3, 38, 41; PERA Rules 2, 5, 14, 46 Field Details / Input Citation Sheet ID Linked Enforcement or Hearing Case ID Scheduled Law Invoked (Name of Law) Specific Section(s) or Provision(s) Cited Nature of Viol
+
+  chunk[740] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1374
+    TEXT: Remarks\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n
+
+  chunk[741] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1286
+    TEXT: Date(s) of Work Total Cost Incurred (Attach Certificate – PERA-FM2-011) Breakdown of Costs (Materials, Labour, Equipment) Payment Deadline (7–15 Days) Consequences of Non-Payment (Auction / Revenue Recovery) Bank Payment Instructions / Challan Code Appeal / Review Window (If Applicable) Forwarded to
+
+  chunk[742] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1241
+    TEXT: Form 3.14: Payment Acknowledgement Certificate Legal Basis: PERA Rules 88(4), Rule 91 Field Details / Input Payment Acknowledgement Number Offender Name and CNIC Amount Paid Mode of Payment (Cash, Bank Transfer, Challan No.) Date of Payment Linked Final Recovery Order (PERAFM2-013) Confirmation of F
+
+  chunk[743] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1495
+    TEXT: MIS / Public Register Entry Reference\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________\n\nSignature: ______________________ | Name & Designation: _
+
+  chunk[744] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1320
+    TEXT: Field Details / Input Compliance Report ID Linked Demand Notice ID (PERA-FM2042) Name and CNIC of Offender Date of Notice Issuance Due Date for Payment Amount Paid (Full / Partial) Mode of Payment (Bank / Challan No. / Receipt ID) Date of Payment Payment Verified By (Name & Designation) Balance Outs
+
+  chunk[746] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1457
+    TEXT: Reserve Price (Declared / Not Declared) Number of Bidders Present Bid Details (Attach Sheet or Record Below) Highest Bidder Name, CNIC, Contact Winning Bid Amount Payment Terms (Deposit, Full Payment Due Date) Challan / Bank Transfer Details Receipt Reference Number Remarks (If Any Disputes or Re-au
+
+  chunk[747] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1296
+    TEXT: Signature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________ Form 3.22: Assessment & Verification Report Legal Basis: PERA Rules 113–119 Field Details / Input Verification Report ID Linked Whistle-Blower Disclosure ID (PERA-FM2-015) Summary of Disclosure Verif
+
+  chunk[748] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1391
+    TEXT: Photos, Videos) Departments Consulted (if any) Preliminary Findings Summary SDEO Decision on FIR Requirement Outcome: Administrative Enforcement / FIR Recommendation / Closure MIS Entry ID Forwarded to (DERB, Police, HO, etc.)\n\nSignature: ______________________ | Name & Designation: ________________
+
+  chunk[749] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1341
+    TEXT: Date of Action Case Reference Number Name and CNIC of Respondent / Violator Nature of Violation / Scheduled Law Invoked Type of Final Enforcement (Eviction / Sealing / Recovery / Auction / Court Referral) Linked Form IDs (Seizure / Hearing / Recovery / Auction / Referral) Amount Recovered (If Applic
+
+  chunk[750] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1380
+    TEXT: Delivery Method (Hand, Post, Public Notice) Date of Notice Issuance\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________ Form 6.2: Inspection Report 
+
+  chunk[751] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1365
+    TEXT: Daily Log ID Enforcement Officer Name and ID Station and District Date of Entry Time In / Time Out Action Taken (Inspection, Eviction, Sealing, Complaint Handling, Recovery, etc.) Linked Case or Complaint ID (If Any) Location(s) Visited (GPS and Address) Other Officers or Departments Accompanied Bod
+
+  chunk[752] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1306
+    TEXT: ____________\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________ Form 8.3: Sealing Execution Report Legal Basis: PERA Act Section 41(1), PERA Rules Rule 51(4–6) Field Details / Input Sealing Report ID Date & Time of Sealing Premises Location (GPS Coo
+
+  chunk[753] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1350
+    TEXT: Address) Sealing Officer Name and Designation Condition of Premises at Time of Sealing Precautionary Notices Displayed (Yes/No) Physical Security Applied (Locks, Chains, Welding, etc.) Independent Witnesses Present (Yes/No) Resistance Encountered (Yes/No, Explain) Photographic/Video Evidence Collect
+
+  chunk[754] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1463
+    TEXT: Compliance Reference to Bodycam / Video ID Inventory Summary (Number of Items, Estimated Value) Custody Destination & Time of Transfer Forwarding to Enforcement Station / MIS Upload ID\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________\n\nSignature: _
+
+  chunk[755] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1265
+    TEXT: Form 8.7: Eviction Execution Report Legal Basis: PERA Act Sections 41, 43; PERA Rules 47–50 Field Details / Input Eviction Execution ID Linked Sealing Order / EPO Reference (PERA-FM2-007 / PERA-FM2-004) Date of Eviction Location Address (GPS and Full Description) Type of Property Evicted (Residentia
+
+  chunk[756] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1305
+    TEXT: Report ID Name of Capturing Officer Date and Time of Evidence Capture Location (GPS and Address) Type of Evidence (Photo, Video, Audio, Document, Physical Object) Short Description of Evidence Equipment Used (Camera ID, Bodycam, Scanner, etc.) File Names / Hash Codes / QR Tags Witness Present (Yes/N
+
+  chunk[758] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1432
+    TEXT: Form 11: Post-Sealing Violation Incident Report Legal Basis: PERA Act Section 41(3); PERA Rules Rule 51(7) Field Details / Input Incident Report ID Linked Sealing Report ID (PERA-FM2026) Location and Description of Premises Date and Time of Violation Noted Nature of Violation (Breaking Seal, Tamperi
+
+  chunk[759] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1405
+    TEXT: Amount Due Reason for Recovery (Rent / Penalty / Illegal Gains / Costs) Date of Final Notice Expiry Attempts at Voluntary Payment (Y/N, Detail) District / Tehsil Where Property Located Landholding or Property Description Requesting PERA Officer (Name, Designation) Forwarded to (District Collector / 
+
+  chunk[760] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - OPERATIONS AND PROCEDURES CODE 2025.pdf p=0 len=1389
+    TEXT: ____________\n\nSignature: ______________________ | Name & Designation: ______________________ | Date:\n\n____________ Form 14: Unsealing Authorization and Compliance Certificate Legal Basis: PERA Act Section 41(3), PERA Rules Rule 51(6) Field Details / Input Unsealing Order Number Authorizing Authority
+
+  chunk[763] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - PERFORMANCE APPRAISAL - AMENDED REGULATIONS 2025.pdf p=0 len=2055
+    TEXT: GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY Lahore, Dated the 12th November, 2025 N O T I F I C A T I O N THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (PERFORMANCE APPRAISAL) (AMENDED) REGULATIONS, 2025 No. DG(PERA)/1-1/2025(PerformanceAppriasal):- In exercise of the powe
+
+  chunk[765] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - PERFORMANCE APPRAISAL - AMENDED REGULATIONS 2025.pdf p=0 len=2523
+    TEXT: (2) The Director General shall approve and decide the amount of honorarium subject to equivalent to maximum three (3) running basic salaries and subject to maximum twice grant to an employee during a financial year. (3) Any honorarium granted by the Authority shall not preclude the Director General 
+
+  chunk[777] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - UNIFORM - REGULATIONS 2025.pdf p=0 len=2218
+    TEXT: GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY\nLahore, Dated the | ,2025\nN O T I F I C A T I O N THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (UNIFORM) REGULATIONS, 2025 No.xxxxxxx: In exercise of the powers conferred under Section 79 read with Section 19 (5), of the Punjab 
+
+  chunk[779] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY - UNIFORM - REGULATIONS 2025.pdf p=0 len=2665
+    TEXT: c. Administrative / Office Uniform : All administrative / office staff shall wear\n\nthe f ormal dress code | during official meetings, public representation, and\ndesignated workdays, or as specified by the Director General. (2) The prescribed uniform shall be strictly followed by the designated emplo
+
