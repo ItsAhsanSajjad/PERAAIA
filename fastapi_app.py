@@ -494,6 +494,7 @@ def ask_question_json(request: QueryRequest):
                 "pages": pages,     # aggregated
                 "locs": locs,       # aggregated
                 "snippet": (g.get("snippet") or "").strip(),
+                "query": request.message or request.question or "", # Pass query for highlighting
             }
         )
 
@@ -588,6 +589,10 @@ def simple_ask(request: SimpleChatRequest):
         conversation_history=request.conversation_history
     )
     
+    # Inject query into references for frontend
+    for r in result.get("references", []):
+        r["query"] = query_for_retrieval # Use rewritten query as it has better keywords
+
     return SimpleChatResponse(
         answer=result.get("answer", "Jawab nahi mila."),
         decision=result.get("decision", "answer"),
@@ -731,3 +736,136 @@ def serve_pdf(filename: str):
         print(f"INTERNAL SERVER ERROR serving PDF {filename}: {str(e)}")
         # Return simple 404 instead of 500 if something goes wrong, to avoid scaring user
         raise HTTPException(status_code=404, detail="File could not be served")
+
+
+# ============================================================
+# PDF Highlight Endpoint — returns a PDF with yellow highlights
+# ============================================================
+import fitz  # PyMuPDF
+from fastapi.responses import Response
+
+def _find_pdf_path(filename: str) -> str:
+    """Reuse the fuzzy filename resolution logic from serve_pdf."""
+    decoded_name = unquote(filename).strip()
+    filepath = os.path.join(DATA_DIR, decoded_name)
+
+    if os.path.exists(filepath) and os.path.isfile(filepath):
+        return filepath
+
+    # Normalize dashes
+    normalized_name = decoded_name.replace("\u2013", "-").replace("\u2014", "-")
+    filepath_norm = os.path.join(DATA_DIR, normalized_name)
+    if os.path.exists(filepath_norm) and os.path.isfile(filepath_norm):
+        return filepath_norm
+
+    # Try adding .pdf extension
+    for name in [decoded_name, normalized_name]:
+        filepath_ext = os.path.join(DATA_DIR, name + ".pdf")
+        if os.path.exists(filepath_ext):
+            return filepath_ext
+
+    # Fuzzy scan
+    target_norm = _normalize_for_match(decoded_name)
+    if target_norm.endswith(".pdf"):
+        target_norm = target_norm[:-4]
+    target_stripped = re.sub(r'[^a-z0-9 ]', '', target_norm)
+
+    for f in os.listdir(DATA_DIR):
+        f_norm = _normalize_for_match(f)
+        if f_norm.endswith(".pdf"):
+            f_norm = f_norm[:-4]
+        f_stripped = re.sub(r'[^a-z0-9 ]', '', f_norm)
+        if f_norm == target_norm or f_stripped == target_stripped:
+            return os.path.join(DATA_DIR, f)
+
+    return ""
+
+
+@app.get("/api/pdf-highlight")
+def pdf_highlight(file: str, page: int = 1, snippet: str = "", query: str = ""):
+    """
+    Return a single-page PDF with yellow highlights drawn over the snippet text.
+    Also highlights query keywords if provided.
+    """
+    filepath = _find_pdf_path(file)
+    if not filepath:
+        raise HTTPException(status_code=404, detail=f"PDF not found: {file}")
+
+    if not _is_safe_under_assets_data(filepath):
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    try:
+        doc = fitz.open(filepath)
+        page_idx = max(0, page - 1)
+        if page_idx >= len(doc):
+            page_idx = len(doc) - 1
+
+        pg = doc[page_idx]
+        highlighted = False
+
+        # --- Helper to highlight phrases ---
+        def highlight_texts(phrases, color=(1, 0.95, 0.2), opacity=0.4):
+            nonlocal highlighted
+            for p in phrases:
+                if not p or len(p) < 3: continue
+                # Try exact phrase
+                rects = pg.search_for(p, quads=False)
+                if not rects and len(p) > 20: 
+                    # Try first 20 chars if long fail
+                    rects = pg.search_for(p[:20], quads=False)
+                
+                for rect in rects:
+                    annot = pg.add_highlight_annot(rect)
+                    annot.set_colors(stroke=color)
+                    annot.set_opacity(opacity)
+                    annot.update()
+                    highlighted = True
+
+        # Strategy 1: Highlight full snippet & lines
+        if snippet and snippet.strip():
+            clean_snippet = snippet.strip()
+            # 1a. Attempt full match (newlines normalized)
+            highlight_texts([clean_snippet.replace("\n", " ")])
+            
+            # 1b. Attempt individual lines (split by newlines, periods)
+            lines = re.split(r'[\n\.\u2022]+', clean_snippet) # Split on newlines, dots, bullets
+            valid_lines = [l.strip() for l in lines if len(l.strip()) > 10]
+            highlight_texts(valid_lines)
+
+        # Strategy 2: Highlight Query Keywords (Strategy 3 in our plan)
+        if query and query.strip():
+            # Remove stopwords
+            stop_words = {"a", "an", "the", "is", "are", "was", "were", "of", "in", "on", "at", "to", "for", "with", "by", "about", "as", "from", "mein", "ka", "ki", "ke", "ko", "ne", "aur", "hai", "hain", "kya", "kyun", "kab", "kahan", "kaise", "kon", "who", "what", "where", "when", "why", "how", "batao", "bataen"}
+            
+            q_words = [w for w in re.split(r'\W+', query.lower()) if w and w not in stop_words and len(w) > 2]
+            # Use a slightly different opacity/color? keeping same for now
+            highlight_texts(q_words, opacity=0.5)
+
+        # Generate output
+        out_doc = fitz.open()
+        out_doc.insert_pdf(doc, from_page=page_idx, to_page=page_idx)
+        pdf_bytes = out_doc.tobytes()
+        out_doc.close()
+        doc.close()
+
+        # Prepare safe filename for header (ASCII only to avoid encoding errors)
+        safe_filename = os.path.basename(filepath).encode('ascii', 'ignore').decode('ascii') or "document.pdf"
+        
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={
+                "Content-Disposition": f'inline; filename="highlight_{safe_filename}"',
+                "Content-Security-Policy": "frame-ancestors *",
+                "X-Frame-Options": "ALLOWALL",
+                "Access-Control-Allow-Origin": "*",
+                "Cache-Control": "no-cache",
+            }
+        )
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(f"Error generating highlighted PDF: {e}")
+        raise HTTPException(status_code=500, detail=f"Error highlighting PDF: {str(e)}")
+

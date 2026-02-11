@@ -1,0 +1,59 @@
+DOC with SSO: Annex H Contractual Employees SRs.pdf max_score=0.750
+  HIT: score=0.750 kwscore=0 text=Position Title: - System Support Officer
+Report To: - | Sub Divisional Enforcement Officer, Concerned Wing Head
+Wing: - | Enforcement Station, M&I, IT
+DOC with SSO: Compiled Working Paper_2nd Meeting PERA  max_score=0.750
+  HIT: score=0.750 kwscore=0 text=H R H i r e d ( H Q ) :
+H i r e d ( F i e l d ) :
+6 rounds of recruitment run so far **experts from industry and academia were invited to conduct inte
+  HIT: score=0.750 kwscore=0 text=Performance Appraisal Regulations (Agenda 02 – Flag G) Employee Reporting Officer Countersigning Officer 2nd Countersigning Officer Appellate Authorit
+  HIT: score=0.750 kwscore=0 text=Head Count
+
+• SPPP - 08
+
+Total - 08 Chief Instructor / SPPP-1 (1) Senior Manager Training & Admin /SPPP-2 (1) Deputy Manger Training/ SPPP-4 (1) Assis
+  HIT: score=0.750 kwscore=0 text=District Board SDEO BS 16/17 (1) Sr. Sergeant* BS 09 (2) System Support Officer SPPP 5 (3/2) Enforcement Officer BS 14 (4/3/2) Investigation Officer B
+  HIT: score=0.750 kwscore=0 text=Enforcement Stations at Lahore(10) Head Count
+
+• BS 18 - 01
+• BS 16/17 - 01
+• BS 14 - 04
+• BS 11 - 04
+• BS 09 - 02
+• BS 07 - 48+5
+
+• SPPP - 04
+• Total
+  HIT: score=0.750 kwscore=0 text=Post Name BS Strength Per ES Total No. ESs Total Strength Secretary District Board BS 18 1 in each District* 1* Sub Divisional Enforcement Officer BS 
+  HIT: score=0.750 kwscore=0 text=Enforcement Stations at Divisional HQs (15) Head Count
+
+• BS 18 - 01
+• BS 16/17 - 01
+• BS 14 - 03
+• BS 11 - 03
+• BS 09 - 02
+• BS 07 - 48+4
+
+• SPPP - 0
+DOC with SSO: Annex G Employees SRs 1.pdf max_score=0.750
+  HIT: score=0.750 kwscore=0 text=Position Title: | Deputy Director (Implementation)
+Reports to: | Additional Director General (Monitoring & Implementation)
+Purpose of the Position:
+Th
+DOC with SSO: Annex I (Performance Appraisal).pdf max_score=0.750
+  HIT: score=0.750 kwscore=0 text=Schedule-II: Hierarchy of Performance Appraisal for Contractual Employees Sr No. SPPP Grade/Title Reporting Officer 1st Countersigning officer 2nd Cou
+
+SSO in LLM context: True
+SSO at char 87/27339
+Context snippet: ...8)
+Content: Position Title: - System Support Officer
+Report To: - | Sub Divisional Enforcement Officer, Concerned Wing Head
+Wing: - | Enforcement Station, M&I, IT & Communication, Training
+Purpose of the Position:
+The System Suppo...
+
+ANSWER_MIN_TOP_SCORE=0.28
+HIT_MIN_SCORE=0.26
+
+Decision: refuse
+Answer: Yeh information PERA documents mein available nahi hai. Mazeed madad ke liye PERA se contact karein.

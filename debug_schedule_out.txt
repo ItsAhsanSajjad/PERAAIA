@@ -1,0 +1,86 @@
+=== SCHEDULE CHUNKS IN INDEX ===
+Total chunks with 'schedule': 375
+  Chunk 2: (10 of 2024) The Punjab Enforcement p.2
+    (i) “Court” means the Court of Session established under the Code and also includes the Court of an Additional Sessions Judge; (j) “custodian of the S
+
+  Chunk 3: (10 of 2024) The Punjab Enforcement p.3
+    expiry of period of lease or license, continues to remain in the occupation of the State property or a n allottee who after the expiry or cancellation
+
+  Chunk 4: (10 of 2024) The Punjab Enforcement p.4
+    (mm) “reference” means a reference made by a Department wherein any violation or offence is reported to the Authority or to the Enforcement Station fo
+
+  Chunk 5: (10 of 2024) The Punjab Enforcement p.5
+    the Punjab Enforcement and Regulatory Authority for c arrying out the purposes of the Act. (2) The Authority shall be a body corporate, having perpetu
+
+  Chunk 8: (10 of 2024) The Punjab Enforcement p.8
+    (a) oversee, spearhead and monitor the implementation of the policy guidelines issued by the Government for the purposes of the Act; (b) appoint Heari
+
+  Chunk 9: (10 of 2024) The Punjab Enforcement p.9
+    (r) sanction payment of reward to any person, inclu ding any employee, who has made an exceptional effort towards accomplishing the objective of the A
+
+  Chunk 10: (10 of 2024) The Punjab Enforcement p.10
+    (5) The quorum for a meeting of the Board shall be one half of the total members. (6) The Secretary, on the direction of the Chairperson, sh all call 
+
+  Chunk 11: (10 of 2024) The Punjab Enforcement p.11
+    and Whistle-blower, who has made an exceptional effort towards accomplishing the objective of the Act; and (h) such other functions and exercise such 
+
+  Chunk 12: (10 of 2024) The Punjab Enforcement p.12
+    (b) confiscation of articles, carts or vehicles; (c) sealing of any premises; (d) removal of encroachments or public nuisance; (e) any ancillary matte
+
+  Chunk 13: (10 of 2024) The Punjab Enforcement p.13
+    (o) analyze the requisition sent by Enforcement Station and forward the same to the Board; (p) inspect any site or record, seek reports and summon the
+
+  Chunk 15: (10 of 2024) The Punjab Enforcement p.15
+    (7) The Authority may frame regulations for supervision and administration of Enforcement Stations and its employees.
+20. Requisition by the Enforceme
+
+  Chunk 16: (10 of 2024) The Punjab Enforcement p.16
+    (l) ensure discipline of the Enforcement Station; (m) keep record of all registers as may be prescribed; (n) issue certified copies of record; (o) con
+
+  Chunk 17: (10 of 2024) The Punjab Enforcement p.17
+    (b) power to enter, inspect , search and seal any private property, building or place, subject to warrant or order of the Magistrate in whose jurisdic
+
+  Chunk 18: (10 of 2024) The Punjab Enforcement p.18
+    (xiv) power to initiate and conduct inquiry under the Act and Scheduled laws; (xv) impose fine on the offenders as provide d under the Act and Schedul
+
+  Chunk 19: (10 of 2024) The Punjab Enforcement p.19
+    reason to believe that an offence has occurred or there is apprehension of so happening; (b) power to enter, inspect, search and seal any private prop
+
+
+=== Query: 'schedule 3' ===
+Decision: refuse
+Answer: Yeh information PERA documents mein available nahi hai. Mazeed madad ke liye PERA se contact karein.
+Top 3 chunks:
+  [1] subj=1 score=0.691 Annex M Medical Policy.pdf p.6
+    Schedule II Group Life Insurance (GLI) Limits for Contractual Employees of PERA excluding Deputationists SPPP Group Life
+  [2] subj=1 score=0.691 Annex G Employees SRs 1.pdf p.24
+    Schedule-II Conditions of Service Directorate General Sr. No. Name of Post with BS Appointing Authority Minimum Qualific
+  [3] subj=1 score=0.690 Annex H Contractual Employees  p.21
+    Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)
+Report To: -
+
+=== Query: 'schedule 4' ===
+Decision: refuse
+Answer: Yeh information PERA documents mein available nahi hai. Mazeed madad ke liye PERA se contact karein.
+Top 3 chunks:
+  [1] subj=1 score=0.691 Annex M Medical Policy.pdf p.6
+    Schedule II Group Life Insurance (GLI) Limits for Contractual Employees of PERA excluding Deputationists SPPP Group Life
+  [2] subj=1 score=0.691 Annex G Employees SRs 1.pdf p.24
+    Schedule-II Conditions of Service Directorate General Sr. No. Name of Post with BS Appointing Authority Minimum Qualific
+  [3] subj=1 score=0.690 Annex H Contractual Employees  p.21
+    Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)
+Report To: -
+
+=== Query: 'schedule 3 kya hai' ===
+Decision: refuse
+Answer: Yeh information PERA documents mein available nahi hai. Mazeed madad ke liye PERA se contact karein.
+Top 3 chunks:
+  [1] subj=2 score=0.405 Flag-C; O&Ps Code.pdf p.4
+    Form 3.6: Hearing Proceedings and Order Sheet ..........................................................................
+  [2] subj=2 score=0.405 Annex I (Performance Appraisal p.13
+    Schedule-VIII: Authority to Approve Honorarium and Cash Prize Employees Authority for Approval of Honorarium Enforcement
+  [3] subj=2 score=0.404 Compiled Working Paper_2nd Mee p.5
+    the Punjab Enforcement | and Regulatory Authority | for c arrying out the
+
+purposes of the Act.
+(2) | The Authority shal

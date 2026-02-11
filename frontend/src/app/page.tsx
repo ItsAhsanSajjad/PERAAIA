@@ -18,6 +18,7 @@ interface Reference {
   open_url?: string;
   snippet?: string;
   score?: number;
+  query?: string;
   chunk_index?: number;
 }
 interface ChatSession {
@@ -86,7 +87,7 @@ export default function Home() {
   const [latestIsNew, setLatestIsNew] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [pdfModal, setPdfModal] = useState<{ url: string; title: string } | null>(null);
+  const [pdfModal, setPdfModal] = useState<{ url: string; title: string; snippet?: string } | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
@@ -258,10 +259,14 @@ export default function Home() {
   /* ─── Open PDF ─── */
   const openPdf = (ref: Reference) => {
     const pg = ref.page_start || ref.page || 1;
-    const url = ref.open_url
-      ? ref.open_url.replace(/^https?:\/\/[^/]+/, API_URL)
-      : `${API_URL}/pdf/${encodeURIComponent(ref.document)}#page=${pg}`;
-    setPdfModal({ url, title: `📄 ${ref.document} — Page ${pg}` });
+    const snippet = ref.snippet || "";
+    // Use the highlight endpoint if we have a snippet, otherwise fall back to plain PDF
+    const url = snippet
+      ? `${API_URL}/api/pdf-highlight?file=${encodeURIComponent(ref.document)}&page=${pg}&snippet=${encodeURIComponent(snippet.slice(0, 300))}&query=${encodeURIComponent(ref.query || "")}`
+      : ref.open_url
+        ? ref.open_url.replace(/^https?:\/\/[^/]+/, API_URL)
+        : `${API_URL}/pdf/${encodeURIComponent(ref.document)}#page=${pg}`;
+    setPdfModal({ url, title: `📄 ${ref.document} — Page ${pg}`, snippet });
   };
 
   /* ─── Render Bot Content ─── */
@@ -658,6 +663,7 @@ export default function Home() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="modal-overlay absolute inset-0" onClick={() => setPdfModal(null)} />
           <div className="modal-content relative w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden">
+            {/* Header */}
             <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
               <div className="flex items-center gap-2">
                 <span className="text-lg">📄</span>
@@ -680,6 +686,31 @@ export default function Home() {
                 >✕</button>
               </div>
             </div>
+
+            {/* Snippet Preview */}
+            {pdfModal.snippet && (
+              <div className="px-5 py-3" style={{ borderBottom: "1px solid var(--border)", background: "rgba(255, 243, 176, 0.08)" }}>
+                <div className="flex items-start gap-2">
+                  <span className="text-xs mt-0.5" style={{ color: "var(--text-faint)" }}>🔍</span>
+                  <div>
+                    <p className="text-[10px] font-semibold mb-1" style={{ color: "var(--text-faint)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Extracted Text</p>
+                    <p className="text-xs leading-relaxed" style={{
+                      color: "var(--text-primary)",
+                      background: "rgba(255, 230, 0, 0.12)",
+                      borderLeft: "3px solid rgba(255, 200, 0, 0.6)",
+                      padding: "8px 12px",
+                      borderRadius: "0 8px 8px 0",
+                      maxHeight: 80,
+                      overflowY: "auto",
+                    }}>
+                      {pdfModal.snippet.slice(0, 300)}{pdfModal.snippet.length > 300 ? "…" : ""}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* PDF Iframe */}
             <iframe src={pdfModal.url} className="flex-1 w-full border-0" title="PDF Viewer" />
           </div>
         </div>

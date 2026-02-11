@@ -1,0 +1,19 @@
+SSO: PASS | answer
+  answer: **system support officer** ka role pera mein kuch is tarah hai:
+
+- **report to**: sub divisional enf
+Schedule-3: FAIL missing: ['schedule-iii', 'kpa'] | refuse
+  answer: yeh information pera documents mein available nahi hai. mazeed madad ke liye pera se contact karein.
+Schedule-4: PASS | answer
+  answer: **schedule-iv** outlines the **rules / regulations adopted by the authority**. the following are the
+Schedule-5: PASS | answer
+  answer: **schedule-v** pertains to the **evaluation rating scale for employees** within the punjab enforceme
+Act-title: PASS | answer
+  answer: the short title of the act is the **punjab enforcement and regulation act 2024** [1].
+DG-name: FAIL missing: ['rizwan'] | answer
+  answer: **director general** ka naam **capt. farrukh atiq khan (rtd.)** hai [1].
+Section-32: PASS | answer
+  answer: section 32 mein **arrest** ke procedure ka zikr hai. iske mutabiq:
+
+1. **arrest procedure**:
+   - en

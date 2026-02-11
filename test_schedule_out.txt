@@ -1,0 +1,61 @@
+Query: 'schedule 3' -> Expanded: 'Schedule-III'
+Decision: answer
+Answer: **Schedule-III** outlines the **Guidelines for Key Performance Areas (KPAs)** for Employees of the Directorate General. Here are the key components:
+
+- **Primary Job Responsibilities (50%)**: Execution of assigned duties as per Terms of Service under service regulations.
+- **Strategic Planning & Pol
+References: 3
+  {'id': 1, 'document': 'Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf', 'page_start': 346, 'open_url': 'https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=346', 'snippet': 'Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communication\nPurpose of the Position:\n', 'score': 0.6906276226043702}
+  {'id': 2, 'document': 'Annex H Contractual Employees SRs.pdf', 'page_start': 21, 'open_url': 'https://ask.pera.gop.pk/assets/data/Annex H Contractual Employees SRs.pdf#page=21', 'snippet': 'Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communications\nPurpose of the Position:', 'score': 0.6902280986309052}
+  {'id': 3, 'document': 'Annex H Contractual Employees SRs.pdf', 'page_start': 67, 'open_url': 'https://ask.pera.gop.pk/assets/data/Annex H Contractual Employees SRs.pdf#page=67', 'snippet': 'Position Title: Manager (Research & Implementation)\nReport To: | Assistant Director (Implementation)\nWing: - | Monitoring & Implementation\nPurpose of the Position:\nManager (Research & Implementation) ', 'score': 0.6871788561344147}
+Top 3 chunks:
+  [1] subj=0 score=0.691 Compiled Working Paper_2nd Mee p.346
+    Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)
+Report To: -
+  [2] subj=0 score=0.690 Annex H Contractual Employees  p.21
+    Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)
+Report To: -
+  [3] subj=0 score=0.687 Annex H Contractual Employees  p.67
+    Position Title: Manager (Research & Implementation)
+Report To: | Assistant Director (Implementation)
+Wing: - | Monitorin
+
+Query: 'schedule 4' -> Expanded: 'Schedule-IV'
+Decision: answer
+Answer: **Schedule-IV** outlines the **Rules / Regulations Adopted by the Authority** under the Punjab Enforcement and Regulatory Authority (PERA). The following are the key components listed in this schedule:
+
+1. **PEEDA Act, 2006**
+2. **Deputation Policy, 1998**
+3. **Punjab Civil Servants (Conduct) Rules,
+References: 2
+  {'id': 1, 'document': 'Annex G Employees SRs 1.pdf', 'page_start': 58, 'open_url': 'https://ask.pera.gop.pk/assets/data/Annex G Employees SRs 1.pdf#page=58', 'snippet': 'Schedule-IV Rules / Regulations Adopted by the Authority\n\n1. PEEDA Act, 2006.\n2. Deputation Policy, 1998.\n3. Punjab Civil Servants (Conduct) Rules, 1966.\n4. Punjab Civil Servants (Pension), Rules, as ', 'score': 0.65}
+  {'id': 2, 'document': 'Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf', 'page_start': 324, 'open_url': 'https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=324', 'snippet': 'Schedule-IV Rules / Regulations Adopted by the Authority\n\n1. PEEDA Act, 2006.\n2. Deputation Policy, 1998.\n3. Punjab Civil Servants (Conduct) Rules, 1966.\n4. Punjab Civil Servants (Pension), Rules, as ', 'score': 0.65}
+Top 3 chunks:
+  [1] subj=0 score=0.650 Annex G Employees SRs 1.pdf p.1
+    THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) (AMENDED) REGULATIONS, 2025 CONT
+  [2] subj=0 score=0.650 Annex G Employees SRs 1.pdf p.7
+    iii. Scrutinize received applications to ensure completeness and eligibility. iv. Shortlist candidates in a transparent 
+  [3] subj=0 score=0.650 Annex G Employees SRs 1.pdf p.58
+    Schedule-IV Rules / Regulations Adopted by the Authority
+
+1. PEEDA Act, 2006.
+2. Deputation Policy, 1998.
+3. Punjab Civi
+
+Query: 'schedule 5' -> Expanded: 'Schedule-V'
+Decision: answer
+Answer: **Schedule-V** pertains to the **Evaluation Rating Scale for Employees** within the Punjab Enforcement and Regulatory Authority (PERA). Here are the key details:
+
+- **Score Rating Action based on Scores**:
+  - **85-100**: **Outstanding**
+    - Eligible for accelerated promotions where applicable, le
+References: 1
+  {'id': 1, 'document': 'Annex I (Performance Appraisal).pdf', 'page_start': 10, 'open_url': 'https://ask.pera.gop.pk/assets/data/Annex I (Performance Appraisal).pdf#page=10', 'snippet': 'Schedule-V: Evaluation Rating Scale for Employees Score Rating Action based on Scores Honorarium 85-100 Outstanding Eligible for accelerated promotions where applicable, leadership roles, honorarium, ', 'score': 0.65}
+Top 3 chunks:
+  [1] subj=0 score=0.688 Annex I (Performance Appraisal p.13
+    Schedule-VIII: Authority to Approve Honorarium and Cash Prize Employees Authority for Approval of Honorarium Enforcement
+  [2] subj=0 score=0.687 Annex G Employees SRs 1.pdf p.59
+    Schedule-V Transfer and Posting of the Employees Sr. No Position Grade Competent Authority 1 ADG BS-19 Director General
+
+  [3] subj=0 score=0.686 Annex I (Performance Appraisal p.11
+    Schedule-VI: Actions Available for Low-Performing Employees Employee Level Action Contractual Employee Enforcement Stati

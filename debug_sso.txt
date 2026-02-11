@@ -1,0 +1,70 @@
+Query: 'sso kia hota'
+Decision: answer
+Answer: **System Support Officer** ka role PERA mein kuch khaas responsibilities aur duties par mabni hota hai. Yeh position **Sub Divisional Enforcement Officer** (SDEO) ko report karti hai aur Enforcement Stations par kaam karti hai. Iska maqsad IT infrastructure aur office administration ko smoothly chalana hai. 
+
+### Responsibilities:
+- **Hardware Management**: Desktops, laptops, printers, aur scanners ki troubleshooting aur management.
+- **Software Maintenance**: Software applications ko install, configure, aur maintain karna.
+- **Network Management**: Network connectivity issues ko monitor aur resolve karna.
+- **Vendor Coordination**: External IT support providers ke sath coordination.
+- **Record Keeping**: Hardware aur software inventory ka record rakhna.
+- **Duty Roster Management**: PERA ke personnel ke liye duty roster tayar karna.
+- **Official Correspondence**: Head Office aur doosri departments ko official correspondence manage karna.
+- **Financial Record Keeping**: Office expenses aur vendor payments ka record rakhna.
+- **Procurement Coordination**: Office supplies ki inventory manage karna aur procurement karna.
+- **Periodic Reporting**: IT system status aur administrative activities par reports tayar karna.
+
+Yeh position un logon ke liye hai jinke paas **16 saal ki education** aur **2 saal ka IT experience** ho, jo ke kisi reputable organization mein ho. [1]
+
+References returned:
+  [1] Annex H Contractual Employees SRs.pdf p.38
+       snippet: Position Title: - System Support Officer
+Report To: - | Sub Divisional Enforcement Officer, Concerne
+
+Top 10 ranked chunks:
+  [1] subj=3 score=0.750 Annex H Contractual Employees SRs.p p.38
+      Position Title: - System Support Officer
+Report To: - | Sub Divisional Enforcement Officer, Concerned Wing Head
+Wing: - 
+  [2] subj=3 score=0.750 Compiled Working Paper_2nd Meeting  p.72
+      H R H i r e d ( H Q ) :
+H i r e d ( F i e l d ) :
+6 rounds of recruitment run so far **experts from industry and academi
+  [3] subj=3 score=0.750 Compiled Working Paper_2nd Meeting  p.116
+      Performance Appraisal Regulations (Agenda 02 – Flag G) Employee Reporting Officer Countersigning Officer 2nd Countersign
+  [4] subj=3 score=0.750 Compiled Working Paper_2nd Meeting  p.164
+      Head Count
+
+• SPPP - 08
+
+Total - 08 Chief Instructor / SPPP-1 (1) Senior Manager Training & Admin /SPPP-2 (1) Deputy Man
+  [5] subj=3 score=0.750 Compiled Working Paper_2nd Meeting  p.167
+      District Board SDEO BS 16/17 (1) Sr. Sergeant* BS 09 (2) System Support Officer SPPP 5 (3/2) Enforcement Officer BS 14 (
+  [6] subj=3 score=0.750 Compiled Working Paper_2nd Meeting  p.170
+      Enforcement Stations at Lahore(10) Head Count
+
+• BS 18 - 01
+• BS 16/17 - 01
+• BS 14 - 04
+• BS 11 - 04
+• BS 09 - 02
+• BS 
+  [7] subj=3 score=0.750 Compiled Working Paper_2nd Meeting  p.171
+      Post Name BS Strength Per ES Total No. ESs Total Strength Secretary District Board BS 18 1 in each District* 1* Sub Divi
+  [8] subj=3 score=0.750 Compiled Working Paper_2nd Meeting  p.172
+      Enforcement Stations at Divisional HQs (15) Head Count
+
+• BS 18 - 01
+• BS 16/17 - 01
+• BS 14 - 03
+• BS 11 - 03
+• BS 09 -
+  [9] subj=3 score=0.750 Annex G Employees SRs 1.pdf p.35
+      Position Title: | Deputy Director (Implementation)
+Reports to: | Additional Director General (Monitoring & Implementatio
+  [10] subj=3 score=0.750 Annex I (Performance Appraisal).pdf p.7
+      Schedule-II: Hierarchy of Performance Appraisal for Contractual Employees Sr No. SPPP Grade/Title Reporting Officer 1st 
+
+
+Searching ALL chunks for 'sso' keyword:
+  Total SSO chunks found: 0

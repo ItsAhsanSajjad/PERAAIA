@@ -1,0 +1,26 @@
+=== Query: 'schedule 3' -> 'Schedule-III schedule-iii' ===
+Context length: 26156
+First 500 chars:
+[1] Source: Annex G Employees SRs 1.pdf (Page 28)
+Content: Schedule-III Terms and Reference for Service
+Position Title: | Director General PERA
+Reports To: | Authority
+Purpose of the Position:
+He will be responsible for assisting the Authority in performing its functions and exercising its powers as mentioned in the Act. He will carry out overall supervision of operations of HQ and Enforcement Stations on behalf of the Authority. He will be resp onsible for providing all kinds of operational sup
+
+=== Query: 'schedule 4' -> 'Schedule-IV schedule-iv' ===
+Context length: 28043
+First 500 chars:
+[1] Source: Annex G Employees SRs 1.pdf (Page 58)
+Content: Schedule-IV Rules / Regulations Adopted by the Authority
+
+1. PEEDA Act, 2006.
+2. Deputation Policy, 1998.
+3. Punjab Civil Servants (Conduct) Rules, 1966.
+4. Punjab Civil Servants (Pension), Rules, as amended from time to time.
+5. Punjab Revised Leave Rules, 1981.
+6. Punjab Police (E&D), Rules, 1975, as amended from time to time.
+7. Punjab GP Fund Rules, 1978.
+8. Recruitment Policy, 2022, as explained in Section 14 of the Regulations
+
+---

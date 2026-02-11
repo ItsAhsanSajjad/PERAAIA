@@ -28,13 +28,23 @@ _ABBREV_MAP = {
     "it": "Information Technology",
     "eo": "Enforcement Officer",
     "io": "Investigation Officer",
-    "sso": "Senior Staff Officer",
+    "sso": "System Support Officer",
     "tor": "Terms of Reference",
     "jd": "Job Description",
     "sr": "Service Rules",
     "sppp": "Special Pay Package PERA",
     "lms": "Learning Management System",
     "faqs": "Frequently Asked Questions",
+    # Typos for "schedule" to ensure normalization works
+    "schedudle": "schedule",
+    "scheduel": "schedule",
+    "scedule": "schedule",
+    "sehdule": "schedule",
+    "skedule": "schedule",
+    "schdule": "schedule",
+    "shcedule": "schedule",
+    "shadule": "schedule",
+    "schedul": "schedule",
 }
 
 # Smart context expansion keywords
@@ -65,7 +75,7 @@ def _get_page_map(chunks: List[Dict[str, Any]]) -> Dict[str, List[int]]:
     return m
 
 def _expand_abbreviations(query: str) -> str:
-    """Expand known abbreviations in-place for better embedding matches."""
+    """Expand known abbreviations and normalize schedule numbers."""
     words = query.split()
     expanded = []
     for w in words:
@@ -74,7 +84,21 @@ def _expand_abbreviations(query: str) -> str:
             expanded.append(_ABBREV_MAP[key])
         else:
             expanded.append(w)
-    return " ".join(expanded)
+    result = " ".join(expanded)
+    
+    # Schedule number normalization: "schedule 3" -> "Schedule-III"
+    # Replace the Arabic numeral with the Roman numeral format used in PERA documents
+    _arabic_to_roman = {"1": "I", "2": "II", "3": "III", "4": "IV", "5": "V",
+                        "6": "VI", "7": "VII", "8": "VIII", "9": "IX", "10": "X"}
+    m = _re.search(r'\bschedule[\s\-]*(\d+)\b', result, _re.IGNORECASE)
+    if m:
+        num = m.group(1)
+        roman = _arabic_to_roman.get(num)
+        if roman:
+            # Replace "schedule 3" with "Schedule-III" in the main query
+            result = result[:m.start()] + f"Schedule-{roman}" + result[m.end():]
+    
+    return result
 
 _client = None
 
@@ -197,12 +221,13 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
     
     # Run keyword search regardless of FAISS score (Hybrid Search)
     if True: 
-        # Extract meaningful words from query (skip common Urdu/English stopwords)
+        # Extract meaningful words from EXPANDED query (includes abbreviation expansions)
         import re
-        q_lower = re.sub(r'[^\w\s]', '', question.lower())  # Strip punctuation
+        q_lower = re.sub(r'[^\w\s\-]', '', expanded_q.lower())  # Use expanded_q; preserve hyphens
         _stop = {"kya", "hai", "kon", "kaun", "ki", "ka", "ke", "se", "ko", "ne", "ye", "yeh",
                  "what", "who", "is", "the", "a", "an", "of", "in", "for", "and", "how", "where",
-                 "when", "which", "does", "was", "are", "kia", "hain", "mein", "par", "say"}
+                 "when", "which", "does", "was", "are", "kia", "hain", "mein", "par", "say",
+                 "hota", "hoti", "hote", "karta", "karte", "karo", "bata", "batao", "wala", "wali"}
         q_words = [w for w in q_lower.split() if w not in _stop and len(w) > 1]
         
         if len(q_words) >= 1:

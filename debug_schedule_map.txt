@@ -1,0 +1,116 @@
+Schedule variants found in index:
+
+  'schedule -i' -> 6 chunks
+    Chunk 155: Annex H Contractual Employees SRs.p p.55
+      Position Title: - Assistant Manager (Personnel) Report To: - Assistant Director (Personnel) Wing: - 
+    Chunk 186: Annex I (Performance Appraisal).pdf p.3
+      4. Appraisal Mechanism. – (1) SMART goals shall be set in the start of each calendar year,
+these goa
+    Chunk 195: Annex I (Performance Appraisal).pdf p.12
+      Schedule-VII: Appellate Authority for Employees Employee of Appellate Authority Enforcement Station 
+
+  'schedule -ii' -> 2 chunks
+    Chunk 204: Annex M Medical Policy.pdf p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (MEDICAL) POLICY, 2025 CONTENTS
+1. Objective
+2. Shor
+    Chunk 545: Compiled Working Paper_2nd Meeting  p.329
+      (i) “Organizational Structure ” means the organizational structure g iven in Schedule-I of these Reg
+
+  'schedule -vii' -> 1 chunks
+    Chunk 186: Annex I (Performance Appraisal).pdf p.3
+      4. Appraisal Mechanism. – (1) SMART goals shall be set in the start of each calendar year,
+these goa
+
+  'schedule -viii' -> 1 chunks
+    Chunk 187: Annex I (Performance Appraisal).pdf p.4
+      (2) The Director General shall approve and decide the amount of honorarium subject to equivalent to 
+
+  'schedule 1' -> 2 chunks
+    Chunk 447: Compiled Working Paper_2nd Meeting  p.231
+      Schedule 1 2 3 4 5 6 Section Description of Offence Nature of Offence Fine Up to (in Rs.) Officer/Bo
+    Chunk 738: Flag-C; O&Ps Code.pdf p.48
+      Schedule 1 2 3 4 5 6 Section Description of Offence Nature of Offence Fine Up to (in Rs.) Officer/Bo
+
+  'schedule i' -> 1 chunks
+    Chunk 208: Annex M Medical Policy.pdf p.5
+      Schedule I Inpatient Department (IPD) Limits (excluding Deputationist) * Total IPD benefit per emplo
+
+  'schedule ii' -> 2 chunks
+    Chunk 209: Annex M Medical Policy.pdf p.6
+      Schedule II Group Life Insurance (GLI) Limits for Contractual Employees of PERA excluding Deputation
+    Chunk 261: Compiled Working Paper_2nd Meeting  p.47
+      5.2 Therefore, it is proposed that DG PERA being procuring agency may be allowed to enter into contr
+
+  'schedule iii' -> 1 chunks
+    Chunk 185: Annex I (Performance Appraisal).pdf p.2
+      GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY Lahore, Dated the 12th November
+
+  'schedule v' -> 1 chunks
+    Chunk 390: Compiled Working Paper_2nd Meeting  p.179
+      Transfer and Posting of the Employees - (Schedule V) Sr. No Position Grade Competent Authority 1 Dir
+
+  'schedule-i' -> 38 chunks
+    Chunk 40: Annex G Employees SRs 1.pdf p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) (AMENDED) RE
+    Chunk 42: Annex G Employees SRs 1.pdf p.3
+      Regulatory Authority (Appointment and Conditions of Service for Contractual Employees) Regulations, 
+    Chunk 101: Annex H Contractual Employees SRs.p p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTU
+
+  'schedule-ii' -> 79 chunks
+    Chunk 40: Annex G Employees SRs 1.pdf p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) (AMENDED) RE
+    Chunk 41: Annex G Employees SRs 1.pdf p.2
+      GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY Lahore, Dated the 12th November
+    Chunk 43: Annex G Employees SRs 1.pdf p.4
+      (2) A word or expression used in the se Regulations but not defined shall have the same meaning as a
+
+  'schedule-iii' -> 109 chunks
+    Chunk 40: Annex G Employees SRs 1.pdf p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) (AMENDED) RE
+    Chunk 43: Annex G Employees SRs 1.pdf p.4
+      (2) A word or expression used in the se Regulations but not defined shall have the same meaning as a
+    Chunk 67: Annex G Employees SRs 1.pdf p.28
+      Schedule-III Terms and Reference for Service Position Title: Director General PERA Reports To: Autho
+
+  'schedule-iv' -> 8 chunks
+    Chunk 40: Annex G Employees SRs 1.pdf p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) (AMENDED) RE
+    Chunk 46: Annex G Employees SRs 1.pdf p.7
+      iii. Scrutinize received applications to ensure completeness and eligibility. iv. Shortlist candidat
+    Chunk 97: Annex G Employees SRs 1.pdf p.58
+      Schedule-IV Rules / Regulations Adopted by the Authority
+1. PEEDA Act, 2006.
+2. Deputation Policy, 1
+
+  'schedule-v' -> 9 chunks
+    Chunk 40: Annex G Employees SRs 1.pdf p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) (AMENDED) RE
+    Chunk 44: Annex G Employees SRs 1.pdf p.5
+      provided that the Appointing Authority may extend the period of probation for another year, not furt
+    Chunk 98: Annex G Employees SRs 1.pdf p.59
+      Schedule-V Transfer and Posting of the Employees Sr. No Position Grade Competent Authority 1 ADG BS-
+
+  'schedule-vi' -> 7 chunks
+    Chunk 40: Annex G Employees SRs 1.pdf p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) (AMENDED) RE
+    Chunk 100: Annex G Employees SRs 1.pdf p.61
+      Schedule-VI Special Allowance & Benefits Sr. No. BS Pay + Allowance PERA Special Allowance Deputatio
+    Chunk 184: Annex I (Performance Appraisal).pdf p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (PERFORMANCE APPRAISAL) (AMENDED) REGULATIONS, 2025 
+
+  'schedule-vii' -> 2 chunks
+    Chunk 184: Annex I (Performance Appraisal).pdf p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (PERFORMANCE APPRAISAL) (AMENDED) REGULATIONS, 2025 
+    Chunk 195: Annex I (Performance Appraisal).pdf p.12
+      Schedule-VII: Appellate Authority for Employees Employee of Appellate Authority Enforcement Station 
+
+  'schedule-viii' -> 4 chunks
+    Chunk 184: Annex I (Performance Appraisal).pdf p.1
+      THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (PERFORMANCE APPRAISAL) (AMENDED) REGULATIONS, 2025 
+    Chunk 186: Annex I (Performance Appraisal).pdf p.3
+      4. Appraisal Mechanism. – (1) SMART goals shall be set in the start of each calendar year,
+these goa
+    Chunk 187: Annex I (Performance Appraisal).pdf p.4
+      (2) The Director General shall approve and decide the amount of honorarium subject to equivalent to 

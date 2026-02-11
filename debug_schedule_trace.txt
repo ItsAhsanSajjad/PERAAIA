@@ -1,0 +1,9 @@
+expanded_q: 'Schedule-III'
+q_lower (after strip punct): 'scheduleiii'
+q_words: ['scheduleiii']
+  'scheduleiii' in chunk67: False
+  'schedule-iii' in chunk67: True
+
+BUG CHECK: re.sub strips hyphen!
+  Input: 'schedule-iii'
+  After re.sub: 'scheduleiii'

@@ -1,0 +1,101 @@
+Total SSO matches: 16
+MATCH 'system support' -> Chunk 74: Annex G Employees SRs 1.pdf p.35
+  Position Title: Deputy Director (Implementation) Reports to: Additional Director General (Monitoring & Implementation) Purpose of the Position:
+The Deputy Director (Implementation) shall be responsible for ensuring the effective enforcement of PERA’s mandate across the province, maintaining operatio
+
+MATCH 'system support' -> Chunk 138: Annex H Contractual Employees SRs.pdf p.38
+  Position Title: - System Support Officer Report To: - Sub Divisional Enforcement Officer, Concerned Wing Head Wing: - Enforcement Station, M&I, IT & Communication, Training Purpose of the Position:
+The System Support Officer assist the SDEO with the various functions at Enforcement Stations. includi
+
+MATCH 'system support' -> Chunk 190: Annex I (Performance Appraisal).pdf p.7
+  Schedule-II: Hierarchy of Performance Appraisal for Contractual Employees Sr No. SPPP Grade/Title Reporting Officer 1st Countersigning officer 2nd Countersigning officer Appellate Authority 1 SPPP-1 Director General - - Secretary I & C 2 Head Legal (SPPP-2) Director General - - Secretary I & C 2 SPP
+
+MATCH 'system support' -> Chunk 286: Compiled Working Paper_2nd Meeting PERA  p.72
+  H R H i r e d ( H Q ) :
+H i r e d ( F i e l d ) :
+6 rounds of recruitment run so far **experts from industry and academia were invited to conduct interviews Govt. officers and staff: 19 16Contractual**:
+System Support Officer = 98/106 Prosecutor = 0/53
+
+MATCH 'system support' -> Chunk 327: Compiled Working Paper_2nd Meeting PERA  p.116
+  Performance Appraisal Regulations (Agenda 02 – Flag G) Employee Reporting Officer Countersigning Officer 2nd Countersigning Officer Appellate Authority Secretary District Board Chairperson District Board Commissioner Director General Secretary I & C Sub-Divisional Enforcement Officer Chairperson Dis
+
+MATCH 'system support' -> Chunk 375: Compiled Working Paper_2nd Meeting PERA  p.164
+  Head Count
+
+• SPPP - 08
+Total - 08 Chief Instructor / SPPP-1 (1) Senior Manager Training & Admin /SPPP-2 (1) Deputy Manger Training/ SPPP-4 (1) Assistant Manager Admin & Logistics / SPPP- 5 (1) Training Wing Senior Manager Academics /SPPP-2 (1) Deputy Manger Academics / SPPP-4 (1) Assistant Manager 
+
+MATCH 'system support' -> Chunk 378: Compiled Working Paper_2nd Meeting PERA  p.167
+  District Board SDEO BS 16/17 (1) Sr. Sergeant* BS 09 (2) System Support Officer SPPP 5 (3/2) Enforcement Officer BS 14 (4/3/2) Investigation Officer BS 11 (3/2/1) Enforcement Station - Lhr, Div, Dist, Teh HQs Head Count
+
+• Lahore HQs - 69 (68 x 10)+1
+• Div HQs - 984 (65 x 15)+9
+• District HQs - 2046
+
+MATCH 'system support' -> Chunk 381: Compiled Working Paper_2nd Meeting PERA  p.170
+  Enforcement Stations at Lahore(10) Head Count
+• BS 18 - 01
+• BS 16/17 - 01
+• BS 14 - 04
+• BS 11 - 04
+• BS 09 - 02
+• BS 07 - 48+5
+
+• SPPP - 04
+• Total - 68+1
+District Board SDEO BS 16/17 (1) Sr. Sergeant* BS 09 (2) System Support Officer SPPP 5 (3) Enforcement Officer BS 14 (4) Investigation Officer 
+
+MATCH 'system support' -> Chunk 382: Compiled Working Paper_2nd Meeting PERA  p.171
+  Post Name BS Strength Per ES Total No. ESs Total Strength Secretary District Board BS 18 1 in each District* 1* Sub Divisional Enforcement Officer BS 16/17 1 Enforcement Officer BS 14 4 40 Investigation Officer BS 11 4 40 Sr. Sergeant BS 09 2 20 Sergeant BS 07 48+5 530 Prosecutor SPPP-5 1 10 System 
+
+MATCH 'system support' -> Chunk 383: Compiled Working Paper_2nd Meeting PERA  p.172
+  Enforcement Stations at Divisional HQs (15) Head Count
+• BS 18 - 01
+• BS 16/17 - 01
+• BS 14 - 03
+• BS 11 - 03
+• BS 09 - 02
+• BS 07 - 48+4
+
+• SPPP - 04
+• Total - 65+1
+District Board SDEO BS 16/17 (1) Sr. Sergeant* BS 09 (2) System Support Officer SPPP 5 (3) Enforcement Officer BS 14 (3) Investigation
+
+MATCH 'system support' -> Chunk 384: Compiled Working Paper_2nd Meeting PERA  p.173
+  Enforcement Stations at Divisional HQs (15) Post Name BS Strength Per ES Total No. ESs Total Strength Secretary District Board BS 18 1 in each District* 9* Sub Divisional Enforcement Officer BS 16/17 1 Enforcement Officer BS 14 3 45 Investigation Officer BS 11 3 45 Sr. Sergeant BS 09 2 30 Sergeant B
+
+MATCH 'system support' -> Chunk 385: Compiled Working Paper_2nd Meeting PERA  p.174
+  Enforcement Stations at District HQs (31) Head Count
+• BS 18 - 01
+• BS 16/17 - 01
+• BS 14 - 03
+• BS 11 - 03
+• BS 09 - 02
+• BS 07 - 48+4
+
+• SPPP - 04
+• Total - 65+1
+District Board SDEO BS 16/17 (1) Sr. Sergeant* BS 09 (2) System Support Officer SPPP 5 (3) Enforcement Officer BS 14 (3) Investigation O
+
+MATCH 'system support' -> Chunk 386: Compiled Working Paper_2nd Meeting PERA  p.175
+  Post Name BS Strength Per ES Total No. ESs Total Strength Secretary District Board BS 18 1 in each District* 31* Sub Divisional Enforcement Officer BS 16 1 Enforcement Officer BS 14 3 93 Investigation Officer BS 11 3 93 Sr. Sergeant BS 09 2 62 Sergeant BS 07 48+4 1,612 Prosecutor SPPP-5 1 31 System 
+
+MATCH 'system support' -> Chunk 387: Compiled Working Paper_2nd Meeting PERA  p.176
+  Enforcement Stations at Tehsil HQs (100) Head Count
+• BS 18 - 01
+• BS 16 - 01
+• BS 14 - 02
+• BS 11 - 02
+• BS 09 - 02
+• BS 07 - 28+3
+
+• SPPP - 03
+• Total - 41+1
+District Board SDEO BS 16/17 (1) Sr. Sergeant* BS 09 (2) System Support Officer SPPP 5 (2) Enforcement Officer BS 14 (2) Investigation Offic
+
+MATCH 'system support' -> Chunk 388: Compiled Working Paper_2nd Meeting PERA  p.177
+  Post Name BS Strength Per ES Total No. ESs Total Strength Sub Divisional Enforcement Officer BS 16 1 Enforcement Officer BS 14 2 200 Investigation Officer BS 11 2 200 Sr. Segreant BS 09 2 200 Sergeant BS 07 28+3 3,100 Prosecutor SPPP-5 1 100 System Support Officer SPPP-5 2 200 Total 41 100 4,100 Enf
+
+MATCH 'system support' -> Chunk 579: Compiled Working Paper_2nd Meeting PERA  p.363
+  Position Title: - System Support Officer Report To: - Sub Divisional Enforcement Officer of the Enforcement Station concerned Wing: - Enforcement Station, IT & Communication, Training Purpose of the Position:
+The System Support Officer assist the SDEO with the various functions at Enforcement Statio

@@ -1,0 +1,25 @@
+Total ranked: 40
+  SSO chunks NOT in ranked results!
+
+Top 5 ranked:
+  [1] subj=1 score=0.594 Annex H Contractual Employees 
+    Position Title: - Web & Software Developer
+Report To: - | Manager (Development)
+Wing: - | IT & Commu
+  [2] subj=1 score=0.592 Compiled Working Paper_2nd Mee
+    Position Title: - Web & Software Developer
+Report To: - | Manager (Development)
+Wing: - | IT & Commu
+  [3] subj=1 score=0.591 Annex H Contractual Employees 
+    Position Title: - Android Developer
+Report To: - | Manager (Development)
+Wing: - | IT & Communicatio
+  [4] subj=1 score=0.550 Annex H Contractual Employees 
+    Position Title: - Associate Social Media
+Report To: - | Creative Lead
+Wing: - | IT & Communication
+P
+  [5] subj=1 score=0.550 Annex H Contractual Employees 
+    Position Title: - Senior Manager (Academics)
+Report To: - | Chief Instructor
+Wing: - Training Purpos

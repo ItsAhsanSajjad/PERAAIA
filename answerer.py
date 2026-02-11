@@ -52,14 +52,9 @@ def _get_ranked_chunks(retrieval: Dict[str, Any], question: str) -> List[Dict[st
     
     # Extract subject keywords from question for relevance sorting
     q_lower = question.lower() if question else ""
-    # Expand known abbreviations for better subject matching
-    _ABBREV = {"cto": "chief technology officer", "dg": "director general", 
-               "hr": "human resources", "it": "information technology",
-               "adg": "additional director general", "eo": "enforcement officer"}
-    expanded_q = q_lower
-    for abbr, full in _ABBREV.items():
-        if abbr in q_lower.split():
-            expanded_q = expanded_q.replace(abbr, full)
+    # Use the retriever's full expansion (abbreviations + schedule normalization)
+    from retriever import _expand_abbreviations as _expand
+    expanded_q = _expand(q_lower)
             
     # Subject words to check in chunk text (filter out generic query words)
     _stop = {"what", "which", "where", "when", "does", "that", "this", "with",
@@ -89,6 +84,16 @@ def _get_ranked_chunks(retrieval: Dict[str, Any], question: str) -> List[Dict[st
             
             # Helper score: count subject matches
             subject_match = sum(1 for w in _subject_words if w in text_lower)
+            
+            # BOOST: Schedule header position — if query has a specific schedule number
+            # (e.g. "schedule-iii"), boost chunks where it appears in the title/header
+            import re as _re_ans
+            sched_match = _re_ans.search(r'(schedule-[ivx]+)', expanded_q)
+            if sched_match:
+                sched_term = sched_match.group(1)
+                # Check if schedule term appears in the first 80 chars (header position)
+                if sched_term in text_lower[:80]:
+                    subject_match += 3  # Strong boost for title match
             
             # BOOST: Salary table gets priority for salary queries
             # Broad keyword set including Urdu/typo variants
@@ -379,7 +384,7 @@ def answer_question(
         "Directives:\n"
         "1. **ANSWER FIRST**: Always try your best to answer from the Context. If the user asks about 'powers' and the Context has 'responsibilities' or 'duties' for that role — that IS the answer, present it. Never refuse when related information exists.\n"
         "2. **Citations**: Cite sources using [1], [2] notation matching context chunk numbers. Place citations at end of relevant sentences.\n"
-        "3. **Truthfulness**: Answer from the Context. Do NOT fabricate information not present in the Context.\n"
+        "3. **Truthfulness**: Answer ONLY from the Context. Do NOT fabricate, guess, or invent information not present in the Context. If asked 'what is X' and the Context does not mention X at all, you MUST refuse. Never guess meanings of abbreviations.\n"
         "4. **Conflict Resolution**: If documents conflict, prioritize the 'PERA Act'. EPO timeline is 15 days.\n"
         "5. **Role Specificity**: For specific role queries, treat 'powers', 'responsibilities', 'duties', and 'kaam' as equivalent. List what the documents say about that role.\n"
         "6. **Confidentiality**: Whistle-blower identity must NOT be disclosed without written consent.\n"
@@ -389,7 +394,7 @@ def answer_question(
         "10. **Pay Cross-Reference**: When asked about a role's pay in numbers, cross-reference between chunks (role SPPP level + SPPP salary table).\n"
         "11. **Identity (Developer ONLY)**: ONLY if asked who CREATED/BUILT/DEVELOPED this AI (words: creator, developer, banaya, father, Ahsan), say it was developed by **Muhammad Ahsan Sajjad**. He is NOT a PERA employee. Do NOT confuse him with CTO or any PERA role. For PERA role names, answer ONLY from Context.\n"
         "12. **Salary Table Reading**: For SPPP salaries, use 'Minimum Pay' and 'Maximum Pay' columns from the SPPP Breakup table.\n"
-        "13. **Refusal**: ONLY if absolutely no relevant information exists in Context, say: "
+        "13. **Refusal**: If the Context does NOT contain information relevant to the user's question, say: "
         "'Yeh information PERA documents mein available nahi hai. Mazeed madad ke liye PERA se contact karein.'\n\n"
         "Context:\n"
         f"{context_str}"
@@ -415,8 +420,10 @@ def answer_question(
         if refusal_count < len(assistant_msgs):
             messages.extend(recent)
     
-    # Add current question
-    messages.append({"role": "user", "content": current_question})
+    # Add current question — use expanded form so LLM can match abbreviations to context
+    from retriever import _expand_abbreviations
+    user_q = _expand_abbreviations(current_question)
+    messages.append({"role": "user", "content": user_q})
 
     # 4. Call LLM
     try:
