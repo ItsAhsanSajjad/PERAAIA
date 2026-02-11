@@ -1,0 +1,654 @@
+[
+  {
+    "label": "sched1_normal",
+    "query": "schedule 1 kia hai?",
+    "verdict": "✅",
+    "expected_intent": "SCHEDULE_LOOKUP",
+    "actual_intent": "SCHEDULE_LOOKUP",
+    "decision": "answer",
+    "refs_count": 2,
+    "claims_count": 2,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "**Schedule I** includes the following contents:\n\n- **Short Title and Commencement**\n- **Definitions**\n- **Appointment and Conditions of Service**\n- **Terms of Reference of Service**\n- **Eligibility fo",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 273,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=273",
+        "snippet": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) REGULATIONS, 2025 CONTENTS\n\n1. Short Title and Commencement\n2. Definitions\n3. Appointment and Conditions `of Ser",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 275,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=275",
+        "snippet": "Regulatory Authority (Appointment and Conditions of Service for Contractual Employees) Regulations, 2025” and mentioned in these Regulations to the extent of organizational structure only;\n(g) “Direct",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  },
+  {
+    "label": "sched1_typo1",
+    "query": "sehdule 1 dikhao",
+    "verdict": "✅",
+    "expected_intent": "SCHEDULE_LOOKUP",
+    "actual_intent": "SCHEDULE_LOOKUP",
+    "decision": "answer",
+    "refs_count": 2,
+    "claims_count": 2,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **Short Title and Commencement**\n- **Definitions**\n- **Appointment and Conditions of Service**\n- **Terms of Reference of Service**\n- **Eligibility for Appointment**\n- **Initial Recruitment**\n- **Pro",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 273,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=273",
+        "snippet": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) REGULATIONS, 2025 CONTENTS\n\n1. Short Title and Commencement\n2. Definitions\n3. Appointment and Conditions `of Ser",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 275,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=275",
+        "snippet": "Regulatory Authority (Appointment and Conditions of Service for Contractual Employees) Regulations, 2025” and mentioned in these Regulations to the extent of organizational structure only;\n(g) “Direct",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  },
+  {
+    "label": "sched1_typo2",
+    "query": "schudule 1 batao",
+    "verdict": "✅",
+    "expected_intent": "SCHEDULE_LOOKUP",
+    "actual_intent": "SCHEDULE_LOOKUP",
+    "decision": "answer",
+    "refs_count": 2,
+    "claims_count": 2,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "**Schedule-I** includes the following contents:\n\n1. **Short Title and Commencement**\n2. **Definitions**\n3. **Appointment and Conditions of Service**\n4. **Terms of Reference of Service**\n5. **Eligibili",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 273,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=273",
+        "snippet": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) REGULATIONS, 2025 CONTENTS\n\n1. Short Title and Commencement\n2. Definitions\n3. Appointment and Conditions `of Ser",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 275,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=275",
+        "snippet": "Regulatory Authority (Appointment and Conditions of Service for Contractual Employees) Regulations, 2025” and mentioned in these Regulations to the extent of organizational structure only;\n(g) “Direct",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  },
+  {
+    "label": "sched2_normal",
+    "query": "schedule 2 references",
+    "verdict": "✅",
+    "expected_intent": "SCHEDULE_LOOKUP",
+    "actual_intent": "SCHEDULE_LOOKUP",
+    "decision": "answer",
+    "refs_count": 2,
+    "claims_count": 2,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **Short Title and Commencement**\n- **Definitions**\n- **Appointment and Conditions of Service**\n- **Terms of Reference of Service**\n- **Eligibility for Appointment**\n- **Initial Recruitment**\n- **Pro",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 273,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=273",
+        "snippet": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) REGULATIONS, 2025 CONTENTS\n\n1. Short Title and Commencement\n2. Definitions\n3. Appointment and Conditions `of Ser",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 274,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=274",
+        "snippet": "GOVERNMENT OF THE PUNJAB SERVICES & GENERAL ADMINISTRATION DEPARTMENT PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY LAHORE Dated Lahore, the 30th May, 2025 NOTIFICATION No.xxxxxxx (Director Admin).- In ",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  },
+  {
+    "label": "sched2_typo",
+    "query": "shedule 2 kia hy",
+    "verdict": "✅",
+    "expected_intent": "SCHEDULE_LOOKUP",
+    "actual_intent": "SCHEDULE_LOOKUP",
+    "decision": "answer",
+    "refs_count": 2,
+    "claims_count": 2,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "**Schedule II** includes the following contents related to the Punjab Enforcement and Regulatory Authority (PERA):\n\n- **Short Title and Commencement**\n- **Definitions**\n- **Appointment and Conditions ",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 273,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=273",
+        "snippet": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE) REGULATIONS, 2025 CONTENTS\n\n1. Short Title and Commencement\n2. Definitions\n3. Appointment and Conditions `of Ser",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 274,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=274",
+        "snippet": "GOVERNMENT OF THE PUNJAB SERVICES & GENERAL ADMINISTRATION DEPARTMENT PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY LAHORE Dated Lahore, the 30th May, 2025 NOTIFICATION No.xxxxxxx (Director Admin).- In ",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  },
+  {
+    "label": "sched3_normal",
+    "query": "schedule 3 pay table",
+    "verdict": "✅",
+    "expected_intent": "SCHEDULE_LOOKUP",
+    "actual_intent": "SCHEDULE_LOOKUP",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **SPPP-1**: Minimum Pay per Month (PKR) 350,082 | Maximum Pay per Month (PKR) 1,000,082 | Fuel Limit 300 Liters/Month\n- **SPPP-2**: Minimum Pay per Month (PKR) 296,324 | Maximum Pay per Month (PKR) ",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 329,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=329",
+        "snippet": "Schedule-III Special Pay Package PERA (SPPP) Summary\nSr. No. | SPPP | Minimum Pay per Month (PKR) | Maximum Pay per Month (PKR) | Fuel Limit (Petrol Liters/Month)\n1 | SPPP-1 | 350,082 | 1,000,082 | 30",
+        "quote_offsets": [
+          0,
+          413
+        ]
+      }
+    ]
+  },
+  {
+    "label": "sched3_typo",
+    "query": "schdule 3 salary",
+    "verdict": "✅",
+    "expected_intent": "SCHEDULE_LOOKUP",
+    "actual_intent": "SCHEDULE_LOOKUP",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **SPPP-1**: Minimum Pay per Month **PKR 350,082**, Maximum Pay per Month **PKR 1,000,082**, Fuel Limit **300 liters/month**.\n- **SPPP-2**: Minimum Pay per Month **PKR 296,324**, Maximum Pay per Mont",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 329,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=329",
+        "snippet": "Schedule-III Special Pay Package PERA (SPPP) Summary\nSr. No. | SPPP | Minimum Pay per Month (PKR) | Maximum Pay per Month (PKR) | Fuel Limit (Petrol Liters/Month)\n1 | SPPP-1 | 350,082 | 1,000,082 | 30",
+        "quote_offsets": [
+          0,
+          413
+        ]
+      }
+    ]
+  },
+  {
+    "label": "sso_role",
+    "query": "SSO ka role kia hai?",
+    "verdict": "✅",
+    "expected_intent": "JD_LOOKUP",
+    "actual_intent": "JD_LOOKUP",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **Position Title**: System Support Officer\n- **Report To**: Sub Divisional Enforcement Officer of the Enforcement Station concerned\n- **Wing**: Enforcement Station, IT & Communication, Training\n- **",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 363,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=363",
+        "snippet": "Position Title: - System Support Officer\nReport To: - | Sub Divisional Enforcement Officer of the Enforcement Station concerned\nWing: - | Enforcement Station, IT & Communication, Training\nPurpose of t",
+        "quote_offsets": [
+          0,
+          600
+        ]
+      }
+    ]
+  },
+  {
+    "label": "sso_salary",
+    "query": "SSO ki salary kitni hai?",
+    "verdict": "✅",
+    "expected_intent": "JD_LOOKUP",
+    "actual_intent": "JD_LOOKUP",
+    "decision": "answer",
+    "refs_count": 2,
+    "claims_count": 2,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **System Support Officer (SSO) salary**: **SPPP-5** + any other benefit admissible to **SPPP-5** as mentioned in Schedule-III.\n- **Minimum salary**: **90,219 PKR/month**\n- **Maximum salary**: **200,",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 352,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=352",
+        "snippet": "Position Title: - Assistant Manager (Network)\nReport To: - | Manager (Infrastructure & Networks)\nWing: - | IT & Communication\nPurpose of the Position:\nResponsible for maximizing the performance of IT ",
+        "quote_offsets": [
+          0,
+          299
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 329,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=329",
+        "snippet": "SPPP-5 | Minimum: 90,219 PKR | Maximum: 200,219 PKR | Fuel: 100 Liters/Month",
+        "quote_offsets": [
+          0,
+          76
+        ]
+      }
+    ]
+  },
+  {
+    "label": "cto_powers",
+    "query": "CTO ke powers kya hain?",
+    "verdict": "✅",
+    "expected_intent": "JD_LOOKUP",
+    "actual_intent": "JD_LOOKUP",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **Technical Leadership**: CTO shall be responsible for providing **technical leadership** to the team of IT professionals.\n- **Assistance to Director General**: He shall assist the **Director Genera",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 346,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=346",
+        "snippet": "Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communication\nPurpose of the Position:\n",
+        "quote_offsets": [
+          0,
+          600
+        ]
+      }
+    ]
+  },
+  {
+    "label": "cto_role",
+    "query": "CTO kia karta hai?",
+    "verdict": "✅",
+    "expected_intent": "JD_LOOKUP",
+    "actual_intent": "JD_LOOKUP",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "**Chief Technology Officer (CTO)** ki zimmedariyan yeh hain:\n\n- **Technical leadership** faraham karna IT professionals ki team ko.\n- Director General ki madad karna IT-enabled solutions ko ensure kar",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 346,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=346",
+        "snippet": "Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)\nReport To: - | Director General, PERA\nWing: - | IT & Communication\nPurpose of the Position:\n",
+        "quote_offsets": [
+          0,
+          600
+        ]
+      }
+    ]
+  },
+  {
+    "label": "android_salary",
+    "query": "Android Developer salary?",
+    "verdict": "✅",
+    "expected_intent": "JD_LOOKUP",
+    "actual_intent": "JD_LOOKUP",
+    "decision": "answer",
+    "refs_count": 2,
+    "claims_count": 2,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **Android Developer salary**: SPPP-4 + any other benefit admissible to SPPP-4 as mentioned in Schedule-III.\n- **SPPP-4 salary range**: Minimum **115,561 PKR**; Maximum **250,561 PKR** per month.",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 354,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=354",
+        "snippet": "Position Title: - Web & Software Developer\nReport To: - | Manager (Development)\nWing: - | IT & Communication\nPurpose of the Position:\nHe shall design, develop, and maintain web and software applicatio",
+        "quote_offsets": [
+          0,
+          299
+        ]
+      },
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 329,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=329",
+        "snippet": "SPPP-4 | Minimum: 115,561 PKR | Maximum: 250,561 PKR | Fuel: 150 Liters/Month",
+        "quote_offsets": [
+          0,
+          77
+        ]
+      }
+    ]
+  },
+  {
+    "label": "pera_what",
+    "query": "PERA kya hai?",
+    "verdict": "✅",
+    "expected_intent": "PERA_DEFINITION",
+    "actual_intent": "PERA_DEFINITION",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **PERA** ka matlab hai **Punjab Enforcement and Regulatory Authority**.\n- Yeh ek **provincial enforcement authority** hai jo Punjab mein **special laws** ki implementation aur enforcement ke liye ba",
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=1",
+        "snippet": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe pr",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  },
+  {
+    "label": "pera_kia",
+    "query": "PERA kia hy?",
+    "verdict": "✅",
+    "expected_intent": "PERA_DEFINITION",
+    "actual_intent": "PERA_DEFINITION",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **PERA** ka matlab hai **Punjab Enforcement and Regulatory Authority**.\n- Yeh ek **provincial enforcement authority** hai jo Punjab mein **special laws** ki implementation aur enforcement ke liye ba",
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=1",
+        "snippet": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe pr",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  },
+  {
+    "label": "pera_what_en",
+    "query": "What is PERA?",
+    "verdict": "✅",
+    "expected_intent": "PERA_DEFINITION",
+    "actual_intent": "PERA_DEFINITION",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **PERA** stands for the **Punjab Enforcement and Regulatory Authority**.\n- It is established to provide efficient and effective implementation and enforcement of special laws throughout Punjab.\n- Th",
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=1",
+        "snippet": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe pr",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  },
+  {
+    "label": "pera_kb_bani",
+    "query": "PERA kb bani?",
+    "verdict": "✅",
+    "expected_intent": "PERA_COMMENCEMENT",
+    "actual_intent": "PERA_COMMENCEMENT",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "**Punjab Enforcement and Regulatory Authority (PERA)** ka establishment **public interest** mein hai aur yeh **special laws** ki implementation aur enforcement ke liye banaya gaya hai. Iska establishm",
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=1",
+        "snippet": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe pr",
+        "quote_offsets": [
+          0,
+          400
+        ]
+      }
+    ]
+  },
+  {
+    "label": "pera_when",
+    "query": "When was PERA established?",
+    "verdict": "✅",
+    "expected_intent": "PERA_COMMENCEMENT",
+    "actual_intent": "PERA_COMMENCEMENT",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "The **Punjab Enforcement and Regulatory Authority (PERA)** was established as part of a bill recommended by the Standing Committee on Services and General Administration. The specific date of establis",
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=1",
+        "snippet": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe pr",
+        "quote_offsets": [
+          0,
+          400
+        ]
+      }
+    ]
+  },
+  {
+    "label": "dg_report",
+    "query": "DG kisko reporting hy?",
+    "verdict": "✅",
+    "expected_intent": "NAMED_PERSON",
+    "actual_intent": "NAMED_PERSON",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **Director General PERA** reports to the **Authority**.",
+    "refs": [
+      {
+        "document": "Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf",
+        "page_start": 300,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf#page=300",
+        "snippet": "Schedule-III Terms and Reference for Service\nPosition Title: | Director General PERA\nReports To: | Authority\nPurpose of the Position:\nHe will be responsible for assisting the Authority in performing i",
+        "quote_offsets": [
+          0,
+          400
+        ]
+      }
+    ]
+  },
+  {
+    "label": "dg_name",
+    "query": "DG ka nam kia hy?",
+    "verdict": "✅",
+    "expected_intent": "NAMED_PERSON",
+    "actual_intent": "NAMED_PERSON",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "Insufficient information is available regarding the name of the Director General (DG).",
+    "refs": [
+      {
+        "document": "Annex L PERA Squads and Weapons Regulations.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Annex L PERA Squads and Weapons Regulations.pdf#page=1",
+        "snippet": "THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (SQUADS AND WEAPONS) REGULATIONS, 2025 CONTENTS\n\n1. Short title and Commencement\n2. Definitions\n3. Interpretation\n4. Fundamental principles\n5. Establish",
+        "quote_offsets": [
+          0,
+          400
+        ]
+      }
+    ]
+  },
+  {
+    "label": "act_mean",
+    "query": "act mean in authority?",
+    "verdict": "✅",
+    "expected_intent": "ACT_DEFINITION",
+    "actual_intent": "ACT_DEFINITION",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- The **act** refers to the establishment of the **Punjab Enforcement and Regulatory Authority** and the procedures for efficient and effective implementation and enforcement of special laws throughou",
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=1",
+        "snippet": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe pr",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  },
+  {
+    "label": "authority_mean",
+    "query": "authority ka matlab?",
+    "verdict": "✅",
+    "expected_intent": "ACT_DEFINITION",
+    "actual_intent": "ACT_DEFINITION",
+    "decision": "answer",
+    "refs_count": 1,
+    "claims_count": 1,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "- **Authority** ka matlab hai ek aisi sanstha ya vyakti jo kisi vishesh kshetra mein niyam aur niyantran lagu karne ke liye adhikar rakhta hai. \n- Punjab Enforcement and Regulatory Authority (PERA) ka",
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=1",
+        "snippet": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe pr",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  },
+  {
+    "label": "sec10_powers",
+    "query": "Section 10 ki powers?",
+    "verdict": "✅",
+    "expected_intent": "ACT_SECTION",
+    "actual_intent": "ACT_SECTION",
+    "decision": "answer",
+    "refs_count": 2,
+    "claims_count": 2,
+    "pages_ok": true,
+    "contain_ok": true,
+    "banned_ok": true,
+    "answer_preview": "Insufficient information is available regarding the powers of Section 10.",
+    "refs": [
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 1,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=1",
+        "snippet": "Annexure B (Bill as recommended by Standing Committee on Services and General Administration) A Bill to provide for establishment of the Punjab Enforcement and Regulatory Authority and to prescribe pr",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      },
+      {
+        "document": "Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf",
+        "page_start": 2,
+        "open_url": "https://ask.pera.gop.pk/assets/data/Bill_Recommended_by_Standing_Committee_Services_and_General_Administration.pdf#page=2",
+        "snippet": "(i) “Court” means the Court of Session | established under the\nCode and also includes | the Court of an Additional Sessions\nJudge; (j) “custodian of the State property” means such officer or such empl",
+        "quote_offsets": [
+          0,
+          500
+        ]
+      }
+    ]
+  }
+]

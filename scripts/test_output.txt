@@ -1,0 +1,85 @@
+﻿
+============================================================
+  TestIntentClassification (22 tests)
+============================================================
+  PASS test_enforcement_arrest
+  PASS test_enforcement_eo_powers
+  PASS test_enforcement_fir
+  PASS test_enforcement_section
+  PASS test_general_pera_fallback
+  PASS test_job_role_cto
+  PASS test_job_role_cto_salary
+  PASS test_job_role_qualification
+  PASS test_job_role_sso_system
+  PASS test_org_overview_functions
+  PASS test_org_overview_powers
+  PASS test_org_overview_purpose
+  PASS test_org_overview_urdu
+  PASS test_org_overview_what_is_pera
+  PASS test_out_of_scope_cooking
+  PASS test_out_of_scope_funny_bat
+  PASS test_out_of_scope_funny_bat_variant
+  PASS test_out_of_scope_html
+  PASS test_out_of_scope_joke
+  PASS test_out_of_scope_kotlin
+  PASS test_out_of_scope_ogra
+  PASS test_out_of_scope_python
+
+============================================================
+  TestSSOAmbiguity (4 tests)
+============================================================
+  PASS test_ambiguous_sso
+  PASS test_disambiguated_senior_staff
+  PASS test_disambiguated_system_support
+  PASS test_no_sso
+
+============================================================
+  TestEvidenceRelevanceGate (4 tests)
+============================================================
+  PASS test_empty_retrieval
+  PASS test_irrelevant_chunks_filtered
+  PASS test_out_of_scope_html_no_relevant_chunks
+  PASS test_relevant_chunks_pass
+
+============================================================
+  TestKeywordExtraction (3 tests)
+============================================================
+  PASS test_basic_extraction
+  PASS test_cto_expansion
+  PASS test_stops_removed
+
+============================================================
+  TestPostProcessStrict (3 tests)
+============================================================
+  PASS test_clean_answer_passes
+  PASS test_general_workplace_caught
+  PASS test_hedge_phrase_caught
+
+============================================================
+  TestIntegration (5 tests)
+============================================================
+[Answerer] Intent: OUT_OF_SCOPE for query: 'cto yeh funny bat...'
+  PASS test_cto_funny_bat_refuses
+[Retriever] Expanded: 'cto?' -> 'Chief Technology Officer'
+[Retriever] Embedding query: 'Chief Technology Officer'...
+[Retriever] Embedding done. Shape: (1536,)
+[Retriever] Searching FAISS with TOP_K=30...
+[Retriever] Search done. Found 30 hits.
+[Retriever] Added 0 context chunks.
+[Answerer] Intent: JOB_ROLE for query: 'cto?...'
+  PASS test_cto_no_general_rules
+[Answerer] Intent: OUT_OF_SCOPE for query: 'html css difference...'
+  PASS test_html_css_strict_refuse
+[Answerer] Intent: OUT_OF_SCOPE for query: 'kotlin kya hai...'
+  PASS test_kotlin_strict_refuse
+[Retriever] Embedding query: 'What are the powers of PERA?'...
+[Retriever] Embedding done. Shape: (1536,)
+[Retriever] Searching FAISS with TOP_K=30...
+[Retriever] Search done. Found 30 hits.
+[Retriever] Added 0 context chunks.
+[Answerer] Intent: ORG_OVERVIEW for query: 'What are the powers of PERA?...'
+  PASS test_powers_of_pera_citations
+
+============================================================
+  RESULTS: 41 passed, 0 failed, 0 skipped / 41 total
+============================================================

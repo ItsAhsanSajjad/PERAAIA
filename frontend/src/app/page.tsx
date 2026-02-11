@@ -89,6 +89,7 @@ export default function Home() {
   const [pdfModal, setPdfModal] = useState<{ url: string; title: string } | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const [conversationId, setConversationId] = useState<string | null>(null);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -166,6 +167,7 @@ export default function Home() {
     saveChat();
     setMessages([]);
     setCurrentChatId(genId());
+    setConversationId(null);  // reset server-side session
     setSidebarOpen(false);
   };
   const loadChat = (s: ChatSession) => {
@@ -203,7 +205,11 @@ export default function Home() {
       const res = await fetch(`${API_URL}/api/ask`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: text, conversation_history: history }),
+        body: JSON.stringify({
+          question: text,
+          conversation_id: conversationId || undefined,
+          conversation_history: history,
+        }),
       });
 
       if (!res.ok) {
@@ -213,6 +219,10 @@ export default function Home() {
       }
 
       const data = await res.json();
+      // Store server conversation_id for session continuity
+      if (data.conversation_id) {
+        setConversationId(data.conversation_id);
+      }
       const botMsg: Message = {
         role: "assistant",
         content: data.answer || "Sorry, I could not process that.",

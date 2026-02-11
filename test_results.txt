@@ -1,0 +1,28 @@
+INTENT ROUTING TESTS:
+  [PASS] 'schedule 3' -> SCHEDULE_LOOKUP (expected SCHEDULE_LOOKUP)
+  [PASS] 'sehdule III' -> SCHEDULE_LOOKUP (expected SCHEDULE_LOOKUP)
+  [PASS] 'sched 1' -> SCHEDULE_LOOKUP (expected SCHEDULE_LOOKUP)
+  [PASS] 'SSO ki salary' -> JD_LOOKUP (expected JD_LOOKUP)
+  [PASS] 'CTO ka role' -> JD_LOOKUP (expected JD_LOOKUP)
+  [PASS] 'android developer qualification' -> JD_LOOKUP (expected JD_LOOKUP)
+  [PASS] 'section 5' -> ACT_SECTION (expected ACT_SECTION)
+  [PASS] 'pera kia hai' -> PERA_DEFINITION (expected PERA_DEFINITION)
+  [PASS] 'pera kb bani' -> PERA_DEFINITION (expected PERA_DEFINITION)
+  [PASS] 'salma butt kon hai' -> NAMED_PERSON (expected NAMED_PERSON)
+  [PASS] 'Manager Development ka role' -> JD_LOOKUP (expected JD_LOOKUP)
+  [PASS] 'hello' -> FALLBACK (expected FALLBACK)
+
+Routing: 12 pass, 0 fail
+
+REGISTRY ANSWER TESTS:
+  [PASS] 'schedule 3' -> 1 claims, source=schedule_registry
+  [PASS] 'SSO ki salary' -> 2 claims, source=jd_registry
+  [PASS] 'pera kia hai' -> 1 claims, source=act_registry
+  [PASS] 'pera kb bani' -> 1 claims, source=act_registry
+  [PASS] 'CTO ka role kya hai' -> 1 claims, source=jd_registry
+  [PASS] 'android developer qualification' -> 1 claims, source=jd_registry
+  [PASS] 'hello world' -> None (fallback)
+
+Answers: 7 pass, 0 fail
+
+TOTAL: 19 pass, 0 fail

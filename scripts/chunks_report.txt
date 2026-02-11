@@ -1,0 +1,231 @@
+Total chunks: 783
+Keys: ['id', 'active', 'created_at', 'doc_name', 'doc_rank', 'source_type', 'loc_kind', 'loc_start', 'loc_end', 'public_path', 'path', 'text', 'text_sha256', 'text_clean_sha256', 'embedding_model', 'embed_model_version', 'embed_text_version', 'embed_text_sha256', 'search_text_version', 'search_text_sha256', 'search_text', 'embed_text_preview']
+Sample chunk[0]:
+  id: 1
+  active: True
+  created_at: 1770640549
+  doc_name: Annex L PERA Squads and Weapons Regulations.pdf
+  doc_rank: 0
+  source_type: pdf
+  loc_kind: page
+  loc_start: 1
+  loc_end: 1
+  public_path: /assets/data/Annex L PERA Squads and Weapons Regulations.pdf
+  path: D:/Ask_Pera/PERAIA/assets/data/Annex L PERA Squads and Weapons Regulations.pdf
+  text: THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (SQUADS AND WEAPONS) REGULATIONS, 2025 CONTENTS
+
+1. 
+  text_sha256: 9de12bfcae480aa5d1c300ac4b49f6af97db470430b3d53a11659809d41dcc7b
+  text_clean_sha256: 3feb3ba986f123fb25922a04c8dec4ed3c04da7b8827821760acd4de1afbacff
+  embedding_model: text-embedding-3-small
+  embed_model_version: 1
+  embed_text_version: 4
+  embed_text_sha256: b331e047b85de70b8f3b3d37aa2b1a14a575473ac9ba12ff31cd7197bca795a9
+  search_text_version: 3
+  search_text_sha256: 3bf5c790054dc5130ad3911ffa08ae4fd5809fbe456bdb2a12a9ccd686c0d54d
+  search_text: DOC: Annex L PERA Squads and Weapons Regulations.pdf
+TYPE: pdf
+LOC: Page 1
+TAGS: pera, schedule, com
+  embed_text_preview: DOCUMENT: Annex L PERA Squads and Weapons Regulations.pdf
+RANK: 0
+TYPE: pdf
+LOCATION: Page 1
+TAGS: p
+
+=== Schedule-I / Offences ===
+  [10] doc=Bill_Recommended_by_Standing_Committee_Services_and_General_
+    (mm) ?reference? means a reference made by a Department wherein any violation or offence is reported to the Authority or to the Enforcement Station for enf orcement of the Act or Scheduled laws; (nn) ?regulations? means the regulations framed under the Act; (oo) ?requisition? means a requisition sen
+
+  [24] doc=Bill_Recommended_by_Standing_Committee_Services_and_General_
+    (xiv) power to initiate and conduct | inquiry under the
+Act and Scheduled laws; (xv) impose fine on the offenders as provide d under the Act and Scheduled laws, subject to prescribed pecuniary limitations; (xvi) power to issue EPO under the Act; and (xvii) any other power or function c onferred or d
+
+  [26] doc=Bill_Recommended_by_Standing_Committee_Services_and_General_
+    (3) The Sergeants shall have the following powers and functions:
+(a) assist the officers and employees for enforcement of the Act or Scheduled laws; (b) carry weapons as prescribed under the rules; and (c) perform any other function as may be prescribed.
+
+28. Enforcement Squad .? There shall be one 
+
+
+=== Schedule-III / SPPP ===
+  [181] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf
+    Sr. No. Special Pay Package PERA SPPP Minimum Pay per Month (PKR) Maximum Pay per Month (PKR) Fuel Limit (Petrol Liters/Month) 1 SPPP-1 350,082 1,000,082 300 2 SPPP-2 296,324 746,324 250 3 SPPP-3 250,051 500,051 200 4 SPPP-4 115,561 250,561 150 5 SPPP-5 90,219 200,219 100 6 Interns CONTRACTUAL EMPLO
+
+  [182] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf
+    Sr. No. Special Pay Package PERA (SPPP) Govt Equivalent Basic Pay Scale PERA Special Allowance Social Security Allowance In lieu of Pension @ 30% *Vehicle Monetization Allowance **Driver Allowance Minimum Pay ***Market Adjustment Allowance (Negotiable) Maximum Pay Fuel Limit (Petrol Liters) 1 SPPP-1
+
+  [344] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf
+    THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (APPOINTMENT AND CONDITIONS OF SERVICE FOR CONTRACTUAL EMPLOYEES) REGULATIONS, 2025 CONTENTS
+
+1. Short title and Commencement
+2. Definitions
+3. Terms of Reference of Service for Contractual Employees
+4. Contractual Employment Committee
+5. Duration and 
+
+  [346] doc=Compiled Working Paper_2nd Meeting PERA 03-07-2025.pdf
+    (i) ?Organizational Structure ? means the organizational structure g iven in Schedule-I of these Regulations and includes employees, contractual employees and contingent paid staff; (j) ?Recognized University ? means any University recognized by Higher Education Commission of Pakistan; (k) ?Regulati
+
+
+=== Job Title Chunks ===
+  'manager (development)': 6 chunks
+    [351] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Manager (Development)
+Report To: - | Chief Technology Officer (CTO)
+Wing: - | IT & Communication
+Purpo
+    [358] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Web & Software Developer
+Report To: - | Manager (Development)
+Wing: - | IT & Communication
+Purpose of 
+  'manager development': 3 chunks
+    [191] doc=Compiled Working Paper_2nd Meeting PERA  | Head Count
+
+? SPPP - 14
+? BS 16 - 01
+? Total - 15Chief Technology
+
+Officer / SPPP-1 (1) Manager Infrastructure & Network
+    [359] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Android Developer
+Report To: - | Manager Development
+Wing: - | IT & Communication
+Purpose of the Posit
+  'system support officer': 16 chunks
+    [118] doc=Compiled Working Paper_2nd Meeting PERA  | H R H i r e d ( H Q ) :
+H i r e d ( F i e l d ) :
+6 rounds of recruitment run so far **experts from industry and academi
+    [145] doc=Compiled Working Paper_2nd Meeting PERA  | Performance Appraisal Regulations (Agenda 02 ? Flag G) Employee Reporting Officer Countersigning Officer 2nd Countersign
+  'chief technology officer': 9 chunks
+    [183] doc=Compiled Working Paper_2nd Meeting PERA  | Organizational Structure Director General /BS-19/20 (1) Dir. Finance BS-19 (08) Dir. Admin. & HR BS-19 (17) Dir. Personn
+    [350] doc=Compiled Working Paper_2nd Meeting PERA  | Schedule-II Terms and Reference for Contractual Employment Position Title: - Chief Technology Officer (CTO)
+Report To: -
+  'assistant manager gis': 3 chunks
+    [188] doc=Compiled Working Paper_2nd Meeting PERA  | Dir Monitoring & Implementation /BS-19 (1) Deputy Director Implementation/ BS-18 (1) Manager Research & Implementation /
+    [395] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Assistant Manager GIS
+Report To: - | Head Monitoring (MIS & GIS)
+Wing: - | Monitoring & Implementation
+  'assistant manager (gis)': 1 chunks
+    [631] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Assistant Manager (GIS)
+Report To: - | Manager Monitoring (MIS & GIS)
+Wing: - | Monitoring & Implement
+  'cto': 369 chunks
+    [0] doc=Annex L PERA Squads and Weapons Regulati | THE PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY (SQUADS AND WEAPONS) REGULATIONS, 2025 CONTENTS
+
+1. Short title and Comm
+    [1] doc=Annex L PERA Squads and Weapons Regulati | GOVERNMENT OF THE PUNJAB PUNJAB ENFORCEMENT AND REGULATORY AUTHORITY Lahore, Dated the 12th November, 2025 NOTIFICATION 
+
+=== Manager (Dev) + salary/SPPP ===
+  [191] doc=Compiled Working Paper_2nd Meeting PERA  | Head Count
+
+? SPPP - 14
+? BS 16 - 01
+? Total - 15Chief Technology
+
+Officer / SPPP-1 (1) Manager Infrastructure & Networks / SPPP-3 (1) Manager Development / SPPP-3 (1) Android Developer / SPPP-4 (1) Assistant Manager Network/ SPPP-5 (2) Assistant Man
+  [356] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Assistant Manager (Network)
+Report To: - | Manager (Infrastructure & Networks)
+Wing: - | IT & Communication
+Purpose of the Position:
+Responsible for maximizing the performance of IT Networks and provide, training, and development of
+  [357] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Assistant Manager (IT Infrastructure)
+Report To: - | Manager (Infrastructure & Networks)
+Wing: - | IT & Communication
+Purpose of the Position:
+Responsible for maximizing the performance of IT Networks and provide, training, and deve
+  [358] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Web & Software Developer
+Report To: - | Manager (Development)
+Wing: - | IT & Communication
+Purpose of the Position:
+He shall design, develop, and maintain web and software applications to meet business and user requirements. This ro
+  [359] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Android Developer
+Report To: - | Manager Development
+Wing: - | IT & Communication
+Purpose of the Position:
+The Android Developer designs, develops, and maintains high-performance Android applications. This role involves working with
+  [370] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Deputy Manager HR
+Report To: - | Assistant Director Admin. & HR
+Wing: - | Administration & HR
+Purpose of the Position:
+The Deputy Manager ? Human Resources plays | a critical role in supporting the Assistant Director
+(Admin. & HR) i
+  [392] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: Manager (Research & Implementation)
+Report To: | Deputy Director (Implementation)
+Wing: - | Monitoring & Implementation
+Purpose of the Position:
+Manager (Research & Implementation) is responsible for ensuring compliance with PERA?s re
+  [394] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Assistant Manager Monitoring
+Report To: - | Head Monitoring (MIS & GIS)
+Wing: - | Monitoring & Implementation
+Purpose of the Position:
+The Assistant Manager Monitoring is responsible for managing and maintaining Management Informati
+  [395] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Assistant Manager GIS
+Report To: - | Head Monitoring (MIS & GIS)
+Wing: - | Monitoring & Implementation
+Purpose of the Position:
+Assistant Manager GIS is responsible for data management and dispersion of reports by analyzing and disp
+  [400] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Deputy Manager Training
+Report To: - | Senior Manager Training & Admin
+Wing: - Training Purpose of the Position:
+The Deputy Manager Training is responsible for planning, coordinating, and overseeing training and professional develop
+  [401] doc=Compiled Working Paper_2nd Meeting PERA  | Position Title: - Deputy Manager Academics
+Report To: - | Senior Manager Academics
+Wing: - Training Purpose of the Position:
+The Deputy Manager Academics is responsible for overseeing the academic operations of a law enforcement training institution.
+  [587] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Assistant Manager (Network)
+Report To: - | Manager (Infrastructure & Networks)
+Wing: - | IT & Communication
+Purpose of the Position:
+Responsible for maximizing the performance of IT Networks and provide, training, and development of
+  [588] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Assistant Manager (IT Infrastructure)
+Report To: - | Manager (Infrastructure & Networks)
+Wing: - | IT & Communication
+Purpose of the Position:
+Responsible for maximizing the performance of IT Networks and provide, training, and deve
+  [589] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Web & Software Developer
+Report To: - | Manager (Development)
+Wing: - | IT & Communication
+Purpose of the Position:
+He shall design, develop, and maintain web and software applications to meet business and user requirements. This ro
+  [590] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Android Developer
+Report To: - | Manager (Development)
+Wing: - | IT & Communication
+Purpose of the Position:
+The Android Developer designs, develops, and maintains high-performance Android applications. This role involves working wi
+  [601] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Manager (HR & Talent Acquisition)
+Report To: - | Deputy Director (Admin. & HR)
+Wing: - | Administration & HR
+Purpose of the Position:
+The Manager (HR & Talent Acquisition) Specialist supports the Deputy Director Administration & HR 
+  [602] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Deputy Manager (HR)
+Report To: - | Manager (HR & Talent Acquisition)
+Wing: - | Administration & HR
+Purpose of the Position:
+The Deputy Manager ? Human Resources plays a critical role in supporting the Manager (HR & Talent Acquisitio
+  [607] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Assistant Manager (Talent Acquisition)
+Report To: - | Deputy Manager (HR & Talent Acquisition)
+Wing: - | Administration & HR
+Purpose of the Position:
+The Assistant Manager (Talent Acquisition ) supports the Deputy Manager (HR & Tale
+  [628] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: Manager (Research & Implementation)
+Report To: | Assistant Director (Implementation)
+Wing: - | Monitoring & Implementation
+Purpose of the Position:
+Manager (Research & Implementation) is responsible for ensuring compliance with PERA?s
+  [630] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Assistant Manager (Monitoring)
+Report To: - | Manager Monitoring (MIS & GIS)
+Wing: - | Monitoring & Implementation
+Purpose of the Position:
+The Assistant Manager Monitoring is responsible for managing and maintaining Management Info
+  [631] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Assistant Manager (GIS)
+Report To: - | Manager Monitoring (MIS & GIS)
+Wing: - | Monitoring & Implementation
+Purpose of the Position:
+Assistant Manager GIS is responsible for data management and dispersion of reports by analyzing and
+  [636] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Deputy Manager (Training)
+Report To: - | Senior Manager (Training & Admin)
+Wing: - Training Purpose of the Position:
+The Deputy Manager (Training) is responsible for planning, coordinating, and overseeing training and professional d
+  [637] doc=THE PUNJAB ENFORCEMENT AND REGULATORY AU | Position Title: - Deputy Manager (Academics)
+Report To: - | Senior Manager (Academics)
+Wing: - Training Purpose of the Position:
+The Deputy Manager (Academics) is responsible for overseeing the academic operations of PERA. This role includes developi
