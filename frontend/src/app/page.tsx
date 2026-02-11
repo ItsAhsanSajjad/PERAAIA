@@ -225,6 +225,19 @@ export default function Home() {
 
   /* ─── Voice ─── */
   const toggleRecording = async () => {
+    // 1. Check for Browser Support / Secure Context
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert(
+        "Microphone Access Blocked!\n\n" +
+        "Reason: Browsers block the microphone on insecure (HTTP) connections when using an IP address.\n\n" +
+        "Solutions:\n" +
+        "1. Access via http://localhost:3000 (if on the same machine).\n" +
+        "2. Enable 'Insecure origins treated as secure' in chrome://flags.\n" +
+        "3. Set up HTTPS."
+      );
+      return;
+    }
+
     if (isRecording) {
       mediaRecorderRef.current?.stop();
       setIsRecording(false);
@@ -240,16 +253,19 @@ export default function Home() {
         stream.getTracks().forEach(t => t.stop());
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
         const fd = new FormData();
-        fd.append("file", blob, "voice.webm");
+        fd.append("audio", blob, "voice.webm");
         try {
-          const r = await fetch(`${API_URL}/api/transcribe`, { method: "POST", body: fd });
+          const r = await fetch(`${API_URL}/transcribe`, { method: "POST", body: fd });
           const d = await r.json();
           if (d.text) { setInput(d.text); inputRef.current?.focus(); }
         } catch { /* no-op */ }
       };
       mr.start();
       setIsRecording(true);
-    } catch { /* no-op */ }
+    } catch (err: any) {
+      console.error(err);
+      alert("Microphone Error: " + (err.message || "Could not access microphone. Ensure you are on HTTPS or localhost."));
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -607,27 +623,7 @@ export default function Home() {
         <div className="px-4 md:px-0 pt-3 pb-6 relative z-10" style={{ background: "var(--bg-page)", borderTop: "1px solid var(--border)" }}>
           <div className="max-w-3xl mx-auto">
             <div className="flex items-end gap-2">
-              {/* Voice */}
-              <button
-                onClick={toggleRecording}
-                className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isRecording ? "recording-pulse" : ""}`}
-                style={{
-                  background: isRecording ? "var(--red)" : "var(--bg-hover)",
-                  color: isRecording ? "white" : "var(--text-secondary)",
-                }}
-                title={isRecording ? "Stop" : "Voice Input"}
-              >
-                {isRecording ? (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
-                ) : (
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" />
-                  </svg>
-                )}
-              </button>
-
-              {/* Input */}
+              {/* Input Area with Integrated Buttons */}
               <div className="flex-1 relative">
                 <textarea
                   ref={inputRef}
@@ -636,10 +632,34 @@ export default function Home() {
                   onKeyDown={handleKeyDown}
                   placeholder="Ask about PERA rules, powers, pay scales..."
                   rows={1}
-                  className="chat-input w-full resize-none px-4 py-3 pr-12 text-sm"
+                  className="chat-input w-full resize-none px-4 py-3 pr-24 text-sm"
                   style={{ maxHeight: 120, minHeight: 44 }}
                   disabled={loading}
                 />
+
+                {/* Voice Input */}
+                <button
+                  onClick={toggleRecording}
+                  className={`absolute right-12 bottom-2 w-9 h-9 rounded-xl flex items-center justify-center transition-all z-10 ${isRecording ? "recording-pulse" : ""}`}
+                  style={{
+                    background: isRecording ? "var(--red)" : "transparent",
+                    color: isRecording ? "white" : "var(--text-secondary)",
+                  }}
+                  title={isRecording ? "Stop" : "Voice Input"}
+                  onMouseEnter={isRecording ? undefined : e => (e.currentTarget.style.background = "var(--bg-hover)")}
+                  onMouseLeave={isRecording ? undefined : e => (e.currentTarget.style.background = "transparent")}
+                >
+                  {isRecording ? (
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2" /></svg>
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" /><line x1="12" y1="19" x2="12" y2="23" /><line x1="8" y1="23" x2="16" y2="23" />
+                    </svg>
+                  )}
+                </button>
+
+                {/* Send Button */}
                 <button
                   onClick={() => sendMessage(input)}
                   disabled={!input.trim() || loading}
@@ -663,7 +683,6 @@ export default function Home() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="modal-overlay absolute inset-0" onClick={() => setPdfModal(null)} />
           <div className="modal-content relative w-full max-w-5xl h-[85vh] flex flex-col overflow-hidden">
-            {/* Header */}
             <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: "1px solid var(--border)" }}>
               <div className="flex items-center gap-2">
                 <span className="text-lg">📄</span>
