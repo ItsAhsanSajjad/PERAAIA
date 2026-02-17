@@ -1,17 +1,24 @@
-# --- Core AI/ML and utilities ---
-openai                 # OpenAI API client
-numpy                  # Numerical computing
-faiss-cpu              # Vector search (CPU version)
-python-dotenv          # Load environment variables from .env
-streamlit              # Streamlit app framework
+# ============================================================
+# Core Dependencies (AI/RAG + Utilities)
+# ============================================================
+openai                  # OpenAI API client
+numpy                   # Numerical computing
+faiss-cpu               # Vector similarity search (CPU)
+python-dotenv           # Environment variable management (.env)
+pypdf                   # PDF parsing and text extraction
 
-# --- Streamlit stack (for web UI demos) ---
-streamlit              # Streamlit app framework
-streamlit-mic-recorder # Microphone recorder component
-streamlit-audiorecorder # Audio recorder component
+# ============================================================
+# Streamlit UI (Web App + Audio Input)
+# ============================================================
+streamlit               # Streamlit app framework
+streamlit-mic-recorder  # Microphone recorder component for Streamlit
+streamlit-audiorecorder # Audio recorder component for Streamlit
 
-# --- FastAPI stack (for API endpoints) ---
-fastapi                # FastAPI framework for building APIs
-uvicorn[standard]      # ASGI server to run FastAPI (with extras: httptools, websockets, watchdog)
-pydantic               # Data validation and schema definitions (used in request/response models)
-starlette              # Routing, middleware, and StaticFiles (FastAPI depends on it)
+# ============================================================
+# FastAPI Backend (REST API + File Uploads)
+# ============================================================
+fastapi                 # FastAPI framework
+uvicorn[standard]       # ASGI server (includes websockets, httptools, watchdog)
+pydantic                # Data validation / schemas
+starlette               # FastAPI dependency (routing, middleware, static files)
+python-multipart        # Multipart/form-data support (file uploads)

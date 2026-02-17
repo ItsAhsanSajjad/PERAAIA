@@ -5,6 +5,7 @@ import json
 import time
 import hashlib
 import re
+import random
 from typing import List, Dict, Any, Optional, Tuple
 
 from dotenv import load_dotenv
@@ -21,13 +22,17 @@ from chunker import chunk_units, Chunk
 # -----------------------------
 # Config (env-tunable)
 # -----------------------------
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
+OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").strip()
+
+# Embedding model name is environment-controlled because you may route through a gateway
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small").strip()
 
 # Versioning: bump when you change embed/search text construction logic
 EMBED_TEXT_VERSION = int(os.getenv("EMBED_TEXT_VERSION", "3"))
 SEARCH_TEXT_VERSION = int(os.getenv("SEARCH_TEXT_VERSION", "2"))
 
-# Rebuild if model changes
+# Rebuild if model changes or behavior changes
 EMBED_MODEL_VERSION = int(os.getenv("EMBED_MODEL_VERSION", "1"))
 
 MAX_EMBED_CHARS_PER_TEXT = int(os.getenv("MAX_EMBED_CHARS_PER_TEXT", "7000"))
@@ -48,7 +53,15 @@ PURGE_INACTIVE_FROM_FAISS = os.getenv("PURGE_INACTIVE_FROM_FAISS", "1").strip() 
 STORE_EMBED_TEXT_PREVIEW = os.getenv("STORE_EMBED_TEXT_PREVIEW", "1").strip() != "0"
 EMBED_TEXT_PREVIEW_CHARS = int(os.getenv("EMBED_TEXT_PREVIEW_CHARS", "1200"))
 
+# If enabled, embed_texts() returns normalized vectors (recommended for IP/cosine search correctness)
+NORMALIZE_EMBEDDINGS = os.getenv("NORMALIZE_EMBEDDINGS", "1").strip() != "0"
+
 DEBUG = os.getenv("INDEX_STORE_DEBUG", "0").strip() != "0"
+
+
+def _dbg(msg: str) -> None:
+    if DEBUG:
+        print(msg)
 
 
 # -----------------------------
@@ -99,7 +112,6 @@ def _safe_default_fs_path(doc_name: str) -> str:
     return os.path.join("assets", "data", doc_name).replace("\\", "/")
 
 def _canonical_public_path(doc_name: str) -> str:
-    # This is what UI/API should use for open_url construction
     dn = (doc_name or "").strip()
     return f"/assets/data/{dn}".replace("\\", "/") if dn else "/assets/data"
 
@@ -117,7 +129,6 @@ def _now() -> int:
 # FAISS helpers
 # -----------------------------
 def _new_idmap_index(dim: int) -> faiss.Index:
-    # IndexIDMap2 supports remove_ids reliably
     base = faiss.IndexFlatIP(dim)
     return faiss.IndexIDMap2(base)
 
@@ -152,48 +163,38 @@ def _remove_ids_from_faiss(idx: faiss.Index, ids: List[int]) -> Tuple[bool, str]
         return False, f"remove_ids failed: {e}"
 
 
-
-
-# ...
-
-# -----------------------------
-# Config (env-tunable)
-# -----------------------------
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "models/text-embedding-004").strip()
-
-# Versioning: bump when you change embed/search text construction logic
-EMBED_TEXT_VERSION = int(os.getenv("EMBED_TEXT_VERSION", "3"))
-SEARCH_TEXT_VERSION = int(os.getenv("SEARCH_TEXT_VERSION", "2"))
-
-# Rebuild if model changes
-EMBED_MODEL_VERSION = int(os.getenv("EMBED_MODEL_VERSION", "2")) # Bumped for Gemini
-
-# ...
-
 # -----------------------------
 # OpenAI embeddings (memory-safe batching + retries)
 # -----------------------------
 def _require_api_key() -> str:
-    key = os.getenv("OPENAI_API_KEY", "").strip()
-    if not key:
+    if not OPENAI_API_KEY:
         raise RuntimeError("OPENAI_API_KEY is missing. Ensure .env is present and loaded.")
-    return key
+    return OPENAI_API_KEY
+
+def _require_base_url() -> str:
+    return OPENAI_BASE_URL or "https://api.openai.com/v1"
 
 def _truncate_text_for_embedding(t: str) -> str:
     t = (t or "").strip()
-    # OpenAI limit is ~8191 tokens ~32k chars, but let's be safe
-    # We use 10k chars max
-    MAX_EMBED_CHARS_PER_TEXT = 12000
     if len(t) <= MAX_EMBED_CHARS_PER_TEXT:
         return t
     return t[:MAX_EMBED_CHARS_PER_TEXT]
 
 def embed_texts(texts: List[str]) -> np.ndarray:
+    """
+    Embeds texts using OpenAI client (or gateway via OPENAI_BASE_URL).
+    Returns float32 numpy array [n, dim].
+    By default, outputs are L2-normalized (NORMALIZE_EMBEDDINGS=1).
+    """
     if not texts:
         return np.zeros((0, 1), dtype=np.float32)
 
     from openai import OpenAI
-    client = OpenAI(api_key=_require_api_key())
+
+    client = OpenAI(
+        api_key=_require_api_key(),
+        base_url=_require_base_url(),
+    )
 
     safe_texts = [_truncate_text_for_embedding(t) for t in texts]
     n_total = len(safe_texts)
@@ -202,8 +203,13 @@ def embed_texts(texts: List[str]) -> np.ndarray:
     out: Optional[np.ndarray] = None
     cursor = 0
 
-    # Max chars per batch request (safe limit)
-    MAX_EMBED_CHARS_PER_BATCH = 40000 
+    # Use env-controlled batch char budget
+    max_batch_chars = max(5000, int(MAX_EMBED_CHARS_PER_BATCH or 0))
+
+    def _sleep(attempt: int) -> None:
+        # exponential backoff + jitter
+        base = EMBED_RETRY_BASE_SLEEP * (2 ** attempt)
+        time.sleep(base + random.uniform(0.0, 0.25))
 
     def _call_embeddings(inp: List[str]) -> List[List[float]]:
         last_err: Optional[Exception] = None
@@ -213,7 +219,8 @@ def embed_texts(texts: List[str]) -> np.ndarray:
                 return [d.embedding for d in resp.data]
             except Exception as e:
                 last_err = e
-                time.sleep(EMBED_RETRY_BASE_SLEEP * (2 ** attempt))
+                _dbg(f"[embed_texts] attempt={attempt+1}/{EMBED_RETRIES} error={e}")
+                _sleep(attempt)
         raise RuntimeError(f"Embedding call failed after retries: {last_err}")
 
     batch: List[str] = []
@@ -228,13 +235,14 @@ def embed_texts(texts: List[str]) -> np.ndarray:
             batch = []
             batch_chars = 0
             return
+
         if dim is None:
             dim = len(embs[0])
             out = np.empty((n_total, dim), dtype=np.float32)
 
         arr = np.asarray(embs, dtype=np.float32)
         if out is not None:
-             out[cursor:cursor + arr.shape[0], :] = arr
+            out[cursor:cursor + arr.shape[0], :] = arr
         cursor += arr.shape[0]
 
         batch = []
@@ -243,7 +251,8 @@ def embed_texts(texts: List[str]) -> np.ndarray:
     for t in safe_texts:
         tlen = len(t)
 
-        if tlen >= MAX_EMBED_CHARS_PER_BATCH:
+        # If a single text exceeds batch budget, embed alone
+        if tlen >= max_batch_chars:
             flush()
             embs = _call_embeddings([t])
             if embs:
@@ -252,11 +261,11 @@ def embed_texts(texts: List[str]) -> np.ndarray:
                     out = np.empty((n_total, dim), dtype=np.float32)
                 arr = np.asarray(embs, dtype=np.float32)
                 if out is not None:
-                     out[cursor:cursor + 1, :] = arr
+                    out[cursor:cursor + 1, :] = arr
                 cursor += 1
             continue
 
-        if batch and (batch_chars + tlen > MAX_EMBED_CHARS_PER_BATCH):
+        if batch and (batch_chars + tlen > max_batch_chars):
             flush()
 
         batch.append(t)
@@ -269,6 +278,10 @@ def embed_texts(texts: List[str]) -> np.ndarray:
 
     if cursor != n_total:
         out = out[:cursor, :]
+
+    # IMPORTANT: normalize here to make inner-product == cosine similarity
+    if NORMALIZE_EMBEDDINGS:
+        out = _normalize_vectors(out)
 
     return out
 
@@ -307,7 +320,6 @@ def _is_low_signal_chunk(txt: str) -> bool:
         return True
     if len(t) <= 16 and _ONLY_NUM_PUNCT_RE.match(t):
         return True
-    # conservative junk filter (avoid dropping valid short definitions)
     if len(t) < 60 and _count_words(t) < 6 and _count_letters(t) < 25:
         return True
     return False
@@ -668,7 +680,7 @@ def scan_and_ingest_if_needed(
         removed_ids_total.extend(ids)
         chunks_deactivated += len(ids)
 
-    # Purge inactive IDs from FAISS (even if we will early-return)
+    # Purge inactive IDs from FAISS
     purge_note = ""
     if PURGE_INACTIVE_FROM_FAISS and removed_ids_total:
         if idx is None and os.path.exists(faiss_path):
@@ -687,13 +699,12 @@ def scan_and_ingest_if_needed(
                 start_id = _next_chunk_id(rows)
                 purge_note = "rebuild_due_to_purge_failure"
 
-            # IMPORTANT: persist purge/rebuild immediately
             try:
                 _save_faiss(idx, faiss_path)
             except Exception:
                 pass
 
-    # ✅ Early return ONLY after purge persistence
+    # Early return if nothing changed
     if (not cold_start) and (not new_or_changed) and os.path.exists(faiss_path):
         _rewrite_jsonl(chunks_path, rows)
         with open(manifest_path, "w", encoding="utf-8") as f:
@@ -734,17 +745,14 @@ def scan_and_ingest_if_needed(
 
     for c in chunks:
         raw = (c.chunk_text or "").strip()
-        print(f"DEBUG CHUNK: len={len(raw)} role={getattr(c, 'loc_kind', '')}")
         if not raw:
-            print("  -> Empty")
             continue
         if _is_low_signal_chunk(raw):
-            print("  -> Low Signal")
             continue
         kept_chunks.append(c)
         embed_text_list.append(_build_embed_text_for_chunk(c))
 
-    # If no usable chunks, still persist manifest + rows + (already persisted purge above)
+    # If no usable chunks, still persist manifest + rows
     if not embed_text_list:
         _rewrite_jsonl(chunks_path, rows)
         with open(manifest_path, "w", encoding="utf-8") as f:
@@ -765,9 +773,8 @@ def scan_and_ingest_if_needed(
             out["purge_note"] = purge_note
         return out
 
-    # Embed + normalize
+    # Embed (embed_texts already normalizes if NORMALIZE_EMBEDDINGS=1)
     vectors = embed_texts(embed_text_list)
-    vectors = _normalize_vectors(vectors)
     dim = int(vectors.shape[1]) if vectors.ndim == 2 else 1
 
     # Load/create FAISS
@@ -794,16 +801,13 @@ def scan_and_ingest_if_needed(
             continue
 
         doc_name = getattr(ch, "doc_name", "Unknown document")
-        # Reference integrity: always canonical for serving
         public_path = _canonical_public_path(doc_name)
 
-        # Keep raw fs path only for internal debug/tracing
         raw_fs_path = (getattr(ch, "path", "") or "").strip()
         if not raw_fs_path:
             raw_fs_path = _safe_default_fs_path(doc_name)
         raw_fs_path = raw_fs_path.replace("\\", "/")
 
-        # Normalize loc fields for reference correctness
         loc_kind = getattr(ch, "loc_kind", "") or ""
         loc_start = getattr(ch, "loc_start", None)
         loc_end = getattr(ch, "loc_end", None)
@@ -831,12 +835,9 @@ def scan_and_ingest_if_needed(
             "loc_start": loc_start,
             "loc_end": loc_end,
 
-            # ✅ Canonical path used by UI/API
             "public_path": public_path,
-            # optional: raw path for debugging only
             "path": raw_fs_path,
 
-            # Evidence payload
             "text": t,
             "text_sha256": _sha256_text(t),
             "text_clean_sha256": _sha256_text(re.sub(r"\s+", " ", t).strip()),
@@ -882,7 +883,7 @@ def scan_and_ingest_if_needed(
 def rebuild_index_from_chunks(index_dir: str = "assets/index") -> Dict[str, Any]:
     """
     Full rebuild from chunks.jsonl active rows.
-    This is the safety hatch when purge is not supported or dim mismatch occurs.
+    Safety hatch when purge fails or dim mismatch occurs.
     """
     faiss_path = _p(index_dir, "faiss.index")
     chunks_path = _p(index_dir, "chunks.jsonl")
@@ -902,7 +903,6 @@ def rebuild_index_from_chunks(index_dir: str = "assets/index") -> Dict[str, Any]
 
     embed_texts_list = [_build_embed_text_for_row(r) for r in active]
     vectors = embed_texts(embed_texts_list)
-    vectors = _normalize_vectors(vectors)
     dim = int(vectors.shape[1])
 
     idx = _new_idmap_index(dim)
@@ -912,7 +912,6 @@ def rebuild_index_from_chunks(index_dir: str = "assets/index") -> Dict[str, Any]
 
     changed = False
     for r, et in zip(active, embed_texts_list):
-        # Keep metadata aligned for audit + future diffing
         if (r.get("embedding_model") or "").strip() != EMBEDDING_MODEL:
             r["embedding_model"] = EMBEDDING_MODEL
             changed = True
@@ -936,7 +935,6 @@ def rebuild_index_from_chunks(index_dir: str = "assets/index") -> Dict[str, Any]
             r["search_text"] = stxt
             changed = True
 
-        # Ensure canonical public_path exists (reference correctness)
         dn = (r.get("doc_name") or "").strip()
         if dn and not (r.get("public_path") or "").startswith("/assets/data/"):
             r["public_path"] = _canonical_public_path(dn)
