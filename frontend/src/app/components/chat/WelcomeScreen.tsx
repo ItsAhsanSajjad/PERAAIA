@@ -63,11 +63,8 @@ export const WelcomeScreen = memo(function WelcomeScreen({ onSendMessage }: Prop
       <h2 className="gradient-text text-3xl md:text-5xl font-extrabold mb-3 text-center tracking-tight">
         PERA AI Assistant
       </h2>
-      <p className="text-sm font-semibold tracking-wide mb-1 text-center max-w-md" style={{ color: "var(--text-primary)" }}>
-        Punjab Enforcement &amp; Regulatory Authority
-      </p>
-      <p className="text-xs mb-5 text-center max-w-md leading-relaxed" style={{ color: "var(--text-faint)" }}>
-        Your AI-powered guide to PERA documents, rules, regulations &amp; governance
+      <p className="text-sm font-semibold tracking-wide mb-5 text-center max-w-md leading-relaxed" style={{ color: "var(--text-primary)" }}>
+        An AI-powered assistant for navigating PERA documents, regulations, and governance
       </p>
 
       {/* Stat Strip */}
