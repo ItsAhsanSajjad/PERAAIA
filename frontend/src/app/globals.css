@@ -7,7 +7,7 @@
    Rich • Vibrant • Glassmorphic • Animated
    ═══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+/* Font loaded via next/font — see layout.tsx */
 
 /* ─── Light Theme ─── */
 :root {
@@ -101,7 +101,7 @@ html {
 body {
   background: var(--bg-page);
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-inter, 'Inter'), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   transition: background 0.5s ease, color 0.3s ease;
   height: 100%;
@@ -718,12 +718,12 @@ body {
   border-radius: var(--radius-md);
   padding: 10px;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 14px rgba(184, 134, 11, 0.3);
 }
 
 .send-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
 }
 
 .send-btn:disabled {
@@ -738,11 +738,11 @@ body {
   border-radius: var(--radius-md);
   font-weight: 600;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 14px rgba(184, 134, 11, 0.2);
 }
 
 .new-chat-btn:hover {
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 6px 20px rgba(184, 134, 11, 0.35);
   transform: translateY(-1px);
 }
 
@@ -783,3 +783,98 @@ body {
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
+
+/* ─── Toast Animation ─── */
+@keyframes toastIn {
+  0% { opacity: 0; transform: translateX(20px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.animate-toast-in {
+  animation: toastIn 0.3s ease-out;
+}
+
+/* ─── Recording Pulse ─── */
+@keyframes recordPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.recording-pulse {
+  animation: recordPulse 1.2s ease-in-out infinite;
+}
+
+/* ─── Status Ping ─── */
+@keyframes statusPing {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+  70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+.status-ping {
+  animation: statusPing 2s ease-in-out infinite;
+}
+
+/* ─── Focus Visible ─── */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ─── Copy Button (visible on hover, always visible on touch) ─── */
+.copy-btn {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.bot-bubble:hover .copy-btn {
+  opacity: 1;
+}
+@media (hover: none) {
+  .copy-btn {
+    opacity: 0.6;
+  }
+}
+
+/* ─── Reference Chips ─── */
+.ref-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+.ref-chip:hover {
+  background: var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+/* ─── Typewriter Cursor ─── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 0.7s step-end infinite;
+}
+
+/* ─── Cite Badge ─── */
+.cite-badge {
+  display: inline;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  vertical-align: super;
+}
