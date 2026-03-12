@@ -21,17 +21,17 @@ function StatusBadge({ status }: { status: ConnectionStatus }) {
     offline: "var(--red)",
   };
   const labels: Record<ConnectionStatus, string> = {
-    online: "Online",
+    online: "System Status: Active",
     connecting: "Connecting",
-    offline: "Offline",
+    offline: "System Status: Unavailable",
   };
   return (
-    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style={{ background: "var(--bg-hover)" }}>
+    <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg" style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}>
       <div
         className={`w-2 h-2 rounded-full ${status === "online" ? "status-ping" : ""}`}
         style={{ background: colors[status] }}
       />
-      <span className="text-[11px] font-medium" style={{ color: "var(--text-secondary)" }}>
+      <span className="text-[11px] font-medium tracking-wide" style={{ color: "var(--text-secondary)" }}>
         {labels[status]}
       </span>
     </div>
@@ -51,6 +51,8 @@ export default function Home() {
     currentChatId,
     loading,
     failedPrompt,
+    lastBotIsNew,
+    clearNewFlag,
     sendMessage,
     retryLastFailed,
     startNewChat,
@@ -68,7 +70,7 @@ export default function Home() {
   const handleOpenPdf = useCallback((ref: Reference) => {
     const pg = ref.page_start || ref.page || 1;
     const url = buildPdfUrl(ref);
-    setPdfModal({ url, title: `📄 ${ref.document} — Page ${pg}` });
+    setPdfModal({ url, title: `${ref.document} — Page ${pg}` });
   }, []);
 
   const handleSidebarToggle = useCallback(() => {
@@ -90,7 +92,7 @@ export default function Home() {
 
   return (
     <div className="flex h-screen overflow-hidden relative" style={{ background: "var(--bg-page)" }}>
-      {/* Ambient Glow */}
+      {/* Subtle ambient — reduced for institutional feel */}
       <div className="ambient-bg" />
 
       {/* Sidebar */}
@@ -106,12 +108,12 @@ export default function Home() {
 
       {/* Main Area */}
       <main className="flex-1 flex flex-col relative z-10 min-w-0">
-        {/* Header */}
-        <header className="glass-header flex items-center justify-between px-4 md:px-6 py-3 z-20 relative">
+        {/* Institutional Header */}
+        <header className="inst-header flex items-center justify-between px-4 md:px-6 py-3 z-20 relative">
           <div className="flex items-center gap-3">
             <button
               onClick={handleSidebarToggle}
-              className="p-2 rounded-xl transition-colors"
+              className="p-2 rounded-lg transition-colors"
               style={{ color: "var(--text-secondary)" }}
               aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
               onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-hover)")}
@@ -121,20 +123,20 @@ export default function Home() {
                 <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="15" y2="12" /><line x1="3" y1="18" x2="18" y2="18" />
               </svg>
             </button>
-            <Image src="/pera_logo.png" alt="PERA" width={32} height={32} className="rounded-xl" priority />
+            <Image src="/pera_logo.png" alt="PERA Emblem" width={32} height={32} className="rounded-lg" priority />
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>PERA AI</h1>
-                <span className="badge" style={{ background: "var(--accent-soft)", color: "var(--accent)" }}>v2.0</span>
+                <h1 className="font-semibold text-sm tracking-wide" style={{ color: "var(--text-primary)" }}>
+                  PERA AI Assistant
+                </h1>
               </div>
-              <p className="text-xs font-medium hidden sm:block" style={{ color: "var(--text-secondary)" }}>
-                Punjab Enforcement &amp; Regulatory Authority
+              <p className="text-[11px] font-medium tracking-wide hidden sm:block" style={{ color: "var(--text-secondary)" }}>
+                Punjab Enforcement & Regulatory Authority
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Theme Toggle — real button */}
             <button
               onClick={toggleTheme}
               className="theme-toggle"
@@ -153,12 +155,14 @@ export default function Home() {
           messages={messages}
           loading={loading}
           failedPrompt={failedPrompt}
+          lastBotIsNew={lastBotIsNew}
+          clearNewFlag={clearNewFlag}
           onSendSuggestion={handleSend}
           onOpenPdf={handleOpenPdf}
           onRetry={retryLastFailed}
         />
 
-        {/* Input Bar */}
+        {/* Query Interface */}
         <Composer onSend={handleSend} disabled={loading} />
       </main>
 

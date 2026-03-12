@@ -3,29 +3,143 @@
 import Image from "next/image";
 import { memo } from "react";
 
-const SUGGESTIONS = [
-  { emoji: "⚖️", title: "PERA Powers", desc: "Authority ke powers kya hain?", cat: "Governance" },
-  { emoji: "👤", title: "CTO Role", desc: "CTO ki responsibilities kya hain?", cat: "Roles" },
-  { emoji: "💰", title: "Pay & Benefits", desc: "Salary scales & allowances", cat: "Finance" },
-  { emoji: "📋", title: "EPO Rules", desc: "EPO kaise issue hota hai?", cat: "Enforcement" },
-  { emoji: "🏛️", title: "Board Composition", desc: "Board of Authority ka composition kya hai?", cat: "Governance" },
-  { emoji: "🔒", title: "Confidentiality", desc: "Confidentiality rules for employees", cat: "Compliance" },
+/* ═══════════════════════════════════════════════════════════
+   PERA AI — Flagship Institutional Landing Experience
+   Regulatory Intelligence Platform
+   ═══════════════════════════════════════════════════════════ */
+
+// ─── Topic Explorer Data ───
+
+const TOPIC_GROUPS = [
+  {
+    theme: "Governance",
+    icon: "⚖️",
+    prompts: [
+      "What powers does PERA have under the Act?",
+      "What is the structure of the PERA Board?",
+    ],
+  },
+  {
+    theme: "Roles & Responsibilities",
+    icon: "👤",
+    prompts: [
+      "What are the responsibilities of the Chief Technology Officer?",
+      "What are the duties of enforcement officers?",
+    ],
+  },
+  {
+    theme: "Enforcement",
+    icon: "📋",
+    prompts: [
+      "How is an EPO issued?",
+      "What enforcement powers does PERA have?",
+    ],
+  },
+  {
+    theme: "Performance",
+    icon: "📊",
+    prompts: [
+      "What KPIs measure PERA operational success?",
+      "How does PERA measure operational efficiency?",
+    ],
+  },
+  {
+    theme: "Service Delivery",
+    icon: "🏛️",
+    prompts: [
+      "How is responsiveness to public complaints evaluated?",
+      "What service delivery benchmarks apply to PERA?",
+    ],
+  },
+  {
+    theme: "Compliance",
+    icon: "🔒",
+    prompts: [
+      "What professional conduct standards apply to PERA employees?",
+      "What are the confidentiality obligations for staff?",
+    ],
+  },
+  {
+    theme: "Learning & Development",
+    icon: "📚",
+    prompts: [
+      "What training expectations exist for PERA staff?",
+      "How is capacity building measured in the KPI framework?",
+    ],
+  },
 ];
 
-const STATS = [
-  { value: "24/7", label: "Available" },
-  { value: "Multi-doc", label: "Search" },
-  { value: "Bilingual", label: "EN / UR" },
-  { value: "Cited", label: "Responses" },
-];
+
+
+// ─── Capabilities ───
 
 const CAPABILITIES = [
-  "Voice Input",
-  "PDF Viewer",
-  "Citation Links",
-  "Dark Mode",
-  "Chat History",
-  "Bilingual",
+  "Guidance on PERA regulations and powers",
+  "Interpretation of governance structures and roles",
+  "Explanation of enforcement procedures",
+  "Insights into institutional performance frameworks",
+  "Clarification of policies, rules, and operational standards",
+];
+
+// ─── Reference Materials ───
+
+const REFERENCE_CATEGORIES = [
+  { label: "Punjab Enforcement & Regulation Act", icon: "📜" },
+  { label: "PERA Service Rules", icon: "📋" },
+  { label: "Governance Documentation", icon: "🏛️" },
+  { label: "Institutional Policies", icon: "📁" },
+  { label: "KPI Frameworks", icon: "📊" },
+  { label: "Official Notifications", icon: "📄" },
+];
+
+// ─── Regulatory Intelligence ───
+
+const INTEL_ITEMS = [
+  {
+    icon: "📢",
+    title: "Latest Notifications",
+    desc: "Recent PERA notices and regulatory updates",
+    status: "Active",
+    statusColor: "#34d399",
+    accent: "#c9943e",
+    meta: "Regulatory Notices",
+  },
+  {
+    icon: "📝",
+    title: "Policy Updates",
+    desc: "Recently updated governance documents",
+    status: "Current",
+    statusColor: "#60a5fa",
+    accent: "#60a5fa",
+    meta: "Governance Documents",
+  },
+  {
+    icon: "🔍",
+    title: "Enforcement Insights",
+    desc: "Current enforcement focus areas and regulatory priorities",
+    status: "Monitoring",
+    statusColor: "#a78bfa",
+    accent: "#a78bfa",
+    meta: "Enforcement Data",
+  },
+  {
+    icon: "📂",
+    title: "Knowledge Base",
+    desc: "Official documents indexed in the assistant",
+    status: "Operational",
+    statusColor: "#34d399",
+    accent: "#34d399",
+    meta: "Document Repository",
+  },
+];
+
+// ─── "What you can ask" examples ───
+
+const EXAMPLE_QUERIES = [
+  "What are PERA enforcement powers?",
+  "What KPIs measure PERA performance?",
+  "How is an EPO issued?",
+  "What is the structure of the PERA Board?",
 ];
 
 interface Props {
@@ -34,111 +148,166 @@ interface Props {
 
 export const WelcomeScreen = memo(function WelcomeScreen({ onSendMessage }: Props) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[70vh] animate-fade-in px-2">
-      {/* Logo with Glow Ring */}
-      <div className="relative mb-5">
-        <div
-          className="absolute inset-[-8px] rounded-3xl opacity-40"
-          style={{
-            background: "conic-gradient(from 0deg, #b8860b, #daa520, #e6b422, #b8860b)",
-            filter: "blur(12px)",
-            animation: "orbSpin 6s linear infinite",
-          }}
-        />
-        <div
-          className="relative w-20 h-20 rounded-2xl overflow-hidden"
-          style={{ boxShadow: "0 8px 40px var(--accent-glow)", border: "2px solid var(--border)" }}
-        >
-          <Image src="/pera_logo.png" alt="PERA AI" width={80} height={80} priority />
-        </div>
-        <div
-          className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
-          style={{ background: "var(--green)", border: "3px solid var(--bg-page)", color: "white" }}
-        >
-          ✓
-        </div>
-      </div>
+    <div className="inst-landing">
 
-      {/* Hero Text */}
-      <h2 className="gradient-text text-3xl md:text-5xl font-extrabold mb-3 text-center tracking-tight">
-        PERA AI Assistant
-      </h2>
-      <p className="text-sm font-semibold tracking-wide mb-5 text-center max-w-md leading-relaxed" style={{ color: "var(--text-primary)" }}>
-        An AI-powered assistant for navigating PERA documents, regulations, and governance
-      </p>
-
-      {/* Stat Strip */}
-      <div
-        className="flex items-center justify-center gap-0 rounded-2xl overflow-hidden mb-6 animate-fade-in"
-        style={{
-          background: "var(--bg-card)",
-          border: "1px solid var(--border)",
-          boxShadow: "var(--shadow-md)",
-        }}
-      >
-        {STATS.map((s, i) => (
-          <div
-            key={i}
-            className="flex flex-col items-center px-5 sm:px-6 py-3.5"
-            style={{ borderRight: i < STATS.length - 1 ? "1px solid var(--border)" : "none" }}
-          >
-            <span className="font-extrabold text-base sm:text-lg tracking-tight" style={{ color: "var(--gold)" }}>
-              {s.value}
-            </span>
-            <span className="text-[9px] font-semibold tracking-widest uppercase mt-0.5" style={{ color: "var(--text-faint)" }}>
-              {s.label}
-            </span>
+      {/* ═══ 1. OFFICIAL AUTHORITY HEADER ═══ */}
+      <section className="inst-hero">
+        <div className="inst-hero-inner">
+          <div className="inst-authority-block">
+            <p className="inst-super-title">Government of Punjab</p>
+            <p className="inst-org-name">Punjab Enforcement & Regulatory Authority</p>
           </div>
-        ))}
-      </div>
 
-      {/* Suggestion Cards — visible text IS the question sent */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 w-full max-w-2xl mb-6">
-        {SUGGESTIONS.map((s, i) => (
-          <button
-            key={i}
-            onClick={() => onSendMessage(s.desc)}
-            className="suggestion-card text-left px-4 py-4 animate-fade-in"
-            style={{ animationDelay: `${i * 80}ms` }}
-          >
-            <div className="relative z-10">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl">{s.emoji}</span>
-                <span
-                  className="text-[9px] font-bold tracking-wider px-2 py-0.5 rounded-full uppercase"
-                  style={{ background: "var(--accent-soft)", color: "var(--accent)" }}
-                >
-                  {s.cat}
-                </span>
-              </div>
-              <h3 className="font-semibold text-sm mb-0.5" style={{ color: "var(--text-primary)" }}>
-                {s.title}
-              </h3>
-              <p className="text-xs" style={{ color: "var(--text-faint)" }}>
-                {s.desc}
-              </p>
+          <div className="inst-logo-row">
+            <div className="inst-logo-wrap">
+              <Image src="/pera_logo.png" alt="PERA Emblem" width={64} height={64} priority />
             </div>
-          </button>
-        ))}
-      </div>
-
-      {/* Capability Pills */}
-      <div className="flex flex-wrap justify-center gap-2">
-        {CAPABILITIES.map((c, i) => (
-          <div
-            key={i}
-            className="px-3 py-1 rounded-full text-[10px] font-medium tracking-wide animate-fade-in"
-            style={{
-              background: "var(--bg-card)",
-              border: "1px solid var(--border)",
-              color: "var(--text-faint)",
-              animationDelay: `${300 + i * 60}ms`,
-            }}
-          >
-            {c}
           </div>
-        ))}
-      </div>
+
+          <h1 className="inst-main-title">PERA AI Assistant</h1>
+          <p className="inst-subtitle">
+            Official informational assistant for regulations, governance, enforcement guidance, and institutional performance.
+          </p>
+
+          <div className="inst-meta-strip">
+            <span className="inst-meta-item">
+              <span className="inst-meta-dot" /> Official Government System
+            </span>
+            <span className="inst-meta-sep">|</span>
+            <span className="inst-meta-item">Version 2.0</span>
+            <span className="inst-meta-sep">|</span>
+            <span className="inst-meta-item">Knowledge Base: Current</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 2. FORMAL INFORMATION NOTICE ═══ */}
+      <section className="inst-notice">
+        <div className="inst-notice-bar" />
+        <p>
+          This assistant provides informational guidance derived from PERA regulations, policies, governance materials, and performance frameworks. Responses are generated from official reference sources to support understanding of PERA operations and institutional standards.
+        </p>
+      </section>
+
+      {/* ═══ 3. WHAT YOU CAN ASK ═══ */}
+      <section className="inst-ask-helper">
+        <h2 className="inst-ask-title">What you can ask</h2>
+        <div className="inst-ask-grid">
+          {EXAMPLE_QUERIES.map((q) => (
+            <button key={q} onClick={() => onSendMessage(q)} className="inst-ask-chip">
+              {q}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <hr className="inst-divider" />
+
+      {/* ═══ 4. REGULATORY INTELLIGENCE ═══ */}
+      <section className="inst-section">
+        <div className="inst-intel-header">
+          <h2 className="inst-section-heading">Regulatory Intelligence</h2>
+          <span className="inst-intel-badge">Live Overview</span>
+        </div>
+        <div className="inst-intel-grid">
+          {INTEL_ITEMS.map((item) => (
+            <div key={item.title} className="inst-intel-card" style={{ '--accent': item.accent } as React.CSSProperties}>
+              <div className="inst-intel-card-top">
+                <div className="inst-intel-icon-wrap">
+                  <span className="inst-intel-icon">{item.icon}</span>
+                </div>
+                <div className="inst-intel-status">
+                  <span className="inst-intel-status-dot" style={{ background: item.statusColor }} />
+                  <span className="inst-intel-status-text">{item.status}</span>
+                </div>
+              </div>
+              <h3 className="inst-intel-title">{item.title}</h3>
+              <p className="inst-intel-desc">{item.desc}</p>
+              <div className="inst-intel-meta">
+                <span className="inst-intel-meta-label">{item.meta}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <hr className="inst-divider" />
+
+      {/* ═══ 5. EXPLORE PERA TOPICS ═══ */}
+      <section className="inst-section">
+        <h2 className="inst-section-heading">Explore PERA Topics</h2>
+        <div className="inst-topics-grid">
+          {TOPIC_GROUPS.map((group) => (
+            <div key={group.theme} className="inst-topic-group">
+              <div className="inst-topic-header">
+                <span className="inst-topic-icon">{group.icon}</span>
+                <h3 className="inst-topic-theme">{group.theme}</h3>
+              </div>
+              <div className="inst-topic-prompts">
+                {group.prompts.map((prompt) => (
+                  <button
+                    key={prompt}
+                    onClick={() => onSendMessage(prompt)}
+                    className="inst-topic-btn"
+                  >
+                    <span className="inst-topic-arrow">→</span>
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+
+
+      {/* ═══ 7. CAPABILITIES ═══ */}
+      <section className="inst-section">
+        <h2 className="inst-section-heading">Capabilities of the Assistant</h2>
+        <ul className="inst-capabilities">
+          {CAPABILITIES.map((cap) => (
+            <li key={cap}>
+              <span className="inst-cap-check">✓</span>
+              {cap}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <hr className="inst-divider" />
+
+      {/* ═══ 8. REFERENCE MATERIALS ═══ */}
+      <section className="inst-section">
+        <h2 className="inst-section-heading">Official Reference Materials</h2>
+        <p className="inst-ref-intro">
+          Responses generated by this assistant are derived from the following official materials.
+        </p>
+        <div className="inst-ref-grid">
+          {REFERENCE_CATEGORIES.map((cat) => (
+            <div key={cat.label} className="inst-ref-card">
+              <span className="inst-ref-icon">{cat.icon}</span>
+              <span className="inst-ref-label">{cat.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ 9. FOOTER ═══ */}
+      <footer className="inst-footer">
+        <div className="inst-footer-links">
+          <span>Privacy Policy</span>
+          <span className="inst-footer-sep">·</span>
+          <span>Terms of Use</span>
+          <span className="inst-footer-sep">·</span>
+          <span>Accessibility Statement</span>
+          <span className="inst-footer-sep">·</span>
+          <span>Data Handling Notice</span>
+        </div>
+        <p className="inst-footer-highlight">
+          PERA AI Assistant — Punjab Enforcement & Regulatory Authority
+        </p>
+      </footer>
     </div>
   );
 });

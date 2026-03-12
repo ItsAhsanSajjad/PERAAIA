@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { memo, useState, useCallback } from "react";
+import { memo, useState, useCallback, useMemo } from "react";
 import type { Message, Reference } from "../../lib/types";
 import { renderMarkdown } from "../../lib/markdown";
 import { showToast } from "../common/Toast";
@@ -14,13 +14,44 @@ const timeAgo = (ts: number) => {
   return new Date(ts).toLocaleDateString();
 };
 
+
+const TOPIC_KEYWORDS: { keyword: string; topic: string }[] = [
+  { keyword: "enforcement", topic: "Enforcement Procedures" },
+  { keyword: "epo", topic: "Enforcement Procedure Orders" },
+  { keyword: "compliance", topic: "Compliance Standards" },
+  { keyword: "governance", topic: "Governance Structures" },
+  { keyword: "board", topic: "PERA Board Composition" },
+  { keyword: "kpi", topic: "KPI Frameworks" },
+  { keyword: "performance", topic: "Institutional Performance" },
+  { keyword: "salary", topic: "Pay Scales & Benefits" },
+  { keyword: "pay scale", topic: "Pay Scales & Benefits" },
+  { keyword: "training", topic: "Learning & Development" },
+  { keyword: "discipline", topic: "Work Discipline & Ethics" },
+  { keyword: "inspection", topic: "Regulatory Inspections" },
+  { keyword: "service delivery", topic: "Service Delivery Standards" },
+];
+
+function extractRelatedTopics(text: string, maxTopics = 3): string[] {
+  const lower = text.toLowerCase();
+  const found: string[] = [];
+  const seen = new Set<string>();
+  for (const { keyword, topic } of TOPIC_KEYWORDS) {
+    if (lower.includes(keyword) && !seen.has(topic)) {
+      found.push(topic);
+      seen.add(topic);
+    }
+    if (found.length >= maxTopics) break;
+  }
+  return found;
+}
+
 interface Props {
   message: Message;
-  /** Text to show during typewriter effect (only for the latest message) */
   typingText?: string;
   isTyping?: boolean;
   onOpenPdf?: (ref: Reference) => void;
   onRetry?: () => void;
+  onSendQuery?: (text: string) => void;
 }
 
 export const MessageBubble = memo(function MessageBubble({
@@ -29,6 +60,7 @@ export const MessageBubble = memo(function MessageBubble({
   isTyping,
   onOpenPdf,
   onRetry,
+  onSendQuery,
 }: Props) {
   const [copied, setCopied] = useState(false);
 
@@ -38,6 +70,12 @@ export const MessageBubble = memo(function MessageBubble({
     showToast("Copied to clipboard", "success");
     setTimeout(() => setCopied(false), 2000);
   }, [message.content]);
+
+  // Compute related topics once
+  const relatedTopics = useMemo(
+    () => (!isTyping && message.role === "assistant" ? extractRelatedTopics(message.content) : []),
+    [message.content, message.role, isTyping],
+  );
 
   if (message.role === "user") {
     return (
@@ -57,6 +95,7 @@ export const MessageBubble = memo(function MessageBubble({
   // Assistant message
   const displayText = isTyping && typingText !== undefined ? typingText : message.content;
   const showRefs = message.references && message.references.length > 0 && !isTyping;
+  const showStructure = !isTyping && !message.failed;
 
   return (
     <div className="flex justify-start gap-2.5">
@@ -70,33 +109,59 @@ export const MessageBubble = memo(function MessageBubble({
       </div>
       <div className="max-w-[82%] md:max-w-[72%] bot-bubble">
         <div className="px-4 py-3">
+          {/* Answer Section */}
+          {showStructure && (
+            <div className="ans-section-label">Answer</div>
+          )}
           <div className="msg-bot-text">
             {renderMarkdown(displayText)}
             {isTyping && <span className="typewriter-cursor" />}
           </div>
 
-          {/* References */}
+          {/* Authority / Source Block */}
           {showRefs && (
-            <div className="mt-3 pt-3 flex flex-wrap gap-1.5" style={{ borderTop: "1px solid var(--border)" }}>
-              <span className="text-[10px] font-medium self-center mr-1" style={{ color: "var(--text-faint)" }}>
-                Sources:
-              </span>
-              {message.references!.slice(0, 8).map((ref, ri) => {
-                const docName = ref.document?.replace(/\.pdf$/i, "") || "Document";
-                const truncated = docName.length > 22 ? docName.slice(0, 22) + "…" : docName;
-                const page = ref.page_start || ref.page;
-                return (
+            <div className="ans-authority-block">
+              <div className="ans-section-label">
+                <span className="ans-verified-dot" />
+                Source — Derived from Official PERA Documents
+              </div>
+              <div className="flex flex-wrap gap-1.5 mt-1.5">
+                {message.references!.slice(0, 8).map((ref, ri) => {
+                  const docName = ref.document?.replace(/\.pdf$/i, "") || "Document";
+                  const truncated = docName.length > 22 ? docName.slice(0, 22) + "…" : docName;
+                  const page = ref.page_start || ref.page;
+                  return (
+                    <button
+                      key={ri}
+                      onClick={() => onOpenPdf?.(ref)}
+                      className="ref-chip"
+                      title={`${ref.document}${page ? ` — Page ${page}` : ""}`}
+                    >
+                      [{ref.id ?? ri + 1}] {truncated}
+                      {page ? ` · p.${page}` : ""}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+
+          {/* Related Topics */}
+          {showStructure && relatedTopics.length > 0 && (
+            <div className="ans-related-block">
+              <div className="ans-section-label">Related Topics</div>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {relatedTopics.map((topic) => (
                   <button
-                    key={ri}
-                    onClick={() => onOpenPdf?.(ref)}
-                    className="ref-chip"
-                    title={`${ref.document}${page ? ` — Page ${page}` : ""}`}
+                    key={topic}
+                    className="ans-related-chip"
+                    onClick={() => onSendQuery?.(`Tell me about ${topic} in PERA`)}
                   >
-                    [{ref.id ?? ri + 1}] {truncated}
-                    {page ? ` · p.${page}` : ""}
+                    {topic}
                   </button>
-                );
-              })}
+                ))}
+              </div>
             </div>
           )}
 

@@ -18,6 +18,7 @@ export function useChatSessions(healthCallbacks: {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [failedPrompt, setFailedPrompt] = useState<string | null>(null);
+  const [lastBotIsNew, setLastBotIsNew] = useState(false);
 
   const initialized = useRef(false);
 
@@ -114,6 +115,7 @@ export function useChatSessions(healthCallbacks: {
           timestamp: Date.now(),
         };
         setMessages((prev) => [...prev, botMsg]);
+        setLastBotIsNew(true);
       } else {
         healthCallbacks.reportFailure();
         setFailedPrompt(trimmed);
@@ -200,6 +202,8 @@ export function useChatSessions(healthCallbacks: {
     currentChatId,
     loading,
     failedPrompt,
+    lastBotIsNew,
+    clearNewFlag: useCallback(() => setLastBotIsNew(false), []),
     sendMessage,
     retryLastFailed,
     startNewChat,

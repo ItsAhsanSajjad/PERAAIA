@@ -10,6 +10,8 @@ interface Props {
   messages: Message[];
   loading: boolean;
   failedPrompt: string | null;
+  lastBotIsNew: boolean;
+  clearNewFlag: () => void;
   onSendSuggestion: (text: string) => void;
   onOpenPdf: (ref: Reference) => void;
   onRetry: () => void;
@@ -23,6 +25,8 @@ export const ChatWindow = memo(function ChatWindow({
   messages,
   loading,
   failedPrompt,
+  lastBotIsNew,
+  clearNewFlag,
   onSendSuggestion,
   onOpenPdf,
   onRetry,
@@ -33,43 +37,19 @@ export const ChatWindow = memo(function ChatWindow({
   // Typewriter state — scoped to this component only
   const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
-  const [latestIsNew, setLatestIsNew] = useState(false);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
 
-  // Track whether the initial mount has completed.
-  // On mount, messages may already be loaded from localStorage —
-  // those should NOT trigger the typewriter.
-  const mountedRef = useRef(false);
-  const prevMsgCountRef = useRef(-1); // -1 = uninitialized
-
-  // Mark as mounted after first render cycle
+  // Only animate when the hook explicitly tells us a fresh bot message arrived
   useEffect(() => {
-    // After the first render, snapshot the current count so restored
-    // messages are treated as "already seen".
-    prevMsgCountRef.current = messages.length;
-    // Use a microtask to ensure this runs after the initial paint
-    const id = requestAnimationFrame(() => {
-      mountedRef.current = true;
-    });
-    return () => cancelAnimationFrame(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Detect genuinely NEW assistant messages (not restored from storage)
-  useEffect(() => {
-    if (!mountedRef.current) return; // skip restored messages on mount
-    if (prevMsgCountRef.current < 0) return; // guard
-    if (messages.length > prevMsgCountRef.current) {
-      const last = messages[messages.length - 1];
-      if (last.role === "assistant" && !last.failed) {
-        setLatestIsNew(true);
-      }
+    if (lastBotIsNew) {
+      setShouldAnimate(true);
+      clearNewFlag();
     }
-    prevMsgCountRef.current = messages.length;
-  }, [messages]);
+  }, [lastBotIsNew, clearNewFlag]);
 
   // Typewriter effect using requestAnimationFrame (not setInterval)
   useEffect(() => {
-    if (!latestIsNew || messages.length === 0) return;
+    if (!shouldAnimate || messages.length === 0) return;
     const last = messages[messages.length - 1];
     if (last.role !== "assistant") return;
     const full = last.content;
@@ -94,7 +74,7 @@ export const ChatWindow = memo(function ChatWindow({
 
       if (i >= full.length) {
         setIsTyping(false);
-        setLatestIsNew(false);
+        setShouldAnimate(false);
         return;
       }
       rafId = requestAnimationFrame(tick);
@@ -102,7 +82,7 @@ export const ChatWindow = memo(function ChatWindow({
 
     rafId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafId);
-  }, [latestIsNew, messages]);
+  }, [shouldAnimate, messages]);
 
   // Scroll to bottom when loading indicator appears
   useEffect(() => {
@@ -154,6 +134,7 @@ export const ChatWindow = memo(function ChatWindow({
               isTyping={showTypewriter}
               onOpenPdf={onOpenPdf}
               onRetry={msg.failed ? onRetry : undefined}
+              onSendQuery={onSendSuggestion}
             />
           );
         })}
