@@ -19,6 +19,7 @@ export function useChatSessions(healthCallbacks: {
   const [loading, setLoading] = useState(false);
   const [failedPrompt, setFailedPrompt] = useState<string | null>(null);
   const [lastBotIsNew, setLastBotIsNew] = useState(false);
+  const serverSessionId = useRef<string | undefined>(undefined);
 
   const initialized = useRef(false);
 
@@ -104,10 +105,15 @@ export function useChatSessions(healthCallbacks: {
       const result = await askQuestion({
         question: trimmed,
         conversation_history: history,
+        session_id: serverSessionId.current,
       });
 
       if (result.ok) {
         healthCallbacks.reportSuccess();
+        // Persist server session_id for follow-up anchoring
+        if (result.data.session_id) {
+          serverSessionId.current = result.data.session_id;
+        }
         const botMsg: Message = {
           role: "assistant",
           content: result.data.answer || "Sorry, I could not process that.",
@@ -161,6 +167,7 @@ export function useChatSessions(healthCallbacks: {
     setMessages([]);
     setCurrentChatId(genId());
     setFailedPrompt(null);
+    serverSessionId.current = undefined;
   }, []);
 
   // ─── Load Chat ───

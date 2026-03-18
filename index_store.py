@@ -17,19 +17,19 @@ import faiss  # type: ignore
 from doc_registry import scan_assets_data, compare_with_manifest
 from extractors import extract_units_from_files
 from chunker import chunk_units, Chunk
+from openai_clients import get_chat_client, require_api_key, OPENAI_BASE_URL, EMBEDDING_MODEL
+from log_config import get_logger
+
+log = get_logger("pera.index_store")
 
 
 # -----------------------------
 # Config (env-tunable)
 # -----------------------------
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
-OPENAI_BASE_URL = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").strip()
-
-# Embedding model name is environment-controlled because you may route through a gateway
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small").strip()
+# Note: OPENAI_API_KEY, OPENAI_BASE_URL, EMBEDDING_MODEL are now in openai_clients.py
 
 # Versioning: bump when you change embed/search text construction logic
-EMBED_TEXT_VERSION = int(os.getenv("EMBED_TEXT_VERSION", "3"))
+EMBED_TEXT_VERSION = int(os.getenv("EMBED_TEXT_VERSION", "4"))  # bumped: slim embed header
 SEARCH_TEXT_VERSION = int(os.getenv("SEARCH_TEXT_VERSION", "2"))
 
 # Rebuild if model changes or behavior changes
@@ -39,7 +39,7 @@ MAX_EMBED_CHARS_PER_TEXT = int(os.getenv("MAX_EMBED_CHARS_PER_TEXT", "7000"))
 MAX_EMBED_CHARS_PER_BATCH = int(os.getenv("MAX_EMBED_CHARS_PER_BATCH", "120000"))
 
 DEFAULT_CHUNK_MAX_CHARS = int(os.getenv("CHUNK_MAX_CHARS", "4500"))
-DEFAULT_CHUNK_OVERLAP_CHARS = int(os.getenv("CHUNK_OVERLAP_CHARS", "350"))
+DEFAULT_CHUNK_OVERLAP_CHARS = int(os.getenv("CHUNK_OVERLAP_CHARS", "500"))  # increased from 350
 
 FORCE_REBUILD_IF_INDEX_MISSING = os.getenv("FORCE_REBUILD_IF_INDEX_MISSING", "1").strip() != "0"
 
@@ -55,13 +55,6 @@ EMBED_TEXT_PREVIEW_CHARS = int(os.getenv("EMBED_TEXT_PREVIEW_CHARS", "1200"))
 
 # If enabled, embed_texts() returns normalized vectors (recommended for IP/cosine search correctness)
 NORMALIZE_EMBEDDINGS = os.getenv("NORMALIZE_EMBEDDINGS", "1").strip() != "0"
-
-DEBUG = os.getenv("INDEX_STORE_DEBUG", "0").strip() != "0"
-
-
-def _dbg(msg: str) -> None:
-    if DEBUG:
-        print(msg)
 
 
 # -----------------------------
@@ -166,11 +159,6 @@ def _remove_ids_from_faiss(idx: faiss.Index, ids: List[int]) -> Tuple[bool, str]
 # -----------------------------
 # OpenAI embeddings (memory-safe batching + retries)
 # -----------------------------
-def _require_api_key() -> str:
-    if not OPENAI_API_KEY:
-        raise RuntimeError("OPENAI_API_KEY is missing. Ensure .env is present and loaded.")
-    return OPENAI_API_KEY
-
 def _require_base_url() -> str:
     return OPENAI_BASE_URL or "https://api.openai.com/v1"
 
@@ -191,10 +179,7 @@ def embed_texts(texts: List[str]) -> np.ndarray:
 
     from openai import OpenAI
 
-    client = OpenAI(
-        api_key=_require_api_key(),
-        base_url=_require_base_url(),
-    )
+    client = get_chat_client()
 
     safe_texts = [_truncate_text_for_embedding(t) for t in texts]
     n_total = len(safe_texts)
@@ -219,7 +204,7 @@ def embed_texts(texts: List[str]) -> np.ndarray:
                 return [d.embedding for d in resp.data]
             except Exception as e:
                 last_err = e
-                _dbg(f"[embed_texts] attempt={attempt+1}/{EMBED_RETRIES} error={e}")
+                log.debug("embed_texts attempt=%d/%d error=%s", attempt + 1, EMBED_RETRIES, e)
                 _sleep(attempt)
         raise RuntimeError(f"Embedding call failed after retries: {last_err}")
 
@@ -438,12 +423,8 @@ def _build_embed_text_from_parts(
     tags_line = f"TAGS: {', '.join(tags)}" if tags else "TAGS:"
 
     header = (
-        f"DOCUMENT: {dn}\n"
-        f"RANK: {rank}\n"
-        f"TYPE: {stype}\n"
-        f"LOCATION: {loc}\n"
+        f"DOCUMENT: {dn} | {loc}\n"
         f"{tags_line}\n"
-        f"{_PERA_IDENTITY_LINE}\n"
     )
     return (header + "\n" + body).strip()
 
@@ -630,7 +611,8 @@ def scan_and_ingest_if_needed(
     if os.path.exists(faiss_path):
         try:
             idx = faiss.read_index(faiss_path)
-        except Exception:
+        except Exception as e:
+            log.warning("Failed to read existing FAISS index at %s: %s", faiss_path, e)
             idx = None
 
     unchanged: List[Dict[str, Any]] = []
@@ -686,7 +668,8 @@ def scan_and_ingest_if_needed(
         if idx is None and os.path.exists(faiss_path):
             try:
                 idx = faiss.read_index(faiss_path)
-            except Exception:
+            except Exception as e:
+                log.warning("Failed to re-read FAISS index for purge at %s: %s", faiss_path, e)
                 idx = None
 
         if idx is not None:
@@ -701,8 +684,8 @@ def scan_and_ingest_if_needed(
 
             try:
                 _save_faiss(idx, faiss_path)
-            except Exception:
-                pass
+            except Exception as e:
+                log.error("Failed to save FAISS index after purge at %s: %s", faiss_path, e, exc_info=True)
 
     # Early return if nothing changed
     if (not cold_start) and (not new_or_changed) and os.path.exists(faiss_path):
@@ -728,9 +711,11 @@ def scan_and_ingest_if_needed(
     units = extract_units_from_files(changed_files)
 
     rank_map = {e["filename"]: int(e.get("rank", 0) or 0) for e in new_or_changed}
+    authority_map = {e["filename"]: int(e.get("authority", 2) or 2) for e in new_or_changed}
     for u in units:
         try:
             u.doc_rank = rank_map.get(u.doc_name, 0)
+            u.doc_authority = authority_map.get(u.doc_name, 2)
         except Exception:
             pass
 
@@ -829,6 +814,7 @@ def scan_and_ingest_if_needed(
 
             "doc_name": doc_name,
             "doc_rank": int(getattr(ch, "doc_rank", 0) or 0),
+            "doc_authority": int(getattr(ch, "doc_authority", 2) or 2),
             "source_type": getattr(ch, "source_type", ""),
 
             "loc_kind": loc_kind,

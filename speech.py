@@ -6,17 +6,10 @@ import tempfile
 import subprocess
 from typing import Optional
 
-from dotenv import load_dotenv
-from openai import OpenAI
+from openai_clients import get_transcription_client, TRANSCRIBE_MODEL
+from log_config import get_logger
 
-load_dotenv()
-
-
-def _client() -> OpenAI:
-    key = (os.getenv("OPENAI_API_KEY") or "").strip()
-    if not key:
-        raise RuntimeError("OPENAI_API_KEY is missing. Ensure .env is present and loaded.")
-    return OpenAI(api_key=key)
+log = get_logger("pera.speech")
 
 
 def _guess_ext(audio_bytes: bytes) -> str:
@@ -91,15 +84,17 @@ def _convert_to_wav(in_path: str) -> Optional[str]:
 def transcribe_audio(audio_bytes: bytes, model: str = None) -> str:
     """
     Safe transcription:
-    - Never raises to Streamlit
+    - Never raises to caller
     - Returns readable error text if unsupported/corrupt
     """
     if not audio_bytes or len(audio_bytes) < 800:
+        log.warning("Transcription rejected: audio too short (%d bytes)", len(audio_bytes) if audio_bytes else 0)
         return "⚠️ I could not read the audio (empty/too short). Please record again."
 
-    model = model or (os.getenv("TRANSCRIBE_MODEL") or "whisper-1")
+    model = model or TRANSCRIBE_MODEL
 
     ext = _guess_ext(audio_bytes)
+    log.info("Transcription starting: ext=%s, size=%d bytes, model=%s", ext, len(audio_bytes), model)
 
     try:
         with tempfile.TemporaryDirectory() as td:
@@ -113,9 +108,10 @@ def transcribe_audio(audio_bytes: bytes, model: str = None) -> str:
                 wav = _convert_to_wav(raw_path)
                 if wav:
                     use_path = wav
+                    log.debug("Converted %s to WAV for Whisper", ext)
 
             # Call OpenAI transcription
-            client = _client()
+            client = get_transcription_client()
             with open(use_path, "rb") as f:
                 result = client.audio.transcriptions.create(
                     model=model,
@@ -124,12 +120,15 @@ def transcribe_audio(audio_bytes: bytes, model: str = None) -> str:
 
             text = (getattr(result, "text", None) or "").strip()
             if not text:
+                log.warning("Transcription returned empty text")
                 return "⚠️ I could not transcribe the audio. Please try again with clearer speech."
+            log.info("Transcription complete: %d chars", len(text))
             return text
 
     except Exception as e:
         # Never crash the app
         msg = str(e)
+        log.error("Transcription failed: %s", msg, exc_info=True)
         if "corrupted" in msg.lower() or "unsupported" in msg.lower() or "invalid_value" in msg.lower():
             return "⚠️ Audio format not supported. Please record again. (If this continues, install FFmpeg for conversion.)"
         return f"⚠️ Voice transcription failed: {msg}"

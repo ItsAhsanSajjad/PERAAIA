@@ -7,33 +7,53 @@ from __future__ import annotations
 
 import os
 import json
+import hashlib
 from typing import List, Dict, Any, Optional, Tuple
 
-from dotenv import load_dotenv
-from openai import OpenAI
-from index_store import load_index_and_chunks, embed_texts
+from openai_clients import get_chat_client, LLM_REWRITE_MODEL
+from index_store import embed_texts
+from index_cache import get_cached_index
+from reranker import rerank_hits
+from log_config import get_logger
 
 import numpy as np
 import re as _re
 from collections import defaultdict
 
-load_dotenv()
+log = get_logger("pera.retriever")
 
-# Configuration
+# Configuration (tightened in Part 2)
 TOP_K = int(os.getenv("RETRIEVER_TOP_K", "30"))
-SIM_THRESHOLD = float(os.getenv("RETRIEVER_SIM_THRESHOLD", "0.14"))
-LLM_REWRITE_MODEL = os.getenv("RETRIEVER_LLM_QUERY_REWRITE_MODEL", "gpt-4o-mini")
+SIM_THRESHOLD = float(os.getenv("RETRIEVER_SIM_THRESHOLD", "0.18"))
+MAX_HITS_PER_DOC_RETRIEVAL = int(os.getenv("MAX_HITS_PER_DOC_RETRIEVAL", "12"))
+
+# Pre-compiled regex for stripping Urdu/Roman Urdu particles from queries before embedding
+_URDU_PARTICLES_RETRIEVER = _re.compile(
+    r"\b(?:ki|ka|ke|ko|kya|hai|hain|hy|hen|aur|ya|mein|se|par|pe|ye|yeh|woh|"
+    r"nahi|nhi|na|ho|tha|thi|batao|btao|bataen|bataiye|batayein|btaen|"
+    r"kitni|kitna|kitne|kahan|kaun|konsi|kaunsi|wala|wali|wale|"
+    r"hota|hoti|hote|kaise|kaisa|kesi|kaisi|abhi|kab|jab|tab)\b",
+    _re.IGNORECASE
+)
 
 # Abbreviation -> full expansion (for embedding search quality)
 _ABBREV_MAP_RAW = {
     "cto": "Chief Technology Officer",
     "dg": "Director General",
+    "adg": "Additional Director General",
+    "ddg": "Deputy Director General",
+    "dd": "Deputy Director",
     "mgr": "Manager",
     "hr": "Human Resources",
     "it": "Information Technology",
     "eo": "Enforcement Officer",
     "io": "Investigation Officer",
     "sso": "System Support Officer",
+    "sdeo": "Sub-Divisional Enforcement Officer",
+    "deo": "Data Entry Operator",
+    "dba": "Database Administrator",
+    "se": "Software Engineer",
+    "admin": "Administration",
     "tor": "Terms of Reference",
     "jd": "Job Description",
     "sr": "Service Rules",
@@ -45,6 +65,7 @@ _ABBREV_MAP_RAW = {
     "Schedule-VI": "Special Allowance and Benefits",
     "sppp": "Special Pay Package PERA",
     "faqs": "Frequently Asked Questions",
+    "gli": "Group Life Insurance",
 }
 
 def _norm_key(s: str) -> str:
@@ -59,11 +80,13 @@ _ABBREV_MAP = {_norm_key(k): v for k, v in _ABBREV_MAP_RAW.items()}
 _EXPANSION_KEYWORDS = {
     "salary", "pay", "allowance", "benefit", "scale", "sppp", "grade", "compensation",
     "detail", "full", "sab kuch", "batao", "explain", "structure",
+    # Role/position keywords — salary data often follows job description on next page
+    "manager", "officer", "director", "appointment", "development",
     # Roman Urdu / misspellings
     "salay", "tankhwah", "tankha", "kitni", "payscale", "pay scale",
     "maaash", "maash",
 }
-_EXPANSION_RADIUS = 3  # Fetch ±3 pages for salary/detail queries
+_EXPANSION_RADIUS = 2  # Adjacent pages needed for salary/SPPP data that follows job descriptions
 
 
 def _normalize_vec(v: np.ndarray) -> np.ndarray:
@@ -71,9 +94,90 @@ def _normalize_vec(v: np.ndarray) -> np.ndarray:
     n = float(np.linalg.norm(v) + 1e-12)
     return v / n
 
+# Numbered entity normalization: "Schedule 3" / "Section three" / "Rule-5" → canonical form
+_ARABIC_TO_ROMAN = {"1": "I", "2": "II", "3": "III", "4": "IV", "5": "V", "6": "VI",
+                    "7": "VII", "8": "VIII", "9": "IX", "10": "X",
+                    "11": "XI", "12": "XII", "13": "XIII", "14": "XIV", "15": "XV"}
+_WORD_TO_ROMAN = {
+    "one": "I", "two": "II", "three": "III", "four": "IV", "five": "V", "six": "VI",
+    "seven": "VII", "eight": "VIII", "nine": "IX", "ten": "X",
+    "first": "I", "second": "II", "third": "III", "fourth": "IV", "fifth": "V", "sixth": "VI",
+    # Urdu / Roman Urdu
+    "ek": "I", "do": "II", "teen": "III", "char": "IV", "panch": "V", "chhe": "VI",
+    "aik": "I", "doo": "II",
+}
+_VALID_ROMAN = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X",
+                "XI", "XII", "XIII", "XIV", "XV"}
+
+# All document entity types that use numbered references in PERA docs
+_NUMBERED_ENTITY_RE = _re.compile(
+    r"\b(schedule|section|rule|chapter|annex|part|clause|article|appendix)"
+    r"[\s\-_]+"
+    r"(\w+)\b",
+    _re.IGNORECASE
+)
+
+
+def _normalize_numbered_references(query: str) -> str:
+    """Convert numbered entity references to canonical 'Entity-ROMAN' format.
+    
+    Handles: Schedule/Section/Rule/Chapter/Annex/Part/Clause/Article/Appendix
+    Formats: arabic (3), word (three/third), Urdu (teen), roman (III/iii)
+    
+    Examples:
+        'schedule 3'        → 'Schedule-III'
+        'section five'      → 'Section-V'
+        'rule 10'           → 'Rule-X'
+        'chapter two'       → 'Chapter-II'
+        'annex iii'         → 'Annex-III'
+    """
+    def _replace(m):
+        entity = m.group(1).capitalize()
+        num_part = m.group(2).lower()
+        # Try arabic number
+        if num_part in _ARABIC_TO_ROMAN:
+            return f"{entity}-{_ARABIC_TO_ROMAN[num_part]}"
+        # Try word number
+        if num_part in _WORD_TO_ROMAN:
+            return f"{entity}-{_WORD_TO_ROMAN[num_part]}"
+        # Already roman?
+        if num_part.upper() in _VALID_ROMAN:
+            return f"{entity}-{num_part.upper()}"
+        # Not a number — keep original (e.g., "Schedule of", "Section on")
+        return m.group(0)
+
+    return _NUMBERED_ENTITY_RE.sub(_replace, query)
+
+
+# Keep backward-compatible alias
+_normalize_schedule_references = _normalize_numbered_references
+
 
 def _expand_abbreviations(query: str) -> str:
     """Expand known abbreviations in-place for better embedding matches."""
+    # First normalize schedule references
+    query = _normalize_schedule_references(query)
+
+    # Normalize possessive forms: "manager's development" → "manager development"
+    query = _re.sub(r"[''\u2019]s\b", "", query)
+
+    # Role title normalization: "manager development" → also add "Manager (Development)"
+    # In PERA PDFs, role titles use parentheses like "Manager (Development)"
+    _role_prefix_re = _re.compile(
+        r"\b(manager|officer|director|assistant|deputy|chief|head|coordinator|superintendent)\s+"
+        r"(development|operations|enforcement|investigation|planning|hr|it|finance|admin|"
+        r"administration|compliance|communication|legal|audit|procurement|training|monitoring|"
+        r"evaluation|research|coordination|security|transport|estate|quality|technology|"
+        r"infrastructure|data|systems?|support|services?)\b",
+        _re.IGNORECASE
+    )
+    role_match = _role_prefix_re.search(query)
+    if role_match:
+        role = role_match.group(1).title()
+        spec = role_match.group(2).title()
+        # REPLACE the matched text with parenthesized form (was: appending)
+        query = query[:role_match.start()] + f"{role} ({spec})" + query[role_match.end():]
+
     words = (query or "").split()
     expanded = []
     for w in words:
@@ -83,25 +187,6 @@ def _expand_abbreviations(query: str) -> str:
         else:
             expanded.append(w)
     return " ".join(expanded)
-
-
-def _build_id_map(rows: List[Dict[str, Any]]) -> Dict[int, Dict[str, Any]]:
-    """
-    FAISS IndexIDMap2 returns vector IDs (the 'id' field in chunks.jsonl).
-    Build id -> row map for active rows only.
-    """
-    m: Dict[int, Dict[str, Any]] = {}
-    for r in rows:
-        if not r.get("active", True):
-            continue
-        rid = r.get("id")
-        if rid is None:
-            continue
-        try:
-            m[int(rid)] = r
-        except Exception:
-            continue
-    return m
 
 
 def _get_page_map_by_id(id_map: Dict[int, Dict[str, Any]]) -> Dict[Tuple[str, int], List[int]]:
@@ -117,58 +202,21 @@ def _get_page_map_by_id(id_map: Dict[int, Dict[str, Any]]) -> Dict[Tuple[str, in
     return m
 
 
-_client = None
-
-def get_client():
-    global _client
-    if _client is None:
-        _client = OpenAI(
-            api_key=os.getenv("OPENAI_API_KEY"),
-            base_url=os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
-        )
-    return _client
-
-
-# =============================================================================
-# Active index pointer
-# =============================================================================
-class ActiveIndexPointer:
-    def __init__(self, pointer_path: str = "assets/indexes/ACTIVE.json"):
-        self.pointer_path = (pointer_path or "").replace("\\", "/")
-
-    def read_raw(self) -> Optional[str]:
-        if not self.pointer_path or not os.path.exists(self.pointer_path):
-            return None
-        try:
-            with open(self.pointer_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-            p = (data.get("active_index_dir") or "").strip()
-            return p.replace("\\", "/") if p else None
-        except Exception:
-            return None
-
-_ACTIVE_POINTER = ActiveIndexPointer(os.getenv("INDEX_POINTER_PATH", "assets/indexes/ACTIVE.json"))
-
-def _resolve_index_dir(index_dir: Optional[str]) -> str:
-    if index_dir and os.path.isdir(index_dir):
-        return index_dir
-
-    ptr = _ACTIVE_POINTER.read_raw()
-    if ptr and os.path.isdir(ptr):
-        return ptr
-
-    return "assets/index"
-
 
 # =============================================================================
 # Main Retrieval Logic
 # =============================================================================
+def _evidence_id(text: str) -> str:
+    """Short hash for evidence traceability."""
+    return hashlib.sha256((text or "")[:500].encode()).hexdigest()[:10]
+
+
 def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
     """
-    Semantic search + smart expansion + keyword fallback (IDMap-safe).
+    Semantic search + reranking + smart expansion + keyword fallback.
+    Uses in-memory cached index (automatic blue/green invalidation).
     """
-    resolved_dir = _resolve_index_dir(index_dir)
-    idx, rows = load_index_and_chunks(resolved_dir)
+    idx, rows, id_map, token_index, resolved_dir = get_cached_index()
 
     empty_result = {
         "question": question,
@@ -176,37 +224,139 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
         "evidence": []
     }
 
-    if idx is None or not rows:
-        print(f"[Retriever] No index found at {resolved_dir}")
-        return empty_result
-
-    # Build ID map (CRITICAL for IndexIDMap2 correctness)
-    id_map = _build_id_map(rows)
-    if not id_map:
-        print("[Retriever] No active rows available in chunks.jsonl")
+    if idx is None or not id_map:
+        log.warning("No index available (cache dir: %s)", resolved_dir)
         return empty_result
 
     # 1) Expand abbreviations + embed query
     expanded_q = _expand_abbreviations(question)
     if expanded_q != question:
-        print(f"[Retriever] Expanded: '{question}' -> '{expanded_q}'")
+        log.debug("Expanded: '%s' -> '%s'", question, expanded_q)
+
+    # Strip Urdu/Roman Urdu particles from primary query for better embedding match
+    clean_q = _URDU_PARTICLES_RETRIEVER.sub(' ', expanded_q)
+    clean_q = _re.sub(r'\s+', ' ', clean_q).strip()
+    if clean_q != expanded_q:
+        log.debug("Urdu-stripped: '%s' -> '%s'", expanded_q[:50], clean_q[:50])
+
+    # Reorder "Role (Spec) attr" or "role spec attr" → "attr of Role (Spec)"
+    # FAISS embeddings for "salary of X" consistently retrieve salary tables better
+    # After _expand_abbreviations, "manager development salary" becomes
+    # "Manager (Development) salary" — this regex handles both forms.
+    _REORDER_RE = _re.compile(
+        r'^((?:senior\s+|assistant\s+|deputy\s+)?(?:manager|director|head))'
+        r'(?:\s+\((\w+(?:\s+\w+)?)\)|\s+(\w+(?:\s+\w+)?))'  # (spec) or spec
+        r'\s+(salary|pay\s*(?:scale)?|benefit|allowance|appointment)\s*\??$',
+        _re.IGNORECASE
+    )
+    m_reorder = _REORDER_RE.match(clean_q.strip())
+    if m_reorder:
+        role = m_reorder.group(1).strip()
+        spec = (m_reorder.group(2) or m_reorder.group(3)).strip()
+        attr = m_reorder.group(4).strip()
+        clean_q = f"{attr} of {role} ({spec})"
+        log.info("Query reordered for retrieval: '%s' -> '%s'", expanded_q[:50], clean_q[:50])
+
+    # Generate parenthesized title variant for PERA documents:
+    # "manager development salary" → "Manager (Development) salary"
+    # Also generate reordered: "salary of Manager (Development)"
+    # This matches how PERA docs actually name positions.
+    parenthesized_variant = ""
+    _PREFIX_SPEC_FIX = _re.compile(
+        r'\b((?:senior\s+|assistant\s+|deputy\s+)?(?:manager|director|head))\s+'
+        r'(\w+(?:\s+\w+)?)\s+(salary|pay|benefit|scale|appointment)',
+        _re.IGNORECASE
+    )
+    m = _PREFIX_SPEC_FIX.search(clean_q)
+    if m:
+        prefix = m.group(1).strip()
+        spec = m.group(2).strip()
+        suffix = m.group(3).strip()
+        # Reordered query: "salary of Manager (Development)" — this phrasing
+        # consistently produces better FAISS embeddings for salary retrieval
+        parenthesized_variant = f"{suffix} of {prefix} ({spec})"
+        log.debug("Parenthesized variant: '%s'", parenthesized_variant)
+    # Use cleaned query for embedding, keep expanded_q for display/logging
+    embed_q = clean_q or expanded_q
+
+    # Build simplified core-terms query for dual retrieval
+    _stop_core = {
+        "what", "who", "is", "the", "a", "an", "of", "in", "for", "and", "how", "where",
+        "when", "which", "does", "was", "are", "do", "can", "will", "shall", "should",
+        "about", "tell", "me", "explain", "describe", "give", "show", "detail", "details",
+        "kya", "hai", "kon", "kaun", "ki", "ka", "ke", "se", "ko", "ne", "ye", "yeh",
+        "kia", "hain", "mein", "par", "say", "batao", "bataein",
+    }
+    core_words = [w for w in (embed_q or "").lower().split() if w not in _stop_core and len(w) > 1]
+    core_query = " ".join(core_words[:8]) if core_words else embed_q
 
     try:
-        print(f"[Retriever] Embedding query: '{expanded_q}'...")
-        qv = embed_texts([expanded_q])[0]
-        qv = _normalize_vec(qv)  # CRITICAL: match normalized index vectors (cosine sim stability)
-        print(f"[Retriever] Embedding done. Shape: {qv.shape}")
+        log.debug("Dual-query embedding: primary='%s', core='%s'", embed_q[:80], core_query[:80])
+        # Build list of queries: primary, core, and optional parenthesized variant
+        queries_to_embed = [embed_q, core_query]
+        if parenthesized_variant:
+            queries_to_embed.append(parenthesized_variant)
+            log.debug("Triple-query search: adding variant '%s'", parenthesized_variant[:60])
+        vectors = embed_texts(queries_to_embed)
+        qv_primary = _normalize_vec(vectors[0])
+        qv_core = _normalize_vec(vectors[1])
+        qv_variant = _normalize_vec(vectors[2]) if parenthesized_variant else None
+        log.debug("Embeddings done (n=%d).", len(queries_to_embed))
     except Exception as e:
-        print(f"[Retriever] Embedding failed: {e}")
+        log.error("Embedding failed: %s", e, exc_info=True)
         return empty_result
 
-    # 2) Search FAISS (IndexIDMap2 returns IDs, not list positions)
+    # 2) Search FAISS with ALL queries, merge results (keep highest score per chunk)
     try:
-        print(f"[Retriever] Searching FAISS with TOP_K={TOP_K}...")
-        D, I = idx.search(qv.reshape(1, -1), TOP_K)
-        print(f"[Retriever] Search done. Found {len(I[0])} hits.")
+        log.debug("FAISS search with TOP_K=%d each", TOP_K)
+        D1, I1 = idx.search(qv_primary.reshape(1, -1), TOP_K)
+        D2, I2 = idx.search(qv_core.reshape(1, -1), TOP_K)
+
+        # Merge: keep highest similarity score per chunk ID
+        merged_scores: Dict[int, float] = {}
+        for score, cid in zip(D1[0], I1[0]):
+            try:
+                ci = int(cid)
+            except Exception:
+                continue
+            if ci >= 0 and ci in id_map:
+                merged_scores[ci] = max(merged_scores.get(ci, 0.0), float(score))
+
+        for score, cid in zip(D2[0], I2[0]):
+            try:
+                ci = int(cid)
+            except Exception:
+                continue
+            if ci >= 0 and ci in id_map:
+                merged_scores[ci] = max(merged_scores.get(ci, 0.0), float(score))
+
+        # Third search: parenthesized variant (if exists)
+        if qv_variant is not None:
+            D3, I3 = idx.search(qv_variant.reshape(1, -1), TOP_K)
+            for score, cid in zip(D3[0], I3[0]):
+                try:
+                    ci = int(cid)
+                except Exception:
+                    continue
+                if ci >= 0 and ci in id_map:
+                    merged_scores[ci] = max(merged_scores.get(ci, 0.0), float(score))
+
+        # Sort by score descending, take top TOP_K
+        sorted_merged = sorted(merged_scores.items(), key=lambda x: x[1], reverse=True)[:TOP_K]
+
+        # Reconstruct D and I arrays for compatibility with downstream code
+        D_merged = np.array([[s for _, s in sorted_merged]], dtype=np.float32)
+        I_merged = np.array([[cid for cid, _ in sorted_merged]])
+
+        # Replace originals
+        D = D_merged
+        I = I_merged
+
+        log.info("Dual-query merged: %d unique chunks (primary=%d, core=%d)",
+                 len(sorted_merged), len([x for x in I1[0] if int(x) >= 0]),
+                 len([x for x in I2[0] if int(x) >= 0]))
     except Exception as e:
-        print(f"[Retriever] FAISS search failed: {e}")
+        log.error("FAISS search failed: %s", e, exc_info=True)
         return empty_result
 
     base_ids: List[int] = []
@@ -227,7 +377,7 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
     expanded_ids = set()
 
     if should_expand and base_ids:
-        print("[Retriever] Smart Expansion Triggered (Salary/Detail context)")
+        log.debug("Smart Expansion Triggered (Salary/Detail context)")
         page_map = _get_page_map_by_id(id_map)
 
         # For top 10 FAISS hits, fetch neighbor pages ±RADIUS
@@ -251,10 +401,9 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
                         if neighbor_id not in base_id_set:
                             expanded_ids.add(neighbor_id)
 
-    print(f"[Retriever] Added {len(expanded_ids)} context chunks.")
+    log.debug("Added %d context chunks.", len(expanded_ids))
 
-    # --- Hybrid Search: Keyword fallback (ID-based + safer matching) ---
-    # Run keyword scan, but with safer token matching to reduce false positives.
+    # --- Hybrid Search: Keyword fallback (using precomputed token index) ---
     keyword_hits: Dict[int, float] = {}
 
     try:
@@ -266,46 +415,48 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
         }
         q_words = [w for w in q_clean.split() if w not in _stop and len(w) > 1]
 
-        # Limit phrase to avoid noisy giant phrases
-        full_phrase = " ".join(q_words[:12]).strip()
-        phrase_enabled = len(q_words) > 1 and len(full_phrase) >= 6
+        if q_words and token_index:
+            # Find candidate chunks via inverted token index (O(k) instead of O(n))
+            candidate_ids = set()
+            for w in q_words:
+                if w in token_index:
+                    candidate_ids.update(token_index[w])
 
-        # Token regex supports English + Urdu range; keeps numbers too
-        token_re = _re.compile(r"[a-z0-9\u0600-\u06FF]+", _re.IGNORECASE)
+            # Only score candidates (much smaller than full chunk set)
+            full_phrase = " ".join(q_words[:12]).strip()
+            phrase_enabled = len(q_words) > 1 and len(full_phrase) >= 6
 
-        for cid, r in id_map.items():
-            txt = (r.get("text") or "").lower()
-            if not txt:
-                continue
+            for cid in candidate_ids:
+                r = id_map.get(cid)
+                if not r:
+                    continue
+                txt = (r.get("text") or "").lower()
 
-            # Tokenize once per chunk
-            tokens = set(token_re.findall(txt))
+                match_count = sum(1 for w in q_words if w in txt)
+                is_phrase_match = phrase_enabled and (full_phrase in txt)
 
-            match_count = sum(1 for w in q_words if w in tokens)
-            if not q_words:
-                continue
+                score = 0.0
+                if is_phrase_match:
+                    score = 0.72
+                else:
+                    ratio = match_count / max(1, len(q_words))
+                    if ratio == 1.0:
+                        score = 0.64
+                    elif ratio >= 0.75 and len(q_words) >= 3:
+                        score = 0.60
+                    elif ratio >= 0.5 and len(q_words) >= 2:
+                        score = 0.55
 
-            is_phrase_match = phrase_enabled and (full_phrase in txt)
+                if score >= 0.55:
+                    prev = keyword_hits.get(cid, 0.0)
+                    if score > prev:
+                        keyword_hits[cid] = score
 
-            score = 0.0
-            if is_phrase_match:
-                score = 0.72
-            else:
-                ratio = match_count / max(1, len(q_words))
-                if ratio == 1.0:
-                    score = 0.64
-                elif ratio >= 0.75 and len(q_words) >= 3:
-                    score = 0.60
-                elif ratio >= 0.5 and len(q_words) >= 2:
-                    score = 0.55
-
-            if score >= 0.55:
-                prev = keyword_hits.get(cid, 0.0)
-                if score > prev:
-                    keyword_hits[cid] = score
+            log.debug("Keyword fallback: %d candidates from token index, %d hits",
+                     len(candidate_ids), len(keyword_hits))
 
     except Exception as e:
-        print(f"[Retriever] Keyword fallback error: {e}")
+        log.warning("Keyword fallback error: %s", e, exc_info=True)
 
     # Map FAISS ID -> semantic score
     faiss_scores: Dict[int, float] = {}
@@ -373,7 +524,10 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
             "text": text,
             "score": final_score,
             "page_start": page,
+            "page_end": r.get("loc_end", page),
             "public_path": public_path,
+            "doc_authority": int(r.get("doc_authority", 2) or 2),
+            "search_text": r.get("search_text", ""),
             "_is_smart_context": is_context
         })
 
@@ -401,6 +555,53 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
         if "_seen" in d:
             del d["_seen"]
 
+    # ─── RERANK all hits within each doc group ───────────────────
+    all_flat_hits = []
+    for d in evidence:
+        for h in d.get("hits", []):
+            h["doc_name"] = d["doc_name"]
+            h["doc_rank"] = int(d.get("doc_rank", 0) or 0)
+            all_flat_hits.append(h)
+
+    if all_flat_hits:
+        log.info("Pre-rerank: %d total hits across %d docs", len(all_flat_hits), len(evidence))
+        reranked = rerank_hits(question, all_flat_hits)
+
+        # Rebuild doc groups from reranked order, respecting per-doc caps
+        new_docs_map: Dict[str, Dict[str, Any]] = {}
+        per_doc_count: Dict[str, int] = {}
+        for h in reranked:
+            dn = h.get("doc_name", "Unknown")
+            if dn not in new_docs_map:
+                new_docs_map[dn] = {
+                    "doc_name": dn,
+                    "max_score": 0.0,
+                    "doc_rank": h.get("doc_rank", 0),
+                    "hits": [],
+                }
+                per_doc_count[dn] = 0
+
+            if per_doc_count[dn] >= MAX_HITS_PER_DOC_RETRIEVAL:
+                # Smart context (expansion) chunks bypass the cap
+                # They contain critical cross-page data like salary/appointment
+                if not h.get("_is_smart_context", False):
+                    continue
+
+            # Add evidence_id for traceability
+            h["evidence_id"] = _evidence_id(h.get("text", ""))
+
+            new_docs_map[dn]["hits"].append(h)
+            per_doc_count[dn] += 1
+
+            hit_score = float(h.get("_blend", h.get("score", 0.0)))
+            if hit_score > float(new_docs_map[dn]["max_score"]):
+                new_docs_map[dn]["max_score"] = hit_score
+
+        evidence = list(new_docs_map.values())
+        total_after = sum(len(d["hits"]) for d in evidence)
+        log.info("Post-rerank: %d hits across %d docs (per-doc cap=%d)",
+                 total_after, len(evidence), MAX_HITS_PER_DOC_RETRIEVAL)
+
     evidence.sort(key=lambda x: float(x.get("max_score", 0)), reverse=True)
 
     return {
@@ -416,6 +617,11 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
 def rewrite_contextual_query(current_query: str, last_question: str, last_answer: str) -> str:
     """
     Rewrite follow-up questions to be standalone using LLM.
+    IMPORTANT: deterministic abbreviation expansions are PROTECTED
+    from LLM override. The rewriter is told which expansions are confirmed.
+    IMPORTANT: Queries that already contain explicit role/position names
+    are NOT rewritten — they are self-contained and rewriting them with
+    session context can contaminate the search query.
     """
     should_rewrite = os.getenv("RETRIEVER_LLM_QUERY_REWRITE_ALWAYS", "0") != "0"
 
@@ -425,27 +631,63 @@ def rewrite_contextual_query(current_query: str, last_question: str, last_answer
     if len(current_query) < 4 and current_query.lower() in ["ok", "thanks", "theek", "sahi"]:
         return current_query
 
+    # GUARD: If the query already contains an explicit role/position,
+    # don't rewrite — the user knows what they're asking about.
+    # Only use LLM rewrite for pronoun-based follow-ups.
+    _explicit_role_re = _re.compile(
+        r"\b(manager|officer|director|assistant|deputy|chief|head|coordinator|superintendent"
+        r"|inspector|registrar|analyst)\s+\w+",
+        _re.IGNORECASE
+    )
+    if _explicit_role_re.search(current_query):
+        # Query has explicit role — just expand abbreviations, skip LLM rewrite
+        expanded = _expand_abbreviations(current_query)
+        if expanded != current_query:
+            log.info("Skip LLM rewrite (explicit role in query), abbreviation only: '%s' -> '%s'",
+                     current_query[:60], expanded[:60])
+        return expanded
+
+    # Pre-expand abbreviations BEFORE rewrite
+    pre_expanded = _expand_abbreviations(current_query)
+    expansions_done = []
+    for w in current_query.split():
+        key = _norm_key(w)
+        if key in _ABBREV_MAP:
+            expansions_done.append(f"{w} = {_ABBREV_MAP[key]}")
+
+    # Build protection instruction
+    protection = ""
+    if expansions_done:
+        protection = (
+            "\nCRITICAL: The following abbreviations have been definitively resolved "
+            "from PERA domain knowledge. Do NOT change, override, or reinterpret them:\n"
+            + "\n".join(f"  - {e}" for e in expansions_done)
+            + "\nUse these exact expansions in your rewritten query."
+        )
+
     system_prompt = (
-        "You are a query rewriter for a RAG system.\n"
+        "You are a query rewriter for a RAG system about PERA (Punjab Enforcement and Regulatory Authority).\n"
         "Your task: Rewrite the user query to be a standalone, semantically rich search query.\n"
         "Rules:\n"
-        "1. Expand abbreviations (e.g. 'CTO' -> 'Chief Technology Officer', 'DG' -> 'Director General').\n"
-        "2. Map broad terms to specific document phrasing (e.g. 'powers' -> 'powers, functions, responsibilities').\n"
-        "3. Urdu/Hindi: Preserve direction of action and correct subject/object.\n"
-        "4. Resolve pronouns using History if available.\n"
-        "5. Keep final query in English for best match with document corpus.\n"
-        "6. OUTPUT ONLY THE REWRITTEN QUERY."
+        "1. Do NOT invent or guess abbreviation expansions. Only expand abbreviations you are certain about.\n"
+        "2. If an abbreviation is ambiguous, keep the original abbreviation.\n"
+        "3. Map broad terms to specific document phrasing (e.g. 'powers' -> 'powers, functions, responsibilities').\n"
+        "4. Urdu/Hindi: Preserve direction of action and correct subject/object.\n"
+        "5. Resolve pronouns using History if available.\n"
+        "6. Keep final query in English for best match with document corpus.\n"
+        "7. OUTPUT ONLY THE REWRITTEN QUERY."
+        + protection
     )
 
     user_prompt = (
         f"History: {last_question or 'None'}\n"
         f"Answer Context: {(last_answer or '')[:200]}...\n"
-        f"Current Follow-up: {current_query}\n"
+        f"Current Follow-up: {pre_expanded}\n"
         "Rewritten Query:"
     )
 
     try:
-        client = get_client()
+        client = get_chat_client()
         response = client.chat.completions.create(
             model=LLM_REWRITE_MODEL,
             messages=[
@@ -454,7 +696,32 @@ def rewrite_contextual_query(current_query: str, last_question: str, last_answer
             ],
             temperature=0.0
         )
-        return response.choices[0].message.content.strip()
+        rewritten = response.choices[0].message.content.strip()
+
+        # Post-rewrite protection: verify known expansions weren't corrupted
+        rewritten_lower = rewritten.lower()
+        for w in current_query.split():
+            key = _norm_key(w)
+            if key in _ABBREV_MAP:
+                expected = _ABBREV_MAP[key].lower()
+                if expected not in rewritten_lower:
+                    log.warning(
+                        "Rewriter corrupted abbreviation %s (expected '%s', not found in '%s'). Reverting.",
+                        w, _ABBREV_MAP[key], rewritten[:100]
+                    )
+                    # Replace LLM's wrong expansion with correct one
+                    rewritten = re.sub(
+                        rf"\b{re.escape(w)}\b",
+                        _ABBREV_MAP[key],
+                        rewritten,
+                        flags=re.IGNORECASE,
+                    )
+
+        # Log rewrite diff for auditability
+        if rewritten != current_query:
+            log.info("Query rewrite: '%s' -> '%s'", current_query, rewritten)
+
+        return rewritten
     except Exception as e:
-        print(f"[Retriever] Rewrite failed: {e}")
+        log.warning("Query rewrite failed (falling back to original): %s", e)
         return current_query

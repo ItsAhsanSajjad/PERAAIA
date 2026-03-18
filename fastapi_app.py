@@ -1,26 +1,36 @@
 from __future__ import annotations
 
 import os
+import uuid
 from urllib.parse import quote
 from typing import List, Dict, Any, Optional, Tuple
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from retriever import retrieve, rewrite_contextual_query
 from answerer import answer_question
+from log_config import setup_logging, get_logger, request_id_var
+from openai_clients import has_api_key
+from session_store import get_session_store, SessionTurn
+from audit_trail import log_audit_entry
+from context_state import anchor_query, extract_subject, extract_evidence_metadata
+from smalltalk_intent import decide_smalltalk
 
 # Auto-indexer (safe blue/green builds + atomic pointer switch)
 from index_manager import SafeAutoIndexer, IndexManagerConfig
+
+log = get_logger("pera.api")
 
 
 # ============================================================
 # FastAPI app
 # ============================================================
-app = FastAPI()
+app = FastAPI(title="PERA AI Backend", version="2.1.0")
 
 # Keep your permissive CORS behavior
 app.add_middleware(
@@ -74,10 +84,27 @@ indexer = SafeAutoIndexer(
     )
 )
 
+# ============================================================
+# Request ID Middleware
+# ============================================================
+class RequestIDMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # Accept forwarded request ID or generate a new one
+        rid = request.headers.get("X-Request-ID") or uuid.uuid4().hex[:12]
+        request.state.request_id = rid
+        request_id_var.set(rid)
+        response = await call_next(request)
+        response.headers["X-Request-ID"] = rid
+        return response
+
+app.add_middleware(RequestIDMiddleware)
+
 
 @app.on_event("startup")
-def _startup_indexer():
-    """Starts background indexing when the app starts."""
+def _startup():
+    """Initialize logging and start background indexer."""
+    setup_logging()
+    log.info("PERA AI Backend starting up")
     indexer.start_background()
 
 
@@ -472,53 +499,184 @@ def ask_question_json(request: QueryRequest):
 
 
 # ============================================================
-# NEW: Simple Chat API for Next.js frontend
+# Simple Chat API for Next.js frontend
 # ============================================================
 class SimpleChatRequest(BaseModel):
     question: str
     conversation_history: Optional[List[Dict[str, Any]]] = None
+    session_id: Optional[str] = None  # Part 3: server-side session
 
 
 class SimpleChatResponse(BaseModel):
     answer: str
     decision: str
     references: List[Dict[str, Any]]
+    session_id: Optional[str] = None  # returned so client can persist
+    grounding: Optional[Dict[str, Any]] = None  # Part 2 additive
 
 
 @app.post("/api/ask", response_model=SimpleChatResponse)
-def simple_ask(request: SimpleChatRequest):
-    """Simple chat endpoint for Next.js frontend."""
+def simple_ask(req: Request, request: SimpleChatRequest):
+    """Chat endpoint with session tracking, smalltalk bypass, entity anchoring, and audit trail."""
     question = request.question.strip()
-    
-    # --- Extract last Q/A from history for contextual rewriting ---
-    last_question = None
-    last_answer = None
+    rid = getattr(req.state, "request_id", "")
+
+    # ── 0. Session ────────────────────────────────────────────
+    store = get_session_store()
+    session = store.get_or_create(request.session_id)
+    sid = session.session_id
+
+    # ── 1. Smalltalk bypass ───────────────────────────────────
+    st = decide_smalltalk(question)
+    if st and st.is_greeting_only:
+        log.info("Smalltalk bypass: '%s' -> deterministic response", question[:40])
+        log_audit_entry(
+            request_id=rid, session_id=sid, question=question,
+            decision="smalltalk", answer_text=st.response,
+            is_smalltalk=True,
+        )
+        return SimpleChatResponse(
+            answer=st.response,
+            decision="smalltalk",
+            references=[],
+            session_id=sid,
+        )
+
+    # If greeting + real question, use remainingquestion with ack prefix
+    ack_prefix = ""
+    if st and not st.is_greeting_only and st.remaining_question:
+        ack_prefix = st.ack
+        question = st.remaining_question
+        log.info("Greeting stripped: ack='%s', question='%s'", ack_prefix, question[:60])
+
+    # ── 2. Extract last Q/A from client history FIRST ───────────
+    # (needed for entity anchoring when session_id is not sent)
+    last_question_client = None
+    last_answer_client = None
     if request.conversation_history:
         for msg in reversed(request.conversation_history):
             role = msg.get("role", "")
             content = (msg.get("content") or "").strip()
-            if role == "assistant" and last_answer is None:
-                last_answer = content
-            elif role == "user" and last_question is None:
-                last_question = content
-            if last_question and last_answer:
+            if role == "assistant" and last_answer_client is None:
+                last_answer_client = content
+            elif role == "user" and last_question_client is None:
+                last_question_client = content
+            if last_question_client and last_answer_client:
                 break
 
-    # --- Rewrite query (handles Urdu, abbreviations, follow-ups) ---
-    query_for_retrieval = rewrite_contextual_query(question, last_question, last_answer)
-    print(f"[/api/ask] Original: '{question}' -> Rewritten: '{query_for_retrieval}'")
+    # Build fallback subject from client history if session is empty
+    fallback_subject = ""
+    if not session.last_subject and last_answer_client:
+        fallback_subject = extract_subject(last_answer_client)
+        if fallback_subject:
+            log.info("Using client-history subject fallback: '%s'", fallback_subject[:60])
 
-    retrieval = retrieve(query_for_retrieval)
-    result = answer_question(
-        request.question, 
-        retrieval, 
-        conversation_history=request.conversation_history
+    # ── 3. Entity anchoring (session + client fallback) ────────
+    anchored_q, subject_used, was_anchored = anchor_query(
+        question,
+        last_subject=session.last_subject or fallback_subject,
+        last_question=session.last_question or last_question_client or "",
+        last_answer=session.last_answer or last_answer_client or "",
     )
-    
+
+    # Prefer server-side session for last Q/A if available
+    lq = session.last_question or last_question_client or ""
+    la = session.last_answer or last_answer_client or ""
+
+    # ── 4. Rewrite query (handles Urdu, abbreviations, follow-ups) ──
+    query_for_retrieval = rewrite_contextual_query(anchored_q, lq, la)
+    rewrite_diff = ""
+    if query_for_retrieval != question:
+        rewrite_diff = f"{question} -> {query_for_retrieval}"
+    log.info("Query: '%s' -> Anchored: '%s' -> Rewritten: '%s'",
+             question[:60], anchored_q[:60], query_for_retrieval[:60])
+
+    # ── 5. Retrieve + Answer ──────────────────────────────────
+    retrieval = retrieve(query_for_retrieval)
+    # Only pass conversation_history for genuine follow-ups to prevent
+    # prior wrong answers from contaminating standalone questions
+    hist_for_llm = request.conversation_history if was_anchored else None
+    # Use anchored_q (with resolved pronouns) for the LLM so position
+    # filtering sees the actual role name (e.g. "salary of manager development"
+    # instead of "salary of this?")
+    question_for_llm = anchored_q if was_anchored else question
+    result = answer_question(
+        question_for_llm,
+        retrieval,
+        conversation_history=hist_for_llm,
+    )
+
+    # ── 6. Extract metadata for session + audit ───────────────
+    evidence_ids, doc_names = extract_evidence_metadata(retrieval)
+    answer_text = result.get("answer", "")
+    decision = result.get("decision", "answer")
+    grounding = result.get("grounding")
+    support_state = result.get("support_state", "")
+
+    # Extract subject from the answer if we didn't anchor
+    subject_from_answer = extract_subject(answer_text) if not subject_used else subject_used
+    final_subject = subject_used or subject_from_answer
+
+    # ── 7. Update session state ───────────────────────────────
+    session.add_turn(SessionTurn(
+        question=question,
+        normalized_query=query_for_retrieval,
+        answer_preview=answer_text[:300],
+        decision=decision,
+        evidence_ids=evidence_ids,
+        doc_names=doc_names,
+        subject_entity=final_subject,
+    ))
+    store.put(sid, session)
+
+    # ── 8. Audit trail ────────────────────────────────────────
+    # Build evidence text preview (the actual context sent to LLM)
+    evidence_text = ""
+    try:
+        from answerer import format_evidence_for_llm
+        evidence_text = format_evidence_for_llm(retrieval, question)
+    except Exception:
+        pass
+
+    # Build grounding details dict for audit
+    grounding_details = None
+    if grounding:
+        grounding_details = {
+            "score": grounding.get("score"),
+            "confidence": grounding.get("confidence"),
+            "semantic_support": grounding.get("semantic_support"),
+            "support_state": grounding.get("support_state", support_state),
+            "unsupported_claims": grounding.get("unsupported_claims", [])[:3],
+        }
+
+    log_audit_entry(
+        request_id=rid,
+        session_id=sid,
+        question=question,
+        normalized_query=query_for_retrieval,
+        decision=decision,
+        answer_text=answer_text,
+        evidence_ids=evidence_ids,
+        doc_names=doc_names,
+        references_count=len(result.get("references", [])),
+        grounding_score=grounding.get("score") if grounding else None,
+        grounding_confidence=grounding.get("confidence", "") if grounding else "",
+        grounding_details=grounding_details,
+        subject_entity=final_subject,
+        evidence_text_preview=evidence_text,
+        rewrite_diff=rewrite_diff,
+        support_state=support_state,
+    )
+
+    # ── 9. Build response ─────────────────────────────────────
+    final_answer = (ack_prefix + answer_text) if ack_prefix else answer_text
+
     return SimpleChatResponse(
-        answer=result.get("answer", "Jawab nahi mila."),
-        decision=result.get("decision", "answer"),
+        answer=final_answer,
+        decision=decision,
         references=result.get("references", []),
+        session_id=sid,
+        grounding=grounding,
     )
 
 
@@ -549,6 +707,7 @@ async def transcribe(audio: UploadFile = File(...)):
             success=not is_error
         )
     except Exception as e:
+        log.error("Transcription endpoint error: %s", e, exc_info=True)
         return TranscribeResponse(text="", success=False)
 
 
@@ -627,18 +786,18 @@ def serve_pdf(filename: str):
                     if f_norm == target_norm or f_stripped == target_stripped:
                         filepath = os.path.join(DATA_DIR, f)
                         found = True
-                        print(f"Fuzzy matched: {decoded_name} -> {f}")
+                        log.debug("Fuzzy matched: %s -> %s", decoded_name, f)
                         break
             except Exception as e:
-                print(f"Error during fuzzy scan: {e}")
+                log.warning("Error during fuzzy scan: %s", e)
         
         if not found:
-             print(f"PDF Not Found: {filename} (decoded: {decoded_name})")
+             log.info("PDF Not Found: %s (decoded: %s)", filename, decoded_name)
              raise HTTPException(status_code=404, detail=f"PDF not found: {filename}")
 
         # Security check
         if not _is_safe_under_assets_data(filepath):
-            print(f"Access Denied for path: {filepath}")
+            log.warning("Access Denied for path: %s", filepath)
             raise HTTPException(status_code=403, detail="Access denied")
         
         return FileResponse(
@@ -654,6 +813,55 @@ def serve_pdf(filename: str):
     except HTTPException:
         raise
     except Exception as e:
-        print(f"INTERNAL SERVER ERROR serving PDF {filename}: {str(e)}")
-        # Return simple 404 instead of 500 if something goes wrong, to avoid scaring user
-        raise HTTPException(status_code=404, detail="File could not be served")
+        log.error("Internal server error serving PDF '%s': %s", filename, e, exc_info=True)
+        raise HTTPException(status_code=500, detail="Internal server error while serving file")
+
+
+# ============================================================
+# Health & Readiness Endpoints
+# ============================================================
+@app.get("/health")
+def health_check():
+    """Lightweight liveness probe — confirms the process is alive."""
+    return {"status": "ok"}
+
+
+@app.get("/ready")
+def readiness_check():
+    """Readiness probe — confirms the service can serve traffic."""
+    checks: Dict[str, Any] = {}
+
+    # 1. OpenAI API key present
+    checks["openai_api_key"] = has_api_key()
+
+    # 2. Active index pointer exists and is valid
+    try:
+        active_dir = indexer.pointer.read()
+        checks["active_index"] = active_dir is not None
+        checks["active_index_dir"] = active_dir or "none"
+    except Exception as e:
+        checks["active_index"] = False
+        checks["active_index_error"] = str(e)
+
+    # 3. FAISS index loadable (lightweight — just checks file exists)
+    if active_dir:
+        import os as _os
+        faiss_path = _os.path.join(active_dir, "faiss.index").replace("\\", "/")
+        chunks_path = _os.path.join(active_dir, "chunks.jsonl").replace("\\", "/")
+        checks["faiss_index_exists"] = _os.path.exists(faiss_path)
+        checks["chunks_file_exists"] = _os.path.exists(chunks_path)
+    else:
+        checks["faiss_index_exists"] = False
+        checks["chunks_file_exists"] = False
+
+    ready = all([
+        checks.get("openai_api_key", False),
+        checks.get("active_index", False),
+        checks.get("faiss_index_exists", False),
+        checks.get("chunks_file_exists", False),
+    ])
+
+    return JSONResponse(
+        status_code=200 if ready else 503,
+        content={"ready": ready, "checks": checks}
+    )

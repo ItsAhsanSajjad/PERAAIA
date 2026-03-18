@@ -163,7 +163,9 @@ def split_greeting_and_question(text: str) -> Tuple[bool, str, str]:
         return False, "", raw
 
     first_token = m.group(0)
-    remaining = re.sub(rf"^{re.escape(first_token)}", "", raw, flags=re.IGNORECASE).lstrip(" ,:-—–\n\t")
+    remaining = re.sub(rf"^{re.escape(first_token)}", "", raw, flags=re.IGNORECASE).lstrip(" ,:-\u2014\u2013\n\t")
+    # Strip punctuation-only noise (e.g., "Hello!" -> remaining = "!" -> "")
+    remaining = re.sub(r"^[!?.,;:\s]+$", "", remaining).strip()
 
     token = first_token.lower()
     if any(x in token for x in ["aoa", "a.o.a", "slm", "salam", "salaam", "assalam", "assalamu", "asalam"]):

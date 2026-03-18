@@ -11,6 +11,9 @@ from typing import Optional, Dict, Any
 
 from doc_registry import scan_assets_data, compare_with_manifest
 from index_store import scan_and_ingest_if_needed, load_index_and_chunks
+from log_config import get_logger
+
+log = get_logger("pera.index_manager")
 
 
 @dataclass
@@ -112,6 +115,7 @@ class SafeAutoIndexer:
         self._stop_event.clear()
         self._thread = threading.Thread(target=self._run_loop, daemon=True)
         self._thread.start()
+        log.info("Background indexer started (poll_seconds=%d)", self.cfg.poll_seconds)
 
     def stop_background(self) -> None:
         self._stop_event.set()
@@ -148,9 +152,9 @@ class SafeAutoIndexer:
             try:
                 with self._lock:
                     self._check_and_rebuild_if_needed()
-            except Exception:
-                # Never crash production due to indexing errors
-                pass
+            except Exception as e:
+                # Never crash production due to indexing errors — but DO log them
+                log.error("Background index rebuild failed: %s", e, exc_info=True)
             self._stop_event.wait(self.cfg.poll_seconds)
 
     def _bootstrap_initial_index(self) -> Dict[str, Any]:
@@ -170,6 +174,7 @@ class SafeAutoIndexer:
             raise RuntimeError("Initial index build failed validation (no faiss/chunks).")
 
         self.pointer.write_atomic(build_dir)
+        log.info("Initial index bootstrapped at %s", build_dir)
         self._cleanup_old_builds()
         return {"changed": True, "active_index_dir": build_dir, "build": build_res}
 
@@ -220,6 +225,7 @@ class SafeAutoIndexer:
             }
 
         self.pointer.write_atomic(build_dir)
+        log.info("Index rebuild complete. Switched pointer: %s -> %s", active_dir, build_dir)
         self._cleanup_old_builds()
 
         return {

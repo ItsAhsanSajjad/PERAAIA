@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import type { Reference } from "./lib/types";
 import { buildPdfUrl } from "./lib/api";
@@ -13,6 +13,8 @@ import { Composer } from "./components/chat/Composer";
 import { PdfModal } from "./components/pdf/PdfModal";
 import { ToastContainer } from "./components/common/Toast";
 import type { ConnectionStatus } from "./lib/types";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 function StatusBadge({ status }: { status: ConnectionStatus }) {
   const colors: Record<ConnectionStatus, string> = {
@@ -44,6 +46,11 @@ export default function Home() {
 
   const { theme, toggleTheme } = useThemePreference();
   const { status, reportSuccess, reportFailure } = useHealthCheck();
+
+  /* — Startup: confirm API origin — */
+  useEffect(() => {
+    console.log("[PERA] API_URL →", API_URL);
+  }, []);
 
   const {
     messages,

@@ -38,12 +38,14 @@ export interface ChatSession {
 export interface AskRequest {
   question: string;
   conversation_history?: { role: string; content: string }[];
+  session_id?: string;
 }
 
 export interface AskResponse {
   answer: string;
   decision?: string;
   references: Reference[];
+  session_id?: string;
 }
 
 export interface TranscribeResponse {

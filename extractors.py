@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import os
 import re
-from dataclasses import dataclass
-from typing import List, Optional, Dict, Any
+from dataclasses import dataclass, field
+from typing import List, Optional, Dict, Any, Tuple
 
 # -----------------------------
 # Data structures
@@ -12,7 +12,7 @@ from typing import List, Optional, Dict, Any
 class ExtractedUnit:
     """
     A traceable extraction unit that can later be chunked.
-    - PDF  => one unit per page
+    - PDF  => one unit per *logical section* (may span multiple pages)
     - DOCX => one unit per section (heading) or paragraph-range block
     """
     doc_name: str
@@ -25,6 +25,7 @@ class ExtractedUnit:
     # optional metadata
     path: Optional[str] = None
     doc_rank: int = 0
+    doc_authority: int = 2        # 1=low (working papers), 2=medium, 3=high (official acts)
 
 
 # -----------------------------
@@ -32,7 +33,8 @@ class ExtractedUnit:
 # -----------------------------
 SUPPORTED_EXTS = (".pdf", ".docx")
 
-EXTRACTOR_DEBUG = os.getenv("EXTRACTOR_DEBUG", "0").strip() != "0"
+from log_config import get_logger
+log = get_logger("pera.extractors")
 
 _NUL_RE = re.compile(r"\x00+")
 _PAGE_NUM_RE = re.compile(r"^\s*(?:page\s*)?\d+\s*(?:of\s*\d+)?\s*$", re.I)
@@ -42,7 +44,6 @@ _MULTI_NEWLINES_RE = re.compile(r"\n{5,}")
 _BULLET_RE = re.compile(r"^\s*(?:[•\-\u2022]|\d+[\)\.]|[A-Za-z][\)\.])\s+")
 
 # Detect tabular alignment (raw, before whitespace collapsing)
-# Use more conservative detection: multiple columns often mean multiple large gaps OR tabs.
 _TABLE_LIKE_RE = re.compile(r"(\t+|\s{3,})")
 
 # Hyphenation: join "regula-" + "tory" (very common in PDFs)
@@ -51,10 +52,49 @@ _HYPHEN_END_RE = re.compile(r"[\w\u0600-\u06FF]-$", re.UNICODE)
 # Token density helpers
 _WORD_RE = re.compile(r"[A-Za-z\u0600-\u06FF]{2,}", re.UNICODE)
 
+# ── Section boundary detection patterns ──────────────────────
+# Headings: chapter, schedule, annex, part headings
+_SECTION_HEADING_RE = re.compile(
+    r"^\s*(?:"
+    r"(?:CHAPTER|PART|SCHEDULE|ANNEX|FLAG|SECTION)\s*[-–—:\s]*[A-Z0-9IVXLC]+"
+    r"|SCHEDULE\s*[-–—:]\s*"
+    r"|CONTENTS\b"
+    r"|TABLE\s+OF\s+CONTENTS"
+    r"|GOVERNMENT\s+OF\s+THE\s+PUNJAB"
+    r")\s*$",
+    re.IGNORECASE | re.MULTILINE,
+)
 
-def _log(msg: str) -> None:
-    if EXTRACTOR_DEBUG:
-        print(msg)
+# Position / Role title block start (robust pattern-based)
+_ROLE_TITLE_RE = re.compile(
+    r"^\s*(?:"
+    r"Position\s+Title\s*[:\-–]"
+    r"|Designation\s*[:\-–]"
+    r"|(?:Director|Additional\s+Director|Deputy\s+Director|Assistant\s+Director)"
+    r"\s+(?:General\b)?"
+    r"|(?:Chief\s+(?:Technology|Executive|Operating|Financial|Security)\s+Officer)"
+    r"|(?:(?:Senior\s+|Sub[\s\-]?Divisional\s+)?Enforcement\s+Officer)"
+    r"|(?:(?:System\s+Support|Investigation|Welfare|Research)\s+Officer)"
+    r"|(?:(?:HR|IT|Project|Operations|Finance|Training|Communication)\s+Manager)"
+    r"|(?:Manager\s*\([^)]+\))"
+    r"|(?:Secretary\s+(?:to\s+the\s+)?(?:Authority|Board|DG))"
+    r")\s*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+# Numbered regulation / rule patterns
+_REGULATION_NUM_RE = re.compile(
+    r"^\s*(\d{1,3})\.\s+[A-Z]",  # e.g. "12. Retirement. -"
+)
+
+# Major structural break: new document section
+_MAJOR_BREAK_RE = re.compile(
+    r"(?:GOVERNMENT\s+OF\s+THE\s+PUNJAB.*?(?:ENFORCEMENT|REGULATORY).*?AUTHORITY"
+    r"|NOTIFICATION\b"
+    r"|^\s*SCHEDULE\s*[-–—:]\s*(?:I|II|III|IV|V|VI)"
+    r")",
+    re.IGNORECASE | re.DOTALL,
+)
 
 
 def _clean_text_general(s: str) -> str:
@@ -107,16 +147,11 @@ def _pdf_lines_raw(text: str) -> List[str]:
     t = t.replace("\r\n", "\n").replace("\r", "\n")
 
     lines = [ln.strip("\n") for ln in t.split("\n")]
-    # keep empty lines only as separators? We'll remove empties here, and treat blanks later.
     lines = [ln.strip() for ln in lines if ln and ln.strip()]
     return lines
 
 
 def _normalize_line_for_header_footer(line: str) -> str:
-    """
-    Normalize digits so "Page 12" ~= "Page 03".
-    Also normalize whitespace so positional repetition can be detected.
-    """
     l = (line or "").strip().lower()
     l = re.sub(r"\d+", "0", l)
     l = re.sub(r"\s+", " ", l).strip()
@@ -128,36 +163,22 @@ def _word_count(s: str) -> int:
 
 
 def _is_header_footer_candidate(line: str) -> bool:
-    """
-    Conservative: only consider short / low-density lines as removable.
-    """
     s = (line or "").strip()
     if not s:
         return False
     if len(s) > 130:
         return False
-
     if _PAGE_NUM_RE.match(s):
         return True
-
-    # very low content lines
     if _word_count(s) <= 3:
         return True
-
-    # Typical boilerplate, but only if it stays short
     sl = s.lower()
     if ("punjab" in sl and ("authority" in sl or "regulatory" in sl or "enforcement" in sl)) and len(s) <= 90:
         return True
-
     return False
 
 
 def _detect_repeated_header_footer(page_lines: List[List[str]], min_pages: int = 3) -> Dict[str, set]:
-    """
-    Find repeated first/last lines across many pages (headers/footers).
-    Returns {"header": set(lines), "footer": set(lines)} of normalized strings.
-    Conservative: only lines that look like headers/footers are eligible.
-    """
     if len(page_lines) < min_pages:
         return {"header": set(), "footer": set()}
 
@@ -169,15 +190,12 @@ def _detect_repeated_header_footer(page_lines: List[List[str]], min_pages: int =
         if not lines:
             continue
         eligible_pages += 1
-
-        # consider first 2 lines, last 2 lines (only if candidate)
         for ln in lines[:2]:
             if not _is_header_footer_candidate(ln):
                 continue
             k = _normalize_line_for_header_footer(ln)
             if k:
                 first_counts[k] = first_counts.get(k, 0) + 1
-
         for ln in lines[-2:]:
             if not _is_header_footer_candidate(ln):
                 continue
@@ -188,7 +206,6 @@ def _detect_repeated_header_footer(page_lines: List[List[str]], min_pages: int =
     if eligible_pages < min_pages:
         return {"header": set(), "footer": set()}
 
-    # More conservative threshold: 70% of eligible pages
     threshold = max(2, int(0.70 * eligible_pages))
     header = {k for k, c in first_counts.items() if c >= threshold}
     footer = {k for k, c in last_counts.items() if c >= threshold}
@@ -213,42 +230,26 @@ def _strip_headers_footers(lines: List[str], hf: Dict[str, set]) -> List[str]:
 
 
 def _looks_like_table_row(raw_line: str) -> bool:
-    """
-    Detect table-like lines before whitespace collapse:
-    - contains multiple spaces or tabs suggesting columns
-    - enough tokens
-    - avoid normal sentences
-    """
     s = (raw_line or "").rstrip()
     if len(s) < 20:
         return False
     if _TABLE_LIKE_RE.search(s) is None:
         return False
-
-    # Heuristic: table rows often have multiple "column gaps"
     col_gaps = len(re.findall(r"\s{3,}", s)) + (1 if "\t" in s else 0)
     if col_gaps < 1:
         return False
-
     tokens = re.findall(r"[A-Za-z\u0600-\u06FF0-9]{2,}", s)
     if len(tokens) < 3:
         return False
-
-    # Avoid treating long prose lines as tables
     if len(s) > 180 and col_gaps == 1:
         return False
-
     return True
 
 
 def _normalize_table_row(raw_line: str) -> str:
-    """
-    Normalize table-like spacing into a stable delimiter (" | ").
-    """
     s = (raw_line or "").strip()
     s = re.sub(r"\t+", "  ", s)
     s = re.sub(r"\s{3,}", " | ", s).strip()
-    # collapse accidental repeated delimiters
     s = re.sub(r"(?:\s\|\s){2,}", " | ", s)
     return s
 
@@ -278,7 +279,6 @@ def _join_pdf_lines(lines: List[str]) -> str:
             flush_paragraph()
             continue
 
-        # bullets and tables preserved as their own lines
         if _BULLET_RE.search(raw):
             flush_paragraph()
             merged.append(raw)
@@ -289,19 +289,15 @@ def _join_pdf_lines(lines: List[str]) -> str:
             merged.append(_normalize_table_row(raw))
             continue
 
-        # Hyphenation fix: if current paragraph ends with "-" and next starts with a word, join without space
         if buf and _HYPHEN_END_RE.search(buf):
-            # remove the hyphen at end and join immediately
             buf = buf[:-1] + raw
             continue
 
-        # Preserve sectioning after colon: if paragraph ends with ":" start a new paragraph
         if buf.endswith(":"):
             flush_paragraph()
             buf = raw
             continue
 
-        # Otherwise append with space
         if not buf:
             buf = raw
         else:
@@ -312,15 +308,115 @@ def _join_pdf_lines(lines: List[str]) -> str:
     return _clean_text_general(text)
 
 
-# -----------------------------
-# PDF Extraction
-# -----------------------------
+# ─────────────────────────────────────────────────────────────
+# Table-aware extraction with pdfplumber (selective)
+# ─────────────────────────────────────────────────────────────
+_PDFPLUMBER_AVAILABLE = False
+try:
+    import pdfplumber
+    _PDFPLUMBER_AVAILABLE = True
+except ImportError:
+    pass
+
+
+def _page_has_tables(pdf_path: str, page_idx: int) -> bool:
+    """Quick check if a specific page has extractable tables via pdfplumber."""
+    if not _PDFPLUMBER_AVAILABLE:
+        return False
+    try:
+        with pdfplumber.open(pdf_path) as pdf:
+            if page_idx < len(pdf.pages):
+                tables = pdf.pages[page_idx].find_tables()
+                return len(tables) > 0
+    except Exception:
+        pass
+    return False
+
+
+def _extract_tables_pdfplumber(pdf_path: str, page_idx: int) -> str:
+    """
+    Extract tables from a specific page using pdfplumber.
+    Returns formatted table text with | delimiters preserving row/column meaning.
+    """
+    if not _PDFPLUMBER_AVAILABLE:
+        return ""
+    try:
+        with pdfplumber.open(pdf_path) as pdf:
+            if page_idx >= len(pdf.pages):
+                return ""
+            page = pdf.pages[page_idx]
+            tables = page.extract_tables()
+            if not tables:
+                return ""
+
+            parts = []
+            for table in tables:
+                for row in table:
+                    if row:
+                        cells = [str(c or "").strip().replace("\n", " ") for c in row]
+                        if any(cells):
+                            parts.append(" | ".join(cells))
+            return "\n".join(parts)
+    except Exception as e:
+        log.debug("pdfplumber table extraction failed for page %d: %s", page_idx + 1, e)
+        return ""
+
+
+def _is_table_heavy_page(lines: List[str]) -> bool:
+    """Heuristic: a page is table-heavy if >40% of its lines look like table rows."""
+    if len(lines) < 3:
+        return False
+    table_lines = sum(1 for ln in lines if _looks_like_table_row(ln))
+    return table_lines / len(lines) > 0.40
+
+
+# ─────────────────────────────────────────────────────────────
+# Section-boundary detection for stream segmentation
+# ─────────────────────────────────────────────────────────────
+
+_PAGE_MARKER_RE = re.compile(r"<<PAGE:(\d+)>>")
+
+def _is_section_boundary(line: str) -> bool:
+    """
+    Returns True if this line represents a hard section boundary
+    where we should split into a new ExtractedUnit.
+    """
+    s = (line or "").strip()
+    if not s:
+        return False
+
+    # Major structural headings
+    if _SECTION_HEADING_RE.match(s):
+        return True
+
+    # Role/position title blocks
+    if _ROLE_TITLE_RE.match(s):
+        return True
+
+    # Numbered regulation start (e.g. "12. Retirement. -")
+    if _REGULATION_NUM_RE.match(s) and len(s) > 10:
+        return True
+
+    # "GOVERNMENT OF THE PUNJAB" block = new section
+    if re.match(r"^\s*GOVERNMENT\s+OF\s+THE\s+PUNJAB\b", s, re.IGNORECASE):
+        return True
+
+    return False
+
+
+# ─────────────────────────────────────────────────────────────
+# NEW: Stream-based PDF extraction (replaces page-isolated extraction)
+# ─────────────────────────────────────────────────────────────
 def extract_pdf_units(pdf_path: str) -> List[ExtractedUnit]:
     """
-    Extract PDF page-by-page.
-    - conservative repeated header/footer removal
-    - table preservation
-    - hyphenation repair
+    Extract PDF as a continuous document stream, then segment by logical
+    section boundaries. Units can span multiple pages.
+
+    Strategy:
+    1. Extract all pages' text, clean each page, concatenate with <<PAGE:N>> markers
+    2. Detect section boundaries (headings, role titles, regulation numbers, etc.)
+    3. Split stream at section boundaries
+    4. Each unit carries page_start/page_end range from the markers it spans
     """
     units: List[ExtractedUnit] = []
     pdf_path = (pdf_path or "").replace("\\", "/")
@@ -329,67 +425,140 @@ def extract_pdf_units(pdf_path: str) -> List[ExtractedUnit]:
     try:
         from pypdf import PdfReader
         reader = PdfReader(pdf_path)
-        pages = reader.pages
     except Exception as e:
-        print(f"Error extracting {pdf_path}: {e}")
+        log.error("Cannot read PDF %s: %s", pdf_path, e)
         return units
 
-    # first pass: raw page lines for header/footer detection
+    n_pages = len(reader.pages)
+    if n_pages == 0:
+        return units
+
+    # Step 1: Extract per-page lines with header/footer detection
     raw_lines_by_page: List[List[str]] = []
-    for page in pages:
+    for page in reader.pages:
         try:
-            raw = page.extract_text() or ""
+            text = page.extract_text() or ""
         except Exception:
-            raw = ""
-        raw_lines_by_page.append(_pdf_lines_raw(raw))
+            text = ""
+        raw_lines_by_page.append(_pdf_lines_raw(text))
 
     hf = _detect_repeated_header_footer(raw_lines_by_page)
 
-    # second pass: build units
+    # Step 2: Build stream with page markers
+    stream_lines: List[str] = []
     for i, lines in enumerate(raw_lines_by_page):
         page_no = i + 1
-
         lines2 = _strip_headers_footers(lines, hf)
-
-        # fallback: if stripping was too aggressive, revert
         if len(lines2) < max(4, int(0.30 * len(lines))):
             lines2 = lines
 
-        text = _join_pdf_lines(lines2)
-        text = _clean_text_general(text)
+        # For table-heavy pages, try pdfplumber extraction
+        table_text = ""
+        if _is_table_heavy_page(lines2) and _PDFPLUMBER_AVAILABLE:
+            table_text = _extract_tables_pdfplumber(pdf_path, i)
 
-        if not text:
+        # Insert page marker
+        stream_lines.append(f"<<PAGE:{page_no}>>")
+
+        if table_text:
+            # Use pdfplumber table output, plus any non-table narrative from pypdf
+            narrative_lines = [ln for ln in lines2 if not _looks_like_table_row(ln)]
+            if narrative_lines:
+                joined_narrative = _join_pdf_lines(narrative_lines)
+                if joined_narrative.strip():
+                    stream_lines.append(joined_narrative)
+            stream_lines.append(table_text)
+        else:
+            # Standard pypdf extraction with line joining
+            joined = _join_pdf_lines(lines2)
+            if joined.strip():
+                stream_lines.append(joined)
+
+    # Step 3: Join into a single stream and segment by section boundaries
+    full_stream = "\n".join(stream_lines)
+    full_stream = _clean_text_general(full_stream)
+
+    # Split stream into lines for section detection
+    all_lines = full_stream.split("\n")
+
+    # Step 4: Segment by section boundaries
+    sections: List[Tuple[int, int, str]] = []  # (page_start, page_end, text)
+    current_section_lines: List[str] = []
+    current_page_start: int = 1
+    current_page_end: int = 1
+    last_seen_page: int = 1
+
+    def flush_section() -> None:
+        nonlocal current_section_lines, current_page_start, current_page_end
+        if not current_section_lines:
+            return
+        # Remove page markers from section text, clean
+        text_lines = [ln for ln in current_section_lines if not _PAGE_MARKER_RE.match(ln)]
+        text = "\n".join(text_lines).strip()
+        text = _clean_text_general(text)
+        if text and len(text) > 50:  # minimum viable content
+            sections.append((current_page_start, current_page_end, text))
+        current_section_lines = []
+
+    for line in all_lines:
+        # Track page markers
+        pm = _PAGE_MARKER_RE.match(line)
+        if pm:
+            last_seen_page = int(pm.group(1))
+            if not current_section_lines:
+                current_page_start = last_seen_page
+            current_page_end = last_seen_page
+            current_section_lines.append(line)
             continue
 
+        # Check for section boundary
+        if _is_section_boundary(line) and current_section_lines:
+            # Only split if current section has meaningful content
+            text_so_far = "\n".join(
+                ln for ln in current_section_lines if not _PAGE_MARKER_RE.match(ln)
+            ).strip()
+            if len(text_so_far) > 100:
+                flush_section()
+                current_page_start = last_seen_page
+                current_page_end = last_seen_page
+
+        current_section_lines.append(line)
+        current_page_end = last_seen_page
+
+    flush_section()
+
+    # Step 5: Build ExtractedUnits from sections
+    for page_start, page_end, text in sections:
         units.append(
             ExtractedUnit(
                 doc_name=doc_name,
                 source_type="pdf",
                 loc_kind="page",
-                loc_start=page_no,
-                loc_end=page_no,
+                loc_start=page_start,
+                loc_end=page_end,
                 text=text,
                 path=pdf_path,
             )
         )
 
-    _log(f"[Extractor] PDF units: {doc_name} -> {len(units)} pages extracted")
+    log.info(
+        "PDF stream extraction: %s -> %d sections from %d pages (multi-page: %d)",
+        doc_name,
+        len(units),
+        n_pages,
+        sum(1 for u in units if u.loc_start != u.loc_end),
+    )
     return units
 
 
 # -----------------------------
-# DOCX Extraction
+# DOCX Extraction (preserved)
 # -----------------------------
 def extract_docx_units(
     docx_path: str,
     min_chars_per_unit: int = 800,
     max_chars_per_unit: int = 6000
 ) -> List[ExtractedUnit]:
-    """
-    Extract DOCX into stable units using headings.
-    - Uses Heading styles to create sections
-    - Enforces min/max char budgets per unit
-    """
     units: List[ExtractedUnit] = []
     docx_path = (docx_path or "").replace("\\", "/")
     doc_name = os.path.basename(docx_path)
@@ -400,7 +569,6 @@ def extract_docx_units(
     except Exception:
         return units
 
-    # Build paragraph list with heading context
     paras: List[Dict[str, Any]] = []
     para_idx = 0
     current_heading = ""
@@ -501,14 +669,11 @@ def _emit_docx_group_as_units(
     for p in items:
         txt = p["text"]
         i = p["i"]
-
         if start_i is None:
             start_i = i
         end_i = i
-
         buffer.append(txt)
         char_count += len(txt) + 1
-
         if char_count >= max_chars:
             flush()
 
@@ -554,14 +719,11 @@ def _emit_docx_paragraph_blocks(
     for p in items:
         txt = p["text"]
         i = p["i"]
-
         if start_i is None:
             start_i = i
         end_i = i
-
         buffer.append(txt)
         char_count += len(txt) + 1
-
         if char_count >= max_chars:
             flush()
 

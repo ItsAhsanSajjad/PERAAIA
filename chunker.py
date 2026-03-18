@@ -21,12 +21,14 @@ class Chunk:
     loc_end: Any
     chunk_text: str
     path: Optional[str] = None
+    doc_authority: int = 2   # 1=low (working papers), 2=medium, 3=high (official)
 
 
 # -----------------------------
 # Config / Debug
 # -----------------------------
-DEBUG_CHUNKER = os.getenv("CHUNKER_DEBUG", "0").strip() != "0"
+from log_config import get_logger
+_chunker_log = get_logger("pera.chunker")
 
 
 # -----------------------------
@@ -35,24 +37,17 @@ DEBUG_CHUNKER = os.getenv("CHUNKER_DEBUG", "0").strip() != "0"
 _WS_RE = re.compile(r"[ \t]+")
 _NUL_RE = re.compile(r"\x00+")
 
-# Keep unicode (Urdu) and punctuation. Only normalize whitespace.
 def _clean_text(s: str) -> str:
     s = s or ""
     s = _NUL_RE.sub(" ", s)
     s = s.replace("\r\n", "\n").replace("\r", "\n")
-    # collapse horizontal whitespace, preserve newlines (structure)
     s = _WS_RE.sub(" ", s)
-    # cap runaway blank lines but preserve structure
     s = re.sub(r"\n{5,}", "\n\n\n\n", s)
     s = "\n".join([ln.strip() for ln in s.split("\n")])
     return s.strip()
 
 
 def _parse_book_rank(filename: str) -> int:
-    """
-    book1, book2, ... bookN => higher number = newer/higher priority.
-    If no match => rank 0.
-    """
     base = os.path.splitext(os.path.basename(filename))[0]
     m = re.search(r"\bbook\s*([0-9]+)\b", base, flags=re.IGNORECASE)
     if not m:
@@ -67,7 +62,7 @@ def _parse_book_rank(filename: str) -> int:
 # Structural heuristics: tables/lists/headings
 # -----------------------------
 _BULLET_RE = re.compile(r"^\s*(?:[•\-\u2022]|\d+[\)\.]|[a-zA-Z][\)\.])\s+")
-_PIPE_TABLE_RE = re.compile(r"\s\|\s")   # " | " delimiter
+_PIPE_TABLE_RE = re.compile(r"\s\|\s")
 _TAB_TABLE_RE = re.compile(r"\t+")
 
 def _looks_like_table_line(line: str) -> bool:
@@ -92,10 +87,8 @@ def _looks_like_table_or_list(line: str) -> bool:
 
 
 # -----------------------------
-# Heading detection (hardened)
+# Heading detection
 # -----------------------------
-# Captures: Schedule I / Schedule-I / Schedule 1, Annexure A, Appendix B,
-# Chapter 2, Section 12, Rule 3, Regulation 4, Part II, Table 1
 _HEADING_RE = re.compile(
     r"^\s*(?:"
     r"(schedule|annex(?:ure)?|appendix|chapter|section|rule|regulation|part|table)\s*"
@@ -105,7 +98,6 @@ _HEADING_RE = re.compile(
     re.IGNORECASE
 )
 
-# All-caps short headings (e.g., "POWERS", "DUTIES", "ELIGIBILITY")
 def _is_all_caps_heading(s: str) -> bool:
     s = (s or "").strip()
     if len(s) < 4 or len(s) > 60:
@@ -126,56 +118,69 @@ def _is_heading(line: str) -> bool:
     return False
 
 
-# -----------------------------
-# Role heading detection (safer)
-# -----------------------------
-# Avoid false positives: don’t treat long sentences as roles.
-_MAX_ROLE_LEN = 80
+# ─────────────────────────────────────────────────────────────
+# Role heading detection (EXPANDED — pattern-based, not just list)
+# ─────────────────────────────────────────────────────────────
+_MAX_ROLE_LEN = 120  # increased from 80 for titles with wing/dept qualifiers
 
-# Exclusion patterns (lines that look like metadata fields, not headings)
 _ROLE_EXCLUDE_RE = re.compile(
     r"^\s*(report\s*to|reporting\s*to|reports\s*to|department|location|grade|scale|pay|"
-    r"job\s*summary|summary|objective|purpose|education|qualification|experience|"
-    r"responsibilit|duties|skills|competenc|note|remarks)\b",
+    r"job\s*summary|summary|objective|purpose\s+of\s+the\s+position|education|qualification|experience|"
+    r"responsibilit|duties|skills|competenc|note|remarks|wing|section)\s*[:\-]",
     re.IGNORECASE
 )
 
-# "Position Title:" "Job Title:" "Role:"
-_ROLE_PREFIX_RE = re.compile(r"^\s*(position\s*title|job\s*title|role)\s*[:\-]+\s*(.*)$", re.IGNORECASE)
+# "Position Title:" "Job Title:" "Role:" "Designation:" prefix
+_ROLE_PREFIX_RE = re.compile(
+    r"^\s*(position\s*title|job\s*title|role|designation)\s*[:\-–]+\s*(.*)$",
+    re.IGNORECASE
+)
 
-# Role titles patterns (expandable)
-_ROLE_HEADING_RE = re.compile(
+# Pattern-based role detection: matches common title structures
+# Rather than enumerating every title, we match common patterns:
+#   - X Director (General)
+#   - X Officer
+#   - X Manager (Y)
+#   - Secretary to the Authority
+#   - Chief X Officer
+_ROLE_PATTERN_RE = re.compile(
     r"^\s*(?:"
-    r"chief\s+technology\s+officer|"
-    r"chief\s+executive\s+officer|"
-    r"director\s+general|"
-    r"additional\s+director\s+general|"
-    r"deputy\s+director(?:\s+general)?|"
-    r"assistant\s+director|"
-    r"director\s+\([^)]+\)|"
-    r"manager\s*\([^)]+\)|"
-    r"project\s+manager|"
-    r"hr\s+manager|"
-    r"it\s+manager|"
-    r"enforcement\s+officer|"
-    r"sub[- ]?divisional\s+enforcement\s+officer|"
-    r"investigation\s+officer|"
-    r"inspection\s+officer|"
-    r"system\s+support\s+officer|"
-    r"database\s+administrator|"
-    r"system\s+administrator|"
-    r"network\s+administrator|"
-    r"software\s+developer|"
-    r"android\s+developer|"
-    r"[A-Za-z][A-Za-z\s&]+\s+(officer|developer|manager|director|engineer|specialist|administrator|coordinator)"
+    # "Position Title: - X" (already stripped by prefix handler)
+    # Director variants
+    r"(?:Additional\s+|Deputy\s+|Assistant\s+|Joint\s+|Regional\s+)?"
+    r"Director(?:\s+General)?(?:\s*\([^)]+\))?"
+    r"|"
+    # Chief X Officer
+    r"Chief\s+(?:\w+\s+){1,2}Officer"
+    r"|"
+    # X Officer variants
+    r"(?:Senior\s+|Sub[\s\-]?Divisional\s+|Divisional\s+|Provisional\s+|Zonal\s+)?"
+    r"(?:Enforcement|Investigation|Inspection|System\s+Support|Welfare|Research|Security|Intelligence|Liaison)\s+Officer"
+    r"|"
+    # Manager (X) or X Manager
+    r"(?:Manager\s*\([^)]+\)|[\w\s&]+\s+Manager)"
+    r"|"
+    # Secretary variants
+    r"(?:Secretary|Private\s+Secretary|Personal\s+Secretary)(?:\s+(?:to\s+the\s+)?(?:Authority|Board|DG|Director\s+General))?"
+    r"|"
+    # Developer / Administrator / Engineer / Specialist / Coordinator / Analyst
+    r"(?:[\w\s&]+\s+(?:Developer|Administrator|Engineer|Specialist|Coordinator|Analyst|Supervisor|Technician|Trainer|Consultant))"
+    r"|"
+    # Chairman / Chairperson
+    r"Chair(?:man|person)"
+    r"|"
+    # Competent Authority
+    r"Competent\s+Authority"
     r")\s*$",
     re.IGNORECASE
 )
+
 
 def _is_role_heading(line: str) -> Optional[str]:
     """
     Detect if a line is a role heading.
     Returns the role title if detected, None otherwise.
+    Uses pattern-based detection (not just hardcoded list).
     """
     if not line:
         return None
@@ -188,20 +193,22 @@ def _is_role_heading(line: str) -> Optional[str]:
     if _ROLE_EXCLUDE_RE.match(s):
         return None
 
-    # Handle "Position Title: - Role"
+    # Handle "Position Title: - Role Name" or "Designation: X"
     m = _ROLE_PREFIX_RE.match(s)
     if m:
-        s = (m.group(2) or "").strip()
-        s = re.sub(r"^[-•\:\s]+", "", s).strip()
-        if not s:
+        role_part = (m.group(2) or "").strip()
+        role_part = re.sub(r"^[-•\:\s]+", "", role_part).strip()
+        if not role_part:
             return None
+        # The extracted role is the heading
+        return role_part
 
     # Ensure it looks like a title (not a sentence)
-    # Too many punctuation marks -> likely not a clean title
-    if sum(1 for ch in s if ch in ".;,:") >= 2:
+    if sum(1 for ch in s if ch in ".;,") >= 2:
         return None
 
-    if _ROLE_HEADING_RE.match(s):
+    # Pattern-based matching
+    if _ROLE_PATTERN_RE.match(s):
         return s
 
     return None
@@ -214,14 +221,6 @@ def _split_into_blocks_with_context(text: str) -> List[Tuple[Optional[str], str]
     """
     Splits into blocks while tracking role headings.
     Returns list of (role_context, block_text) tuples.
-
-    Rules:
-      - Blank lines split blocks
-      - Headings start new blocks
-      - Do not mix narrative with tables/lists
-      - Role headings update current role context
-      - IMPORTANT: role heading lines are NOT included as content blocks
-        (we inject role context separately to avoid duplication)
     """
     t = _clean_text(text)
     if not t:
@@ -255,11 +254,9 @@ def _split_into_blocks_with_context(text: str) -> List[Tuple[Optional[str], str]
 
         role_match = _is_role_heading(raw)
         if role_match:
-            if DEBUG_CHUNKER:
-                print(f"[Chunker] Role heading detected: {role_match}")
+            _chunker_log.debug("Role heading detected: %s", role_match)
             flush()
             current_role = role_match
-            # DO NOT add the role heading itself to buf (avoid duplication)
             continue
 
         if _is_heading(raw):
@@ -280,31 +277,16 @@ def _split_into_blocks_with_context(text: str) -> List[Tuple[Optional[str], str]
 
 
 def _trim_overlap_to_boundary(tail: str) -> str:
-    """
-    Make overlap start at a clean boundary to avoid mid-word stitching.
-    """
     s = (tail or "").strip()
     if not s:
         return ""
-
-    # Remove leading partial token if overlap begins mid-token
     m = re.search(r"[\s\.,;:\)\]\}!\?]", s)
     if m and m.start() < 20:
         s = s[m.start():].lstrip()
-
     return s.strip()
 
 
 def _chunk_by_char_budget(blocks: List[str], max_chars: int, overlap_chars: int) -> List[str]:
-    """
-    Creates chunks up to max_chars.
-    Overlap is applied as a tail snippet of previous chunk.
-
-    Hardening:
-      - overlap < max_chars
-      - safe splitting for huge blocks
-      - global chunk cap
-    """
     if not blocks:
         return []
 
@@ -334,7 +316,6 @@ def _chunk_by_char_budget(blocks: List[str], max_chars: int, overlap_chars: int)
         if not b:
             continue
 
-        # Huge block safeguard
         if len(b) > max_chars:
             flush()
             step = max(200, max_chars - overlap_chars)
@@ -376,7 +357,6 @@ def _chunk_by_char_budget(blocks: List[str], max_chars: int, overlap_chars: int)
             if i == 0:
                 out.append(c)
                 continue
-
             prev = chunks[i - 1]
             tail = _trim_overlap_to_boundary(prev[-cap:])
             if tail:
@@ -389,9 +369,6 @@ def _chunk_by_char_budget(blocks: List[str], max_chars: int, overlap_chars: int)
 
 
 def _force_keep_chunk(ctext: str) -> bool:
-    """
-    Some chunks must be kept even if short, because they answer common questions.
-    """
     t = (ctext or "").lower()
     if "schedule" in t or "annex" in t or "annexure" in t or "appendix" in t:
         return True
@@ -402,6 +379,8 @@ def _force_keep_chunk(ctext: str) -> bool:
         return True
     if "terms of reference" in t or re.search(r"\btor\b", t):
         return True
+    if "position title" in t or "designation" in t:
+        return True
     return False
 
 
@@ -411,19 +390,20 @@ def _force_keep_chunk(ctext: str) -> bool:
 def chunk_units(
     units: List[ExtractedUnit],
     max_chars: int = 4500,
-    overlap_chars: int = 350,
-    min_chunk_chars: int = 200
+    overlap_chars: int = 500,    # increased from 350 for better cross-boundary context
+    min_chunk_chars: int = 150   # lowered from 200 to preserve short but important sections
 ) -> List[Chunk]:
     """
     Converts extracted units into chunks while preserving traceability.
 
-    Guarantees:
-      - PDF units are page-scoped (never mix pages)
-      - DOCX units are unit-scoped (never mix sections/ranges)
+    Units can now span multiple pages (from stream-based extraction).
+    Chunks inherit page ranges from their parent unit.
 
-    Safety:
-      - Keep short but high-value chunks (Schedule/Annex/definitions/role titles)
-      - Drop short tails only when clearly low-signal
+    Guarantees:
+      - Each chunk stays within one ExtractedUnit (never mixes units)
+      - Multi-page provenance is preserved via loc_start/loc_end
+      - Role context is attached to relevant chunks
+      - Short but high-value chunks are kept
     """
     out: List[Chunk] = []
 
@@ -433,9 +413,12 @@ def chunk_units(
             continue
 
         rank = getattr(u, "doc_rank", 0) or _parse_book_rank(getattr(u, "doc_name", ""))
+        authority = getattr(u, "doc_authority", 2)
 
         # If unit itself is short, keep it as one chunk
         if len(txt) < min_chunk_chars:
+            if not _force_keep_chunk(txt) and len(txt) < 80:
+                continue  # too short and not important
             out.append(
                 Chunk(
                     doc_name=u.doc_name,
@@ -446,6 +429,7 @@ def chunk_units(
                     loc_end=u.loc_end,
                     chunk_text=txt,
                     path=getattr(u, "path", None),
+                    doc_authority=authority,
                 )
             )
             continue
@@ -489,15 +473,14 @@ def chunk_units(
                     elif _force_keep_chunk(ctext):
                         pass
                     elif i == len(chunk_texts) - 1:
-                        # keep last short tail only if meaningful
-                        if len(re.findall(r"[A-Za-z\u0600-\u06FF]{3,}", ctext)) >= 10:
+                        if len(re.findall(r"[A-Za-z\u0600-\u06FF]{3,}", ctext)) >= 8:
                             pass
                         else:
                             continue
                     else:
                         continue
 
-                # Role context injection (only once, avoid duplication)
+                # Role context injection
                 final_text = ctext
                 if ctx and f"[role:" not in ctext.lower():
                     final_text = f"[Role: {ctx}]\n{ctext}"
@@ -512,7 +495,15 @@ def chunk_units(
                         loc_end=u.loc_end,
                         chunk_text=final_text,
                         path=getattr(u, "path", None),
+                        doc_authority=authority,
                     )
                 )
 
+    _chunker_log.info(
+        "Chunking complete: %d units -> %d chunks (role-tagged: %d, multi-page: %d)",
+        len(units),
+        len(out),
+        sum(1 for c in out if "[Role:" in c.chunk_text),
+        sum(1 for c in out if c.loc_start != c.loc_end),
+    )
     return out

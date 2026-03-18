@@ -11,6 +11,45 @@ from typing import List, Dict, Tuple
 SUPPORTED_EXTS = (".pdf",)
 
 
+# ─── Document authority classification ───────────────────────
+# authority=3: Official acts, formal notifications, approved regulations/annexes
+# authority=2: Policy documents, HR manuals, operational guidelines
+# authority=1: Compiled working papers, meeting minutes, draft materials
+#
+# The Compiled Working Paper (~54.7% of old index) gets authority=1
+# so it can no longer dominate retrieval over authoritative sources.
+
+_AUTHORITY_HIGH_PATTERNS = [
+    r"\(\d+\s+of\s+\d{4}\)",           # "(10 of 2024)" — official act
+    r"\bnotifi(?:cation|ed)\b",         # formal notifications
+    r"\bannex\s*[a-z]\b",              # Annex G, H, I, L, M, N, P
+    r"\bflag[-\s]*[a-z]\b",            # Flag-C, Flag-F, etc.
+]
+_AUTHORITY_HIGH_RE = re.compile("|".join(_AUTHORITY_HIGH_PATTERNS), re.IGNORECASE)
+
+_AUTHORITY_LOW_PATTERNS = [
+    r"compiled[\s_]+working[\s_]+paper",
+    r"meeting[\s_]+(?:minutes|notes|mom)",
+    r"working[\s_]+paper",
+    r"\bdraft\b",
+]
+_AUTHORITY_LOW_RE = re.compile("|".join(_AUTHORITY_LOW_PATTERNS), re.IGNORECASE)
+
+
+def classify_doc_authority(filename: str) -> int:
+    """
+    Classify a document's authority level based on its filename.
+    Returns 3 (high), 2 (medium), or 1 (low).
+    """
+    name = (filename or "").strip()
+    if _AUTHORITY_LOW_RE.search(name):
+        return 1
+    if _AUTHORITY_HIGH_RE.search(name):
+        return 3
+    # HR Manual, O&Ps Code, etc. = medium
+    return 2
+
+
 def _safe_mkdir(path: str) -> None:
     os.makedirs(path, exist_ok=True)
 
@@ -65,6 +104,7 @@ def scan_assets_data(data_dir: str = "assets/data") -> List[Dict]:
             "mtime": int(os.path.getmtime(full)),
             "size": int(os.path.getsize(full)),
             "rank": _parse_book_rank(name),
+            "authority": classify_doc_authority(name),
         })
 
     # Sort by rank desc (newest first), then by filename

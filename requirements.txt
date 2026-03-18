@@ -6,6 +6,8 @@ numpy                   # Numerical computing
 faiss-cpu               # Vector similarity search (CPU)
 python-dotenv           # Environment variable management (.env)
 pypdf                   # PDF parsing and text extraction
+python-docx             # DOCX parsing and text extraction (extractors.py)
+pdfplumber              # Table-aware PDF extraction (extractors.py, optional but recommended)
 
 # ============================================================
 # Streamlit UI (Web App + Audio Input)
