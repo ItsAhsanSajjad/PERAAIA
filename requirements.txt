@@ -24,3 +24,14 @@ uvicorn[standard]       # ASGI server (includes websockets, httptools, watchdog)
 pydantic                # Data validation / schemas
 starlette               # FastAPI dependency (routing, middleware, static files)
 python-multipart        # Multipart/form-data support (file uploads)
+
+# ============================================================
+# Optional — Phase 8 auth (only required when AUTH_MODE=jwt)
+# ============================================================
+# AUTH_MODE=disabled / bearer / service work WITHOUT this package.
+# Install only if you intend to verify JSON Web Tokens.
+# Safe fallback: if PyJWT is not installed and AUTH_MODE=jwt, the
+# server returns a structured 401 with reason="pyjwt_not_installed"
+# unless AUTH_JWT_ALLOW_FALLBACK=1 is set, which routes to the
+# bearer-token check instead.
+# PyJWT>=2.0          # uncomment to enable JWT verification

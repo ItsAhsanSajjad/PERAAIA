@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import os
 import re
 from dataclasses import dataclass
@@ -22,6 +23,16 @@ class Chunk:
     chunk_text: str
     path: Optional[str] = None
     doc_authority: int = 2   # 1=low (working papers), 2=medium, 3=high (official)
+
+    # Phase 3 additions — parent-section metadata.
+    #
+    # Backward compatible: default "" so callers that never populate these
+    # fields keep working. When present, the retriever uses them to group
+    # child chunks from the same logical section (e.g., a Schedule or
+    # Chapter heading) for multi-page continuity. Existing builds without
+    # these fields continue to function via chunk-level behavior.
+    section_id: str = ""      # stable id of the nearest enclosing section
+    heading_path: str = ""    # breadcrumb, e.g. "HR Manual > Schedule-III > Pay Scales"
 
 
 # -----------------------------
@@ -215,21 +226,41 @@ def _is_role_heading(line: str) -> Optional[str]:
 
 
 # -----------------------------
-# Block splitting with role context
+# Block splitting with role + section context
 # -----------------------------
-def _split_into_blocks_with_context(text: str) -> List[Tuple[Optional[str], str]]:
+def _normalize_section_heading(raw: str) -> str:
+    """Trim and condense a heading line so it reads well in a heading_path."""
+    s = (raw or "").strip()
+    # Strip trailing punctuation and section numbering noise
+    s = re.sub(r"\s+", " ", s)
+    if len(s) > 80:
+        s = s[:77].rstrip() + "..."
+    return s
+
+
+def _split_into_blocks_with_context(
+    text: str,
+) -> List[Tuple[Optional[str], Optional[str], str]]:
     """
-    Splits into blocks while tracking role headings.
-    Returns list of (role_context, block_text) tuples.
+    Splits into blocks while tracking both role headings AND the enclosing
+    structural heading (the most recent Schedule/Chapter/Section/Annex/etc.
+    line seen).
+
+    Returns list of (role_context, section_heading, block_text) tuples.
+
+    Phase 3: signature now includes section_heading as the second element.
+    A None value means "no structural heading seen yet inside this unit" —
+    callers must handle that gracefully.
     """
     t = _clean_text(text)
     if not t:
         return []
 
     lines = t.split("\n")
-    blocks: List[Tuple[Optional[str], str]] = []
+    blocks: List[Tuple[Optional[str], Optional[str], str]] = []
     buf: List[str] = []
     current_role: Optional[str] = None
+    current_section: Optional[str] = None
 
     def flush():
         nonlocal buf
@@ -237,7 +268,7 @@ def _split_into_blocks_with_context(text: str) -> List[Tuple[Optional[str], str]
             return
         b = _clean_text("\n".join(buf))
         if b:
-            blocks.append((current_role, b))
+            blocks.append((current_role, current_section, b))
         buf = []
 
     def last_is_structured() -> bool:
@@ -260,7 +291,11 @@ def _split_into_blocks_with_context(text: str) -> List[Tuple[Optional[str], str]
             continue
 
         if _is_heading(raw):
+            # Update the current structural section heading, but also keep
+            # the heading line itself in the buffer so downstream chunks
+            # still carry it in their text body.
             flush()
+            current_section = _normalize_section_heading(raw)
             buf.append(raw)
             continue
 
@@ -407,6 +442,15 @@ def chunk_units(
     """
     out: List[Chunk] = []
 
+    # Phase 3 helper: derive a stable section_id from the document name
+    # and the active heading breadcrumb. Same inputs → same id, so
+    # retrieval can group child chunks that share a parent section.
+    def _section_id_for(doc_name: str, heading_path: str) -> str:
+        if not heading_path:
+            return ""
+        key = f"{doc_name}::{heading_path}".lower()
+        return hashlib.sha1(key.encode("utf-8")).hexdigest()[:16]
+
     for u in units:
         txt = _clean_text(getattr(u, "text", "") or "")
         if not txt:
@@ -414,14 +458,23 @@ def chunk_units(
 
         rank = getattr(u, "doc_rank", 0) or _parse_book_rank(getattr(u, "doc_name", ""))
         authority = getattr(u, "doc_authority", 2)
+        doc_name = getattr(u, "doc_name", "") or ""
+
+        # If the extractor gave us a "section" unit, its own loc_kind label
+        # is already a useful section breadcrumb root.
+        unit_section_hint: str = ""
+        u_loc_kind = getattr(u, "loc_kind", "") or ""
+        if u_loc_kind == "section" and getattr(u, "loc_start", None):
+            unit_section_hint = str(u.loc_start)
 
         # If unit itself is short, keep it as one chunk
         if len(txt) < min_chunk_chars:
             if not _force_keep_chunk(txt) and len(txt) < 80:
                 continue  # too short and not important
+            heading_path = unit_section_hint
             out.append(
                 Chunk(
-                    doc_name=u.doc_name,
+                    doc_name=doc_name,
                     doc_rank=rank,
                     source_type=u.source_type,
                     loc_kind=u.loc_kind,
@@ -430,36 +483,47 @@ def chunk_units(
                     chunk_text=txt,
                     path=getattr(u, "path", None),
                     doc_authority=authority,
+                    section_id=_section_id_for(doc_name, heading_path),
+                    heading_path=heading_path,
                 )
             )
             continue
 
-        # Split into (role_context, block_text)
+        # Split into (role_context, section_heading, block_text)
         blocks_with_ctx = _split_into_blocks_with_context(txt)
         if not blocks_with_ctx:
             continue
 
-        # Group blocks by role context to prevent role bleeding
-        grouped: List[Tuple[Optional[str], List[str]]] = []
-        current_ctx = blocks_with_ctx[0][0]
+        # Group blocks by (role, section) context to prevent role bleeding
+        # AND keep each Chunk attached to its nearest structural heading.
+        grouped: List[Tuple[Optional[str], Optional[str], List[str]]] = []
+        current_role = blocks_with_ctx[0][0]
+        current_section = blocks_with_ctx[0][1]
         current_texts: List[str] = []
 
-        for ctx, btxt in blocks_with_ctx:
-            if ctx != current_ctx:
+        for role_ctx, section_ctx, btxt in blocks_with_ctx:
+            if role_ctx != current_role or section_ctx != current_section:
                 if current_texts:
-                    grouped.append((current_ctx, current_texts))
-                current_ctx = ctx
+                    grouped.append((current_role, current_section, current_texts))
+                current_role = role_ctx
+                current_section = section_ctx
                 current_texts = []
             current_texts.append(btxt)
 
         if current_texts:
-            grouped.append((current_ctx, current_texts))
+            grouped.append((current_role, current_section, current_texts))
 
         # Chunk each group independently
-        for ctx, texts in grouped:
+        for role_ctx, section_ctx, texts in grouped:
             chunk_texts = _chunk_by_char_budget(texts, max_chars=max_chars, overlap_chars=overlap_chars)
             if not chunk_texts and len(texts) == 1:
                 chunk_texts = texts
+
+            # Build the heading breadcrumb for this group. Prefer an
+            # explicit in-text heading; fall back to the unit-level hint
+            # (e.g., extractor-provided section label).
+            heading_path = (section_ctx or unit_section_hint or "").strip()
+            sid = _section_id_for(doc_name, heading_path) if heading_path else ""
 
             for i, ctext in enumerate(chunk_texts):
                 ctext = _clean_text(ctext)
@@ -482,12 +546,12 @@ def chunk_units(
 
                 # Role context injection
                 final_text = ctext
-                if ctx and f"[role:" not in ctext.lower():
-                    final_text = f"[Role: {ctx}]\n{ctext}"
+                if role_ctx and f"[role:" not in ctext.lower():
+                    final_text = f"[Role: {role_ctx}]\n{ctext}"
 
                 out.append(
                     Chunk(
-                        doc_name=u.doc_name,
+                        doc_name=doc_name,
                         doc_rank=rank,
                         source_type=u.source_type,
                         loc_kind=u.loc_kind,
@@ -496,6 +560,8 @@ def chunk_units(
                         chunk_text=final_text,
                         path=getattr(u, "path", None),
                         doc_authority=authority,
+                        section_id=sid,
+                        heading_path=heading_path,
                     )
                 )
 

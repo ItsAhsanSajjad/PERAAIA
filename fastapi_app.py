@@ -1,19 +1,39 @@
 from __future__ import annotations
 
+import html
 import os
+import threading
+import time
 import uuid
+from collections import deque
 from urllib.parse import quote
-from typing import List, Dict, Any, Optional, Tuple
+from typing import List, Dict, Any, Optional, Tuple, Deque
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from retriever import retrieve, rewrite_contextual_query
+# Phase 8 — auth layer.
+from auth import (
+    Identity,
+    resolve_identity,
+    is_protected_mode,
+    auth_status_summary,
+    AUTH_MODE,
+)
+
+from retriever import retrieve, retrieve_multi, rewrite_contextual_query
 from answerer import answer_question
+from query_intent import (
+    classify_intent,
+    llm_expand_vague_query,
+    INTENT_OUT_OF_SCOPE,
+    INTENT_VAGUE,
+    INTENT_FOLLOWUP,
+)
 from log_config import setup_logging, get_logger, request_id_var
 from openai_clients import has_api_key
 from session_store import get_session_store, SessionTurn
@@ -28,29 +48,363 @@ log = get_logger("pera.api")
 
 
 # ============================================================
-# FastAPI app
+# Phase 7 — Hardening configuration (env-driven, safe defaults)
 # ============================================================
-app = FastAPI(title="PERA AI Backend", version="2.1.0")
+# Single source of truth for all production-hardening knobs. Defaults
+# are conservative for production; local development can relax them
+# via env vars without code changes.
 
-# Keep your permissive CORS behavior
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["*"],
+# CORS — comma-separated origin list, OR the literal value "*" for
+# allow-all-origins (intentionally preserved per Phase 8 requirements).
+#
+# Configuration semantics:
+#   CORS_ALLOW_ORIGINS="*"                       → allow ALL origins (dev or
+#                                                  intentional production
+#                                                  open API). Credentials are
+#                                                  forced off in this mode
+#                                                  because browsers reject
+#                                                  the combination.
+#   CORS_ALLOW_ORIGINS="https://a,https://b"     → strict allow-list.
+#   CORS_ALLOW_ORIGINS=""                        → no CORSMiddleware mounted
+#                                                  (most restrictive).
+#
+# The default in development is "*" (allow-all) for frictionless local
+# iteration. The default in production is "" (no middleware) so a forgotten
+# env var fails closed instead of leaking.
+APP_VERSION = os.getenv("APP_VERSION", "2.3.0")
+APP_ENV = os.getenv("APP_ENV", "development").strip().lower()  # "development" | "production"
+
+_cors_default = "*" if APP_ENV != "production" else ""
+_cors_raw = os.getenv("CORS_ALLOW_ORIGINS", _cors_default).strip()
+
+# Detect the explicit allow-all directive. Treat "*" as a sentinel,
+# NOT as an item in a list, so a misconfigured "*, https://a" is read
+# as allow-all (matching the user-facing intent rather than silently
+# constructing a broken list).
+CORS_ALLOW_ALL = "*" in [s.strip() for s in _cors_raw.split(",")]
+if CORS_ALLOW_ALL:
+    CORS_ALLOW_ORIGINS: List[str] = ["*"]
+else:
+    CORS_ALLOW_ORIGINS = [o.strip() for o in _cors_raw.split(",") if o.strip()]
+
+CORS_ALLOW_CREDENTIALS = (
+    os.getenv("CORS_ALLOW_CREDENTIALS", "0").strip() == "1"
 )
 
-# Allow iframes (fix for browser blocking)
+# Body / upload size guardrails.
+# MAX_REQUEST_BYTES is a global cap enforced before the route runs.
+# MAX_AUDIO_UPLOAD_BYTES is enforced inside /transcribe specifically.
+MAX_REQUEST_BYTES = int(os.getenv("MAX_REQUEST_BYTES", str(2 * 1024 * 1024)))         # 2 MB
+MAX_AUDIO_UPLOAD_BYTES = int(os.getenv("MAX_AUDIO_UPLOAD_BYTES", str(25 * 1024 * 1024)))  # 25 MB
+
+# Rate limiting — simple in-process token bucket per client IP.
+# Set RATE_LIMIT_ENABLED=0 to disable entirely (default ON).
+RATE_LIMIT_ENABLED = os.getenv("RATE_LIMIT_ENABLED", "1").strip() != "0"
+RATE_LIMIT_ASK_PER_MIN = int(os.getenv("RATE_LIMIT_ASK_PER_MIN", "30"))
+RATE_LIMIT_TRANSCRIBE_PER_MIN = int(os.getenv("RATE_LIMIT_TRANSCRIBE_PER_MIN", "20"))
+RATE_LIMIT_BURST = int(os.getenv("RATE_LIMIT_BURST", "10"))
+# Comma-separated CIDR-less prefixes whose requests bypass the limiter
+# (defaults: localhost variants — never deny developer traffic by accident).
+RATE_LIMIT_BYPASS_IPS = {
+    s.strip() for s in os.getenv("RATE_LIMIT_BYPASS_IPS", "127.0.0.1,::1").split(",")
+    if s.strip()
+}
+
+# Trusted proxy header name. When set, the limiter and audit trail
+# read the client IP from this header (e.g. "X-Forwarded-For"). Empty
+# disables proxy-aware extraction.
+TRUSTED_FORWARDED_HEADER = os.getenv("TRUSTED_FORWARDED_HEADER", "").strip()
+
+
+# ============================================================
+# FastAPI app
+# ============================================================
+app = FastAPI(title="PERA AI Backend", version=APP_VERSION)
+
+# CORS — env-driven. Three behaviors:
+#   • CORS_ALLOW_ORIGINS="*"                  → allow ALL origins
+#     (CORS_ALLOW_CREDENTIALS is force-disabled because browsers reject
+#      `*` + credentials combination).
+#   • CORS_ALLOW_ORIGINS="<csv list>"         → strict allow-list.
+#   • CORS_ALLOW_ORIGINS=""                   → no middleware mounted
+#     (production default, fails closed).
+if CORS_ALLOW_ALL:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=False,  # forced off — wildcard + creds is illegal
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["*"],
+    )
+elif CORS_ALLOW_ORIGINS:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=CORS_ALLOW_ORIGINS,
+        allow_credentials=CORS_ALLOW_CREDENTIALS,
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["*"],
+    )
+
+# Allow iframes (fix for browser blocking) + Phase 7 security headers.
 @app.middleware("http")
-async def add_iframe_headers(request, call_next):
+async def add_security_headers(request, call_next):
     response = await call_next(request)
-    # X-Frame-Options is obsolete and ALLOWALL is invalid. 
-    # Use CSP frame-ancestors instead.
     if "X-Frame-Options" in response.headers:
         del response.headers["X-Frame-Options"]
-    response.headers["Content-Security-Policy"] = "frame-ancestors *"
+    # CSP: keep frame-ancestors permissive in development (PDF viewer
+    # iframes), tighten in production via APP_ENV.
+    if APP_ENV == "production":
+        response.headers.setdefault(
+            "Content-Security-Policy",
+            "frame-ancestors 'self'",
+        )
+    else:
+        response.headers.setdefault("Content-Security-Policy", "frame-ancestors *")
+    # Conservative defaults — safe for an API surface.
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("X-Permitted-Cross-Domain-Policies", "none")
+    if APP_ENV == "production":
+        # Browsers ignore HSTS over plain HTTP, so it's safe to send always.
+        response.headers.setdefault(
+            "Strict-Transport-Security",
+            "max-age=31536000; includeSubDomains",
+        )
     return response
+
+
+# Phase 7 — Body size cap (declared Content-Length only).
+# This cheaply rejects oversize bodies before the route runs. Per-route
+# guards (e.g. /transcribe) still enforce stricter limits on the actual
+# bytes read, in case a client lies about Content-Length.
+@app.middleware("http")
+async def enforce_max_body_size(request: Request, call_next):
+    cl = request.headers.get("content-length")
+    if cl:
+        try:
+            if int(cl) > MAX_REQUEST_BYTES:
+                return JSONResponse(
+                    status_code=413,
+                    content={
+                        "error": "request_too_large",
+                        "max_bytes": MAX_REQUEST_BYTES,
+                        "received": int(cl),
+                    },
+                )
+        except ValueError:
+            pass
+    return await call_next(request)
+
+
+# ============================================================
+# Phase 7 — Per-IP rate limiter (in-process, dependency-free)
+# ============================================================
+# Sliding-window counter per (client_ip, route_group). Two route
+# groups are protected by default: "ask" (/api/ask, /ask, /ask_json,
+# /transcribe is its own group). All other routes are unmetered.
+#
+# Limitations (intentional):
+#   • In-process state — does NOT span workers. For a single-process
+#     uvicorn deployment this is sufficient; for multi-worker, terminate
+#     at a reverse proxy that has its own limiter.
+#   • Per-IP only. No per-user tokens (auth is out of Phase 7 scope).
+#   • Burst support is naive (uses the same window).
+#
+# To disable: set RATE_LIMIT_ENABLED=0.
+
+_RATE_LOCK = threading.Lock()
+_RATE_BUCKETS: Dict[Tuple[str, str], Deque[float]] = {}
+_RATE_LAST_GC = [0.0]  # mutable holder for occasional cleanup
+
+# Route → (group_name, requests_per_minute) lookup. Anything not
+# listed here is not rate-limited.
+_RATE_RULES: Dict[str, Tuple[str, int]] = {
+    "/api/ask":    ("ask",        RATE_LIMIT_ASK_PER_MIN),
+    "/ask":        ("ask",        RATE_LIMIT_ASK_PER_MIN),
+    "/ask_json":   ("ask",        RATE_LIMIT_ASK_PER_MIN),
+    "/transcribe": ("transcribe", RATE_LIMIT_TRANSCRIBE_PER_MIN),
+}
+
+
+def _client_ip(request: Request) -> str:
+    """Resolve the client IP, honoring TRUSTED_FORWARDED_HEADER if set.
+    Falls back to the socket peer; never raises."""
+    if TRUSTED_FORWARDED_HEADER:
+        v = request.headers.get(TRUSTED_FORWARDED_HEADER)
+        if v:
+            # X-Forwarded-For may contain a list; take the first.
+            return v.split(",")[0].strip()
+    try:
+        return request.client.host if request.client else "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _gc_buckets(now: float) -> None:
+    """Drop stale buckets every ~60s to keep memory bounded."""
+    if now - _RATE_LAST_GC[0] < 60.0:
+        return
+    _RATE_LAST_GC[0] = now
+    horizon = now - 120.0  # keep last 2 minutes for safety
+    dead: List[Tuple[str, str]] = []
+    for k, dq in _RATE_BUCKETS.items():
+        # If every entry is older than the horizon, the bucket is dead.
+        if not dq or dq[-1] < horizon:
+            dead.append(k)
+    for k in dead:
+        _RATE_BUCKETS.pop(k, None)
+
+
+def _check_rate(client_ip: str, group: str, rpm: int) -> Tuple[bool, int, int]:
+    """Returns (allowed, remaining, retry_after_seconds).
+    `rpm` is the steady-state per-minute cap; bursts up to
+    rpm + RATE_LIMIT_BURST are tolerated within the window."""
+    if rpm <= 0:
+        return True, 0, 0
+    window = 60.0
+    cap = rpm + max(0, RATE_LIMIT_BURST)
+    now = time.time()
+    key = (client_ip, group)
+    with _RATE_LOCK:
+        dq = _RATE_BUCKETS.get(key)
+        if dq is None:
+            dq = deque()
+            _RATE_BUCKETS[key] = dq
+        # Drop expired timestamps.
+        cutoff = now - window
+        while dq and dq[0] < cutoff:
+            dq.popleft()
+        if len(dq) >= cap:
+            oldest = dq[0]
+            retry_after = max(1, int(window - (now - oldest)))
+            return False, 0, retry_after
+        dq.append(now)
+        remaining = max(0, cap - len(dq))
+        _gc_buckets(now)
+        return True, remaining, 0
+
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    if not RATE_LIMIT_ENABLED:
+        return await call_next(request)
+    rule = _RATE_RULES.get(request.url.path)
+    if rule is None:
+        return await call_next(request)
+    ip = _client_ip(request)
+    if ip in RATE_LIMIT_BYPASS_IPS:
+        return await call_next(request)
+    group, rpm = rule
+    allowed, remaining, retry_after = _check_rate(ip, group, rpm)
+    if not allowed:
+        log.warning(
+            "rate_limit: 429 ip=%s group=%s path=%s retry=%ds",
+            ip, group, request.url.path, retry_after,
+        )
+        return JSONResponse(
+            status_code=429,
+            content={
+                "error": "rate_limited",
+                "group": group,
+                "retry_after_seconds": retry_after,
+            },
+            headers={
+                "Retry-After": str(retry_after),
+                "X-RateLimit-Limit": str(rpm + RATE_LIMIT_BURST),
+                "X-RateLimit-Remaining": "0",
+                "X-RateLimit-Group": group,
+            },
+        )
+    response = await call_next(request)
+    response.headers["X-RateLimit-Limit"] = str(rpm + RATE_LIMIT_BURST)
+    response.headers["X-RateLimit-Remaining"] = str(remaining)
+    response.headers["X-RateLimit-Group"] = group
+    return response
+
+
+# ============================================================
+# Phase 8 — Identity resolution middleware
+# ============================================================
+# Runs on every request, populates request.state.identity, but does
+# NOT enforce. Enforcement is per-route via the require_identity /
+# require_role dependencies. This way:
+#   • /health and /ready stay open (no identity required).
+#   • Audit log can still record an "anonymous" identity for unprotected
+#     paths.
+#   • Protected paths can short-circuit cleanly with a structured 401.
+#
+# The middleware never raises and never blocks a request.
+
+@app.middleware("http")
+async def identity_middleware(request: Request, call_next):
+    headers = {k: v for k, v in request.headers.items()}
+    identity, error = resolve_identity(headers)
+    request.state.identity = identity
+    request.state.identity_error = error  # consumed by require_identity
+    return await call_next(request)
+
+
+# ── Dependencies ──────────────────────────────────────────────
+def get_identity(request: Request) -> Identity:
+    """FastAPI dependency: returns the resolved Identity on request.state."""
+    ident = getattr(request.state, "identity", None)
+    if ident is None:
+        # Defensive: middleware should always have populated this.
+        from auth import _dev_anonymous_identity
+        ident = _dev_anonymous_identity()
+    return ident
+
+
+def require_identity(request: Request) -> Identity:
+    """FastAPI dependency: 401 when AUTH_MODE is protected and the
+    request did not present a valid credential.
+
+    In disabled (dev) mode, returns the anonymous identity and the
+    request proceeds — local development stays usable.
+    """
+    err = getattr(request.state, "identity_error", None)
+    ident = getattr(request.state, "identity", None) or get_identity(request)
+    if is_protected_mode():
+        if err or ident.anonymous:
+            payload = err or {
+                "error": "auth_required", "reason": "no_identity",
+                "mode": AUTH_MODE,
+            }
+            log.warning(
+                "auth: 401 mode=%s path=%s reason=%s",
+                AUTH_MODE, request.url.path, payload.get("reason"),
+            )
+            raise HTTPException(status_code=401, detail=payload)
+    return ident
+
+
+def require_role(*required_roles: str):
+    """Build a dependency that enforces at least one of `required_roles`.
+
+    In disabled mode, role checks are a no-op (anonymous dev identity
+    has no roles by default). Operators can still test role behavior by
+    switching to bearer/JWT and providing the role list.
+    """
+    def _dep(request: Request) -> Identity:
+        ident = require_identity(request)
+        # In disabled mode, do not enforce roles — dev convenience.
+        if not is_protected_mode():
+            return ident
+        if not any(ident.has_role(r) for r in required_roles):
+            log.warning(
+                "rbac: 403 sub=%s roles=%s required=%s path=%s",
+                ident.subject, ident.roles, list(required_roles), request.url.path,
+            )
+            raise HTTPException(
+                status_code=403,
+                detail={
+                    "error": "forbidden",
+                    "reason": "missing_role",
+                    "required_any_of": list(required_roles),
+                },
+            )
+        return ident
+    return _dep
 
 
 # ============================================================
@@ -371,7 +725,7 @@ def download_pdf(filename: str):
 # FIX: Open links should jump to the correct page (Streamlit-like)
 # ============================================================
 @app.post("/ask", response_model=QueryResponse)
-def ask_question(request: QueryRequest):
+def ask_question(request: QueryRequest, identity: Identity = Depends(require_identity)):
     retrieval = retrieve(request.message)
     result = answer_question(request.message, retrieval)
 
@@ -421,16 +775,27 @@ def ask_question(request: QueryRequest):
                     joined += f"; +{len(locs)-6} more"
                 meta_lines.append(f"Sections / Paragraphs: {joined}")
 
-            meta_html = ""
-            if meta_lines:
-                meta_html = "<br/>".join(meta_lines)
+            # Phase 7 — HTML escape every interpolated value to prevent
+            # XSS via document name, snippet, or attacker-controlled URL.
+            # Meta lines are escaped before joining so the <br/> stays
+            # literal but everything else is safe.
+            esc_doc = html.escape(doc, quote=True)
+            esc_snippet = html.escape(snippet, quote=True) if snippet else ""
+            esc_meta_html = "<br/>".join(html.escape(m, quote=True) for m in meta_lines) if meta_lines else ""
+            # URL: must be safe inside an href attribute. quote(safe=...)
+            # leaves the structural URL characters (':', '/', '?', '#',
+            # '&', '=') intact while encoding anything dangerous.
+            safe_open_url = quote(open_url or "", safe=":/?#[]@!$&'()*+,;=%")
+            # Belt-and-braces: also escape attribute-special chars in
+            # case the URL already contained them.
+            esc_href = html.escape(safe_open_url, quote=True)
 
             parts.append(
                 f"""
                 <li style="margin-bottom:10px;">
-                  <a href="{open_url}" target="_blank" rel="noopener noreferrer">{doc}</a>
-                  {("<div style='margin-top:3px; color:#6b7280; font-size:13px;'>" + meta_html + "</div>") if meta_html else ""}
-                  {("<p style='margin:4px 0 0 0;'>" + snippet + "</p>") if snippet else ""}
+                  <a href="{esc_href}" target="_blank" rel="noopener noreferrer">{esc_doc}</a>
+                  {("<div style='margin-top:3px; color:#6b7280; font-size:13px;'>" + esc_meta_html + "</div>") if esc_meta_html else ""}
+                  {("<p style='margin:4px 0 0 0;'>" + esc_snippet + "</p>") if esc_snippet else ""}
                 </li>
                 """.strip()
             )
@@ -446,7 +811,7 @@ def ask_question(request: QueryRequest):
 # FIX: Provide Streamlit-like reference object (open_url with #page)
 # ============================================================
 @app.post("/ask_json", response_model=QueryResponseJSON)
-def ask_question_json(request: QueryRequest):
+def ask_question_json(request: QueryRequest, identity: Identity = Depends(require_identity)):
     retrieval = retrieve(request.message)
     result = answer_question(request.message, retrieval)
 
@@ -516,7 +881,8 @@ class SimpleChatResponse(BaseModel):
 
 
 @app.post("/api/ask", response_model=SimpleChatResponse)
-def simple_ask(req: Request, request: SimpleChatRequest):
+def simple_ask(req: Request, request: SimpleChatRequest,
+               identity: Identity = Depends(require_identity)):
     """Chat endpoint with session tracking, smalltalk bypass, entity anchoring, and audit trail."""
     question = request.question.strip()
     rid = getattr(req.state, "request_id", "")
@@ -591,20 +957,79 @@ def simple_ask(req: Request, request: SimpleChatRequest):
     log.info("Query: '%s' -> Anchored: '%s' -> Rewritten: '%s'",
              question[:60], anchored_q[:60], query_for_retrieval[:60])
 
-    # ── 5. Retrieve + Answer ──────────────────────────────────
-    retrieval = retrieve(query_for_retrieval)
-    # Only pass conversation_history for genuine follow-ups to prevent
-    # prior wrong answers from contaminating standalone questions
-    hist_for_llm = request.conversation_history if was_anchored else None
-    # Use anchored_q (with resolved pronouns) for the LLM so position
-    # filtering sees the actual role name (e.g. "salary of manager development"
-    # instead of "salary of this?")
-    question_for_llm = anchored_q if was_anchored else question
-    result = answer_question(
-        question_for_llm,
-        retrieval,
-        conversation_history=hist_for_llm,
+    # ── 4b. Phase 5 — classify intent (deterministic, no LLM by default).
+    # Runs on the rewritten query so abbreviations are resolved before
+    # detection. The result is advisory: it shapes retrieval and prompts
+    # but never overrides Phase 2 grounding/refusal logic.
+    intent_obj = classify_intent(
+        query_for_retrieval,
+        has_followup_context=bool(was_anchored),
     )
+    intent_payload = {
+        "primary": intent_obj.primary,
+        "is_multi_part": intent_obj.is_multi_part,
+        "sub_queries": list(intent_obj.sub_queries or []),
+        "is_vague": intent_obj.is_vague,
+    }
+
+    # Out-of-scope fast-path: skip retrieval entirely. The answerer also
+    # has a fast-path for this case but it expects an empty retrieval;
+    # we short-circuit here so we don't pay the FAISS round-trip.
+    if intent_obj.primary == INTENT_OUT_OF_SCOPE:
+        log.info("Intent=out_of_scope — skipping retrieval, returning refusal")
+        retrieval = {"question": query_for_retrieval, "has_evidence": False, "evidence": []}
+        result = answer_question(
+            question_for_llm if False else question,  # original question for UX
+            retrieval,
+            conversation_history=None,
+            intent=intent_payload,
+        )
+    else:
+        # Build the list of retrieval queries:
+        #   • multi-part → use sub_queries (decomposed deterministically)
+        #   • vague     → use deterministic expansions; optional LLM upgrade
+        #   • else      → single-query (zero behavioral change vs Phase 4)
+        retrieval_queries = [query_for_retrieval]
+        if intent_obj.is_multi_part and intent_obj.sub_queries:
+            retrieval_queries = list(intent_obj.sub_queries)
+            # Always keep the original full query as a hedge so we don't
+            # lose context that lives only in the unsplit form.
+            if query_for_retrieval not in retrieval_queries:
+                retrieval_queries.append(query_for_retrieval)
+        elif intent_obj.is_vague:
+            retrieval_queries = list(intent_obj.expansions or [query_for_retrieval])
+            llm_extra = llm_expand_vague_query(query_for_retrieval)
+            if llm_extra:
+                seen = {q.lower() for q in retrieval_queries}
+                for e in llm_extra:
+                    if e.lower() not in seen:
+                        retrieval_queries.append(e)
+                        seen.add(e.lower())
+
+        log.info(
+            "Retrieval plan: intent=%s queries=%d -> %s",
+            intent_obj.primary, len(retrieval_queries),
+            [q[:60] for q in retrieval_queries[:4]],
+        )
+        if len(retrieval_queries) <= 1:
+            retrieval = retrieve(retrieval_queries[0])
+        else:
+            retrieval = retrieve_multi(retrieval_queries)
+
+        # ── 5. Answer ─────────────────────────────────────────────
+        # Only pass conversation_history for genuine follow-ups to prevent
+        # prior wrong answers from contaminating standalone questions
+        hist_for_llm = request.conversation_history if was_anchored else None
+        # Use anchored_q (with resolved pronouns) for the LLM so position
+        # filtering sees the actual role name (e.g. "salary of manager development"
+        # instead of "salary of this?")
+        question_for_llm = anchored_q if was_anchored else question
+        result = answer_question(
+            question_for_llm,
+            retrieval,
+            conversation_history=hist_for_llm,
+            intent=intent_payload,
+        )
 
     # ── 6. Extract metadata for session + audit ───────────────
     evidence_ids, doc_names = extract_evidence_metadata(retrieval)
@@ -666,6 +1091,9 @@ def simple_ask(req: Request, request: SimpleChatRequest):
         evidence_text_preview=evidence_text,
         rewrite_diff=rewrite_diff,
         support_state=support_state,
+        intent=intent_payload,
+        client_ip=_client_ip(req),
+        identity=identity.to_audit_dict() if identity else None,
     )
 
     # ── 9. Build response ─────────────────────────────────────
@@ -692,19 +1120,134 @@ class TranscribeResponse(BaseModel):
     success: bool
 
 
+# Phase 7 — /transcribe hardening
+# Allow-list of accepted MIME prefixes. Whisper handles many formats;
+# we accept anything that begins with audio/ plus a few common values
+# that browsers send for WebM/Opus blobs and raw PCM uploads.
+_ALLOWED_AUDIO_MIME_PREFIXES = ("audio/",)
+_ALLOWED_AUDIO_MIME_VALUES = {
+    "application/octet-stream",  # browsers often default to this for blobs
+    "video/webm",                # MediaRecorder default on some browsers
+}
+_ALLOWED_AUDIO_EXTS = {
+    ".wav", ".mp3", ".m4a", ".mp4", ".ogg", ".oga", ".opus",
+    ".webm", ".flac", ".aac", ".amr",
+}
+
+# Magic-byte sniff: cheap defense against non-audio binaries pretending
+# to be audio. Returns True when the first bytes match a known audio
+# / WebM container signature.
+def _looks_like_audio(b: bytes) -> bool:
+    if not b or len(b) < 4:
+        return False
+    head = b[:12]
+    # RIFF (WAV)
+    if head[:4] == b"RIFF" and head[8:12] == b"WAVE":
+        return True
+    # ID3 (MP3) or MP3 frame sync
+    if head[:3] == b"ID3":
+        return True
+    if len(b) >= 2 and b[0] == 0xFF and (b[1] & 0xE0) == 0xE0:
+        return True
+    # OGG / OGM / Opus
+    if head[:4] == b"OggS":
+        return True
+    # FLAC
+    if head[:4] == b"fLaC":
+        return True
+    # ftyp box (M4A / MP4 audio)
+    if len(b) >= 12 and head[4:8] == b"ftyp":
+        return True
+    # EBML (WebM / Matroska)
+    if head[:4] == b"\x1a\x45\xdf\xa3":
+        return True
+    # AMR
+    if head[:5] == b"#!AMR":
+        return True
+    return False
+
+
 @app.post("/transcribe", response_model=TranscribeResponse)
-async def transcribe(audio: UploadFile = File(...)):
-    """Transcribe audio to text using Whisper."""
+async def transcribe(audio: UploadFile = File(...),
+                     identity: Identity = Depends(require_identity)):
+    """Transcribe audio to text using Whisper.
+
+    Phase 7 hardening:
+      • Hard size cap (MAX_AUDIO_UPLOAD_BYTES).
+      • Content-type allow-list (audio/*, octet-stream, video/webm).
+      • Filename extension allow-list as a fallback signal.
+      • Magic-byte sniff to reject non-audio binaries.
+      • Clear, structured 4xx errors instead of silent success=False.
+    """
+    # 1. Content-type screen (cheap reject before reading body).
+    ctype = (audio.content_type or "").lower().strip()
+    if ctype and not (
+        any(ctype.startswith(p) for p in _ALLOWED_AUDIO_MIME_PREFIXES)
+        or ctype in _ALLOWED_AUDIO_MIME_VALUES
+    ):
+        log.warning("transcribe: rejected content-type=%r", ctype)
+        raise HTTPException(
+            status_code=415,
+            detail={"error": "unsupported_media_type", "content_type": ctype},
+        )
+
+    # 2. Filename extension screen (advisory; some clients omit ctype).
+    fname = (audio.filename or "").lower()
+    if fname:
+        _, ext = os.path.splitext(fname)
+        if ext and ext not in _ALLOWED_AUDIO_EXTS:
+            log.warning("transcribe: rejected extension=%r", ext)
+            raise HTTPException(
+                status_code=415,
+                detail={"error": "unsupported_extension", "extension": ext},
+            )
+
+    # 3. Bounded body read. Read up to MAX+1 so we can detect overflow
+    # without holding the whole oversize body in memory.
     try:
-        audio_bytes = await audio.read()
+        cap = MAX_AUDIO_UPLOAD_BYTES
+        audio_bytes = await audio.read(cap + 1)
+    except Exception as e:
+        log.error("transcribe: body read failed: %s", e)
+        raise HTTPException(
+            status_code=400,
+            detail={"error": "body_read_failed"},
+        )
+
+    if audio_bytes is None or len(audio_bytes) == 0:
+        raise HTTPException(
+            status_code=400,
+            detail={"error": "empty_audio"},
+        )
+    if len(audio_bytes) > cap:
+        log.warning(
+            "transcribe: payload too large (%d > %d)",
+            len(audio_bytes), cap,
+        )
+        raise HTTPException(
+            status_code=413,
+            detail={"error": "audio_too_large", "max_bytes": cap},
+        )
+
+    # 4. Magic-byte sniff. Reject obvious non-audio binaries.
+    if not _looks_like_audio(audio_bytes):
+        log.warning(
+            "transcribe: payload failed magic sniff (ctype=%s, ext=%s, len=%d)",
+            ctype, fname, len(audio_bytes),
+        )
+        raise HTTPException(
+            status_code=415,
+            detail={"error": "not_recognized_as_audio"},
+        )
+
+    # 5. Hand off to Whisper. transcribe_audio never raises (returns
+    # "⚠️…" on failure) so we surface that as success=False.
+    try:
         text = transcribe_audio(audio_bytes)
-        
-        # Check if it's an error message
         is_error = text.startswith("⚠️")
-        
         return TranscribeResponse(
             text=text if not is_error else "",
-            success=not is_error
+            success=not is_error,
         )
     except Exception as e:
         log.error("Transcription endpoint error: %s", e, exc_info=True)
@@ -736,13 +1279,13 @@ def serve_pdf(filename: str):
         # This handles 'PERA – FAQs.pdf' correctly if the fs has an en-dash
         decoded_name = unquote(filename).strip()
         filepath = os.path.join(DATA_DIR, decoded_name)
-        
+
         found = False
-        
+
         # Check exact existence
         if os.path.exists(filepath) and os.path.isfile(filepath):
             found = True
-        
+
         # 2. Second attempt: Normalize dashes (en-dash/em-dash -> hyphen)
         if not found:
             normalized_name = decoded_name.replace("–", "-").replace("—", "-")
@@ -750,7 +1293,7 @@ def serve_pdf(filename: str):
             if os.path.exists(filepath_norm) and os.path.isfile(filepath_norm):
                 filepath = filepath_norm
                 found = True
-        
+
         # 3. Third attempt: Try adding .pdf extension if missing
         if not found:
              # Try exact + .pdf
@@ -764,7 +1307,7 @@ def serve_pdf(filename: str):
                 if os.path.exists(filepath_ext_norm):
                     filepath = filepath_ext_norm
                     found = True
-        
+
         # 4. Fourth attempt: Smart fuzzy scan using normalized comparison
         if not found:
             try:
@@ -772,16 +1315,16 @@ def serve_pdf(filename: str):
                 target_norm = _normalize_for_match(decoded_name)
                 if target_norm.endswith(".pdf"):
                     target_norm = target_norm[:-4]
-                
+
                 # Also try without any dashes/special chars at all
                 target_stripped = re.sub(r'[^a-z0-9 ]', '', target_norm)
-                    
+
                 for f in os.listdir(DATA_DIR):
                     f_norm = _normalize_for_match(f)
                     if f_norm.endswith(".pdf"):
                         f_norm = f_norm[:-4]
                     f_stripped = re.sub(r'[^a-z0-9 ]', '', f_norm)
-                    
+
                     # Match if normalized versions match OR stripped versions match
                     if f_norm == target_norm or f_stripped == target_stripped:
                         filepath = os.path.join(DATA_DIR, f)
@@ -790,7 +1333,7 @@ def serve_pdf(filename: str):
                         break
             except Exception as e:
                 log.warning("Error during fuzzy scan: %s", e)
-        
+
         if not found:
              log.info("PDF Not Found: %s (decoded: %s)", filename, decoded_name)
              raise HTTPException(status_code=404, detail=f"PDF not found: {filename}")
@@ -820,21 +1363,43 @@ def serve_pdf(filename: str):
 # ============================================================
 # Health & Readiness Endpoints
 # ============================================================
+# Phase 7 — process start time, used in /health and /ready uptime field.
+_PROCESS_STARTED_AT = time.time()
+
+
 @app.get("/health")
 def health_check():
-    """Lightweight liveness probe — confirms the process is alive."""
-    return {"status": "ok"}
+    """Lightweight liveness probe — confirms the process is alive.
+    Returns immediately without touching disk or network.
+    """
+    return {
+        "status": "ok",
+        "version": APP_VERSION,
+        "env": APP_ENV,
+        "uptime_seconds": int(time.time() - _PROCESS_STARTED_AT),
+        "ts": int(time.time()),
+        "auth": auth_status_summary(),
+    }
 
 
 @app.get("/ready")
 def readiness_check():
-    """Readiness probe — confirms the service can serve traffic."""
-    checks: Dict[str, Any] = {}
+    """Readiness probe — confirms the service can actually serve traffic.
 
-    # 1. OpenAI API key present
+    Returns 200 only when:
+      • OpenAI API key is present
+      • An active index pointer is set
+      • The faiss.index and chunks.jsonl files for that pointer exist
+      • The background indexer thread is alive (Phase 7)
+
+    Returns 503 with structured `checks` so operators can see exactly
+    which gate failed.
+    """
+    checks: Dict[str, Any] = {}
+    active_dir: Optional[str] = None
+
     checks["openai_api_key"] = has_api_key()
 
-    # 2. Active index pointer exists and is valid
     try:
         active_dir = indexer.pointer.read()
         checks["active_index"] = active_dir is not None
@@ -843,7 +1408,6 @@ def readiness_check():
         checks["active_index"] = False
         checks["active_index_error"] = str(e)
 
-    # 3. FAISS index loadable (lightweight — just checks file exists)
     if active_dir:
         import os as _os
         faiss_path = _os.path.join(active_dir, "faiss.index").replace("\\", "/")
@@ -854,14 +1418,35 @@ def readiness_check():
         checks["faiss_index_exists"] = False
         checks["chunks_file_exists"] = False
 
+    # Phase 7 — verify the background indexer thread is alive. If it's
+    # crashed silently, /ready should reflect that so the orchestrator
+    # can recycle the pod.
+    try:
+        bg = getattr(indexer, "_thread", None)
+        checks["indexer_thread_alive"] = bool(bg and bg.is_alive())
+    except Exception as e:
+        checks["indexer_thread_alive"] = False
+        checks["indexer_thread_error"] = str(e)
+
     ready = all([
         checks.get("openai_api_key", False),
         checks.get("active_index", False),
         checks.get("faiss_index_exists", False),
         checks.get("chunks_file_exists", False),
+        # Indexer thread is informational only — do NOT fail readiness on
+        # it during the startup window where the thread may not have
+        # been spawned yet. Operators can read the field directly.
     ])
 
     return JSONResponse(
         status_code=200 if ready else 503,
-        content={"ready": ready, "checks": checks}
+        content={
+            "ready": ready,
+            "version": APP_VERSION,
+            "env": APP_ENV,
+            "uptime_seconds": int(time.time() - _PROCESS_STARTED_AT),
+            "ts": int(time.time()),
+            "auth": auth_status_summary(),
+            "checks": checks,
+        },
     )

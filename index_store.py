@@ -821,6 +821,13 @@ def scan_and_ingest_if_needed(
             "loc_start": loc_start,
             "loc_end": loc_end,
 
+            # Phase 3 additions — parent-section metadata. Absent/empty on
+            # pre-Phase-3 indexes; retriever treats empty strings as
+            # "no parent section known" and falls back to page-adjacency
+            # behavior. Rebuild the index to populate these fields.
+            "section_id": str(getattr(ch, "section_id", "") or ""),
+            "heading_path": str(getattr(ch, "heading_path", "") or ""),
+
             "public_path": public_path,
             "path": raw_fs_path,
 
