@@ -133,7 +133,7 @@ if CORS_ALLOW_ALL:
         CORSMiddleware,
         allow_origins=["*"],
         allow_credentials=False,  # forced off — wildcard + creds is illegal
-        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_methods=["GET", "POST", "DELETE", "PUT", "OPTIONS"],
         allow_headers=["*"],
     )
 elif CORS_ALLOW_ORIGINS:
@@ -141,7 +141,7 @@ elif CORS_ALLOW_ORIGINS:
         CORSMiddleware,
         allow_origins=CORS_ALLOW_ORIGINS,
         allow_credentials=CORS_ALLOW_CREDENTIALS,
-        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_methods=["GET", "POST", "DELETE", "PUT", "OPTIONS"],
         allow_headers=["*"],
     )
 
@@ -460,6 +460,20 @@ def _startup():
     setup_logging()
     log.info("PERA AI Backend starting up")
     indexer.start_background()
+    # Pre-warm the per-PDF page-text cache used by reference resolution
+    # so the first user query doesn't pay a multi-minute cold-start
+    # cost on very large PDFs (hundreds of pages).
+    try:
+        from answerer import prewarm_pdf_cache
+        prewarm_pdf_cache(DATA_DIR)
+    except Exception as exc:
+        log.warning("PDF cache prewarm dispatch failed: %s", exc)
+
+
+# Mount the admin dashboard API. Defined after `indexer` and helpers so
+# `admin_routes` can import them via the running app module.
+from admin_routes import admin_router as _admin_router  # noqa: E402
+app.include_router(_admin_router)
 
 
 # ============================================================

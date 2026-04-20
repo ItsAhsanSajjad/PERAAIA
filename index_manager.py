@@ -208,6 +208,25 @@ class SafeAutoIndexer:
             }
 
         build_dir = self._new_build_dir()
+        # Seed the new build dir with the current active index so
+        # ``scan_and_ingest_if_needed`` takes the incremental path —
+        # only new/changed PDFs are re-embedded, unchanged ones keep
+        # their existing vectors. Without this seed the new build dir
+        # is empty and the ingest treats every PDF as new, re-embedding
+        # the entire corpus (minutes instead of seconds).
+        try:
+            import shutil as _shutil
+            for fname in ("faiss.index", "chunks.jsonl", "manifest.json"):
+                src = os.path.join(active_dir, fname).replace("\\", "/")
+                dst = os.path.join(build_dir, fname).replace("\\", "/")
+                if os.path.exists(src):
+                    _shutil.copy2(src, dst)
+        except Exception as exc:
+            log.warning(
+                "Could not seed new build dir from %s (%s); will cold-build.",
+                active_dir, exc,
+            )
+
         build_res = scan_and_ingest_if_needed(
             data_dir=self.cfg.data_dir,
             index_dir=build_dir,

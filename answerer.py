@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import os
 import re
+import time
 from typing import List, Dict, Any, Optional
 
 from openai_clients import get_chat_client, ANSWER_MODEL
@@ -43,13 +44,76 @@ def _normalize_for_match(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "").lower()).strip()
 
 
+def prewarm_pdf_cache(data_dir: str = "assets/data") -> None:
+    """Load every PDF's page text into the in-memory cache in the
+    background.
+
+    The first user query after a server restart otherwise triggers
+    pdfplumber.open() synchronously inside the request handler — for
+    very large PDFs (400+ pages) that takes minutes and makes the
+    request look frozen. Pre-warming at startup moves that cost off
+    the critical path so user queries are always fast.
+
+    Call this from a background thread at app startup; it is safe to
+    invoke even while pdfplumber is unavailable or the data dir is
+    missing (no-op on error).
+    """
+    import threading
+
+    def _worker() -> None:
+        try:
+            if not os.path.isdir(data_dir):
+                return
+            pdfs = sorted(
+                os.path.join(data_dir, f)
+                for f in os.listdir(data_dir)
+                if f.lower().endswith(".pdf")
+            )
+            log.info(
+                "PDF cache prewarm: %d PDFs queued (dir=%s)",
+                len(pdfs), data_dir,
+            )
+            started = time.time()
+            for p in pdfs:
+                if p in _PDF_PAGE_TEXT_CACHE:
+                    continue
+                try:
+                    _load_pdf_pages(p)
+                except Exception as exc:
+                    log.warning("PDF prewarm failed for %s: %s", p, exc)
+            log.info(
+                "PDF cache prewarm complete in %.1fs (%d cached)",
+                time.time() - started, len(_PDF_PAGE_TEXT_CACHE),
+            )
+        except Exception as exc:
+            log.warning("PDF prewarm worker error: %s", exc)
+
+    threading.Thread(target=_worker, name="pdf-prewarm", daemon=True).start()
+
+
+def _cache_key(pdf_path: str) -> str:
+    """Canonical cache key for a PDF path. Uses the absolute, normalized,
+    lowercased path so that relative vs absolute and slash-direction
+    differences don't cause cache misses (which would force a multi-second
+    pdfplumber re-read per miss)."""
+    try:
+        return os.path.normcase(os.path.abspath(pdf_path or ""))
+    except Exception:
+        return pdf_path or ""
+
+
 def _load_pdf_pages(pdf_path: str) -> List[str]:
     """Load and cache per-page text for a PDF, already whitespace-normalized
     and lowercased so substring matching against chunk fragments works.
     Returns list indexed by 0-based page number. Returns [] if the file
-    cannot be opened or a PDF library is unavailable."""
-    if pdf_path in _PDF_PAGE_TEXT_CACHE:
-        return _PDF_PAGE_TEXT_CACHE[pdf_path]
+    cannot be opened or a PDF library is unavailable.
+
+    Cache is keyed by the canonical absolute path so that callers passing
+    relative paths share the same entry as the startup pre-warm (which
+    scans with absolute paths)."""
+    key = _cache_key(pdf_path)
+    if key in _PDF_PAGE_TEXT_CACHE:
+        return _PDF_PAGE_TEXT_CACHE[key]
     pages: List[str] = []
     try:
         import pdfplumber  # type: ignore
@@ -63,7 +127,7 @@ def _load_pdf_pages(pdf_path: str) -> List[str]:
         log.warning("PDF page-text cache load failed for %s: %s",
                     (pdf_path or "?")[:60], e)
         pages = []
-    _PDF_PAGE_TEXT_CACHE[pdf_path] = pages
+    _PDF_PAGE_TEXT_CACHE[key] = pages
     log.info("PDF page-text cache loaded: %s pages=%d",
              (pdf_path or "?")[:60], len(pages))
     return pages
@@ -2226,21 +2290,68 @@ def answer_question(
         # single largest hallucination vector in the system.
         #
         # New behavior for a government chatbot:
-        #   • unsupported AND grounding.score < 0.25  → honest refusal;
+        #   • unsupported AND grounding.score < 0.15 → honest refusal;
         #     no speculative answer, references still surfaced so the user
         #     can verify what was retrieved.
-        #   • unsupported AND grounding.score >= 0.25 → show the answer but
+        #   • unsupported AND grounding.score >= 0.15 → show the answer but
         #     prepend a visible caution banner; state is kept as
         #     "partially_supported" so downstream consumers render the
         #     partial-support note at the end.
+        #   • EXCEPTION — if the top retrieved chunk lexically contains
+        #     several of the user's query keywords, we trust retrieval
+        #     even when the semantic judge says "none" (the judge is
+        #     calibrated for formal regulatory prose and tends to
+        #     under-score narrative admin-uploaded content). This stops
+        #     cases like "any update on X" with X on the user's uploaded
+        #     PDF being refused.
         #   • other states → unchanged (current wording applied).
         #
         # Rationale: for PERA, refusing when evidence does not support the
         # claim is safer than showing an authoritative-looking answer that
-        # cannot be traced back to the documents.
+        # cannot be traced back to the documents. But a retrieval-strong
+        # match is itself an evidence signal that overrides an overly
+        # strict judge verdict.
+
+        def _retrieval_bypass_unsupported() -> bool:
+            """Return True when the top retrieved chunk is strongly
+            keyword-aligned with the user's question — strong enough
+            that refusing would be user-hostile."""
+            try:
+                all_ev = retrieval.get("evidence") or []
+                stopwords = {
+                    "what", "which", "where", "when", "does", "that",
+                    "this", "with", "from", "about", "have", "been",
+                    "will", "shall", "the", "for", "and", "how",
+                    "give", "me", "tell", "any", "all", "some",
+                    "update", "explain", "pera", "its",
+                }
+                q_tokens = [
+                    w for w in re.findall(
+                        r"[a-zA-Z]+", (current_question or "").lower()
+                    )
+                    if len(w) > 2 and w not in stopwords
+                ]
+                if len(q_tokens) < 2:
+                    return False
+                # Look at up to the top-3 evidence chunks (across docs).
+                scanned = 0
+                for grp in all_ev:
+                    for hit in grp.get("hits", [])[:2]:
+                        if scanned >= 3:
+                            break
+                        text_lc = (hit.get("text") or "").lower()
+                        matched = sum(1 for t in q_tokens if t in text_lc)
+                        if matched >= max(2, len(q_tokens) // 2):
+                            return True
+                        scanned += 1
+                    if scanned >= 3:
+                        break
+                return False
+            except Exception:
+                return False
 
         if support_state == "unsupported":
-            if grounding.score < 0.25:
+            if grounding.score < 0.15 and not _retrieval_bypass_unsupported():
                 log.warning(
                     "Grounding UNSUPPORTED (score=%.3f, semantic=%s) — refusing instead of "
                     "showing an ungrounded answer",
@@ -2285,7 +2396,7 @@ def answer_question(
             else:
                 # Weak-but-not-zero grounding — show with visible caution.
                 log.info(
-                    "Grounding unsupported but score=%.3f >= 0.25 — showing with caution banner",
+                    "Grounding unsupported but score=%.3f >= 0.15 — showing with caution banner",
                     grounding.score
                 )
                 support_state = "partially_supported"
