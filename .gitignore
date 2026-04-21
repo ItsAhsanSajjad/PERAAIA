@@ -1,3 +1,74 @@
+# ═══════════════════════════════════════════════════════════════════
+# Ask PERA Assistant — .gitignore
+# ═══════════════════════════════════════════════════════════════════
+
+# ── Secrets ──────────────────────────────────────────────────────
 .env
+.env.local
+.env.*.local
 .admin_secret
 
+# ── Python bytecode & caches ─────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ── Virtual environments ─────────────────────────────────────────
+venv/
+venv311/
+venv312/
+.venv/
+env/
+ENV/
+
+# ── Node / Next.js ───────────────────────────────────────────────
+node_modules/
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# ── FAISS index builds (regenerated on server) ───────────────────
+# Keep only the active pointer; builds are rebuilt by the server.
+assets/indexes/build_*/
+assets/indexes/latest/
+
+# ── Audit logs (server-side only) ────────────────────────────────
+audit_logs/
+
+# ── Scratch / debug output ───────────────────────────────────────
+*.log
+/tmp/
+.claude/
+eval/
+test_pdf/
+q.json
+r.json
+r_*.json
+sso_*.json
+ask.json
+qq.json
+t.json
+upload_resp.json
+docs.json
+d.json
+
+# ── IDE / OS ─────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
