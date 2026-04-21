@@ -36,8 +36,8 @@ log = get_logger("pera.admin_auth")
 # ---------------------------------------------------------------------------
 # These are intentionally held as module-level constants so a single change
 # here is the only place credentials exist. They are never echoed to logs.
-ADMIN_EMAIL = "Admin@pera.gop.pk"
-ADMIN_PASSWORD = "@AskperabyAHSAN"
+ADMIN_EMAIL = "admin@pera.gop.pk"
+ADMIN_PASSWORD = "Pera@112233"
 
 # 12 hours of session validity after login.
 TOKEN_TTL_SECONDS = 12 * 60 * 60
