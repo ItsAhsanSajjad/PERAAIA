@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PERA AI Assistant",
+  title: "Ask PERA Assistant",
   description: "Punjab Enforcement & Regulatory Authority — AI-powered document assistant for rules, regulations & governance.",
   icons: {
     icon: "/favicon.png",

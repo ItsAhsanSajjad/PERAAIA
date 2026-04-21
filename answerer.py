@@ -45,20 +45,18 @@ def _normalize_for_match(s: str) -> str:
 
 
 def prewarm_pdf_cache(data_dir: str = "assets/data") -> None:
-    """Load every PDF's page text into the in-memory cache in the
-    background.
+    """Load every PDF's page text into the in-memory cache in parallel
+    background workers.
 
     The first user query after a server restart otherwise triggers
     pdfplumber.open() synchronously inside the request handler — for
-    very large PDFs (400+ pages) that takes minutes and makes the
+    very large PDFs (400+ pages) that takes 20+ seconds and makes the
     request look frozen. Pre-warming at startup moves that cost off
-    the critical path so user queries are always fast.
-
-    Call this from a background thread at app startup; it is safe to
-    invoke even while pdfplumber is unavailable or the data dir is
-    missing (no-op on error).
+    the critical path; parallel workers roughly halve the cold-start
+    window so typical queries land on a warm cache.
     """
     import threading
+    from concurrent.futures import ThreadPoolExecutor
 
     def _worker() -> None:
         try:
@@ -70,17 +68,25 @@ def prewarm_pdf_cache(data_dir: str = "assets/data") -> None:
                 if f.lower().endswith(".pdf")
             )
             log.info(
-                "PDF cache prewarm: %d PDFs queued (dir=%s)",
+                "PDF cache prewarm: %d PDFs queued (dir=%s, parallel=4)",
                 len(pdfs), data_dir,
             )
             started = time.time()
-            for p in pdfs:
-                if p in _PDF_PAGE_TEXT_CACHE:
-                    continue
+
+            def _load_one(p: str) -> None:
+                if _cache_key(p) in _PDF_PAGE_TEXT_CACHE:
+                    return
                 try:
                     _load_pdf_pages(p)
                 except Exception as exc:
                     log.warning("PDF prewarm failed for %s: %s", p, exc)
+
+            # pdfplumber is mostly I/O bound with short bursts of CPU
+            # parsing — 4 parallel workers reliably cuts total time
+            # without overloading disk/CPU on modest hardware.
+            with ThreadPoolExecutor(max_workers=4, thread_name_prefix="pdf-warm") as ex:
+                list(ex.map(_load_one, pdfs))
+
             log.info(
                 "PDF cache prewarm complete in %.1fs (%d cached)",
                 time.time() - started, len(_PDF_PAGE_TEXT_CACHE),
@@ -102,7 +108,7 @@ def _cache_key(pdf_path: str) -> str:
         return pdf_path or ""
 
 
-def _load_pdf_pages(pdf_path: str) -> List[str]:
+def _load_pdf_pages(pdf_path: str, cache_only: bool = False) -> List[str]:
     """Load and cache per-page text for a PDF, already whitespace-normalized
     and lowercased so substring matching against chunk fragments works.
     Returns list indexed by 0-based page number. Returns [] if the file
@@ -110,10 +116,19 @@ def _load_pdf_pages(pdf_path: str) -> List[str]:
 
     Cache is keyed by the canonical absolute path so that callers passing
     relative paths share the same entry as the startup pre-warm (which
-    scans with absolute paths)."""
+    scans with absolute paths).
+
+    When *cache_only* is True, return [] immediately on a cache miss
+    instead of loading the PDF synchronously. Used by request-path
+    callers so they never block 20+ seconds on a cold PDF parse —
+    reference page refinement falls back to its linear estimate, and
+    the background pre-warm catches up for subsequent requests.
+    """
     key = _cache_key(pdf_path)
     if key in _PDF_PAGE_TEXT_CACHE:
         return _PDF_PAGE_TEXT_CACHE[key]
+    if cache_only:
+        return []
     pages: List[str] = []
     try:
         import pdfplumber  # type: ignore
@@ -239,7 +254,10 @@ def _resolve_exact_page(
     """
     if not pdf_path or not needle:
         return fallback_page
-    pages = _load_pdf_pages(pdf_path)
+    # Request-path callers must not block on pdfplumber.open — if this
+    # PDF isn't cached yet, fall back to the linear estimate so the
+    # user doesn't wait 20+ seconds for the first query after restart.
+    pages = _load_pdf_pages(pdf_path, cache_only=True)
     if not pages:
         return fallback_page
     needle_low = _normalize_for_match(needle)
@@ -280,7 +298,8 @@ def _resolve_best_page(
     """
     if not pdf_path or not needles:
         return fallback_page, ""
-    pages = _load_pdf_pages(pdf_path)
+    # Request-path — honor cold-cache fallback instead of blocking.
+    pages = _load_pdf_pages(pdf_path, cache_only=True)
     if not pages:
         return fallback_page, ""
     lo = max(1, min_page)
@@ -2395,16 +2414,21 @@ def answer_question(
                 }
             else:
                 # Weak-but-not-zero grounding — show with visible caution.
+                # The caution is appended at the END of the answer (combined
+                # with the partial-support note) so the user reads the
+                # substantive answer first, then sees the caveats together
+                # as one trailing note.
                 log.info(
                     "Grounding unsupported but score=%.3f >= 0.15 — showing with caution banner",
                     grounding.score
                 )
                 support_state = "partially_supported"
-                answer_text = (
+                answer_text = answer_text + (
+                    "\n\n---\n\n"
                     "⚠️ **Caution:** The retrieved PERA documents do not directly address "
-                    "this question. The response below is inferred from related content — "
-                    "please verify against the referenced documents.\n\n"
-                ) + answer_text
+                    "this question. The response above is inferred from related content — "
+                    "please verify against the referenced documents."
+                )
 
         final_answer = _apply_support_state_wording(answer_text, support_state)
 

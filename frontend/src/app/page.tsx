@@ -134,7 +134,7 @@ export default function Home() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="font-semibold text-sm tracking-wide" style={{ color: "var(--text-primary)" }}>
-                  PERA AI Assistant
+                  Ask PERA Assistant
                 </h1>
               </div>
               <p className="text-[11px] font-medium tracking-wide hidden sm:block" style={{ color: "var(--text-secondary)" }}>
