@@ -15,6 +15,7 @@ Endpoints:
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -79,17 +80,38 @@ def _sanitize_filename(name: str) -> str:
     return base
 
 
-def _unique_target_path(data_dir: str, filename: str) -> str:
-    """Return a non-colliding path under data_dir for the given filename."""
-    target = os.path.join(data_dir, filename)
-    if not os.path.exists(target):
-        return target
-    stem, ext = os.path.splitext(filename)
-    for i in range(1, 1000):
-        cand = os.path.join(data_dir, f"{stem}-{i}{ext}")
-        if not os.path.exists(cand):
-            return cand
-    raise HTTPException(status_code=409, detail={"error": "filename_collision"})
+def _file_sha256(path: str, chunk_bytes: int = 1024 * 1024) -> str:
+    """Streamed SHA-256 of a file on disk. Returns hex digest."""
+    h = hashlib.sha256()
+    try:
+        with open(path, "rb") as f:
+            while True:
+                buf = f.read(chunk_bytes)
+                if not buf:
+                    break
+                h.update(buf)
+    except OSError:
+        return ""
+    return h.hexdigest()
+
+
+def _index_existing_pdfs(data_dir: str) -> Dict[str, str]:
+    """Return {sha256: filename} for every PDF currently in data_dir.
+    Used for content-hash duplicate detection during upload."""
+    out: Dict[str, str] = {}
+    try:
+        for name in os.listdir(data_dir):
+            if not name.lower().endswith(".pdf"):
+                continue
+            path = os.path.join(data_dir, name)
+            if not os.path.isfile(path):
+                continue
+            digest = _file_sha256(path)
+            if digest:
+                out[digest] = name
+    except OSError:
+        pass
+    return out
 
 
 def _load_active_manifest() -> Dict[str, Any]:
@@ -215,6 +237,47 @@ def admin_login(body: LoginBody, request: Request) -> Dict[str, Any]:
     return {"token": token, "expires_at": exp}
 
 
+# Tracks whether a background re-index is already in flight so
+# concurrent GET /documents calls don't spawn multiple workers for
+# the same pending set.
+_reindex_in_flight: Dict[str, Any] = {"running": False, "started_at": 0.0, "last_error": ""}
+
+
+def _kick_background_reindex() -> None:
+    """Fire off the indexer in a daemon thread so the HTTP response
+    returns immediately. Deduplicates concurrent kicks by checking an
+    in-flight flag. Errors are captured into _reindex_in_flight so the
+    next GET /documents can surface them."""
+    import threading
+
+    if _reindex_in_flight.get("running"):
+        return
+    _reindex_in_flight["running"] = True
+    _reindex_in_flight["started_at"] = time.time()
+    _reindex_in_flight["last_error"] = ""
+
+    def _worker() -> None:
+        try:
+            indexer = _get_indexer()
+            result = indexer.ensure_index_once() or {}
+            err = result.get("error")
+            if err:
+                _reindex_in_flight["last_error"] = str(err)
+                log.warning("Auto re-index for pending files failed: %s", err)
+            else:
+                log.info(
+                    "Auto re-index complete: changed=%s active_dir=%s",
+                    result.get("changed"), result.get("active_index_dir"),
+                )
+        except Exception as exc:
+            _reindex_in_flight["last_error"] = str(exc)
+            log.error("Auto re-index worker crashed: %s", exc)
+        finally:
+            _reindex_in_flight["running"] = False
+
+    threading.Thread(target=_worker, name="auto-reindex", daemon=True).start()
+
+
 @admin_router.get("/documents")
 def list_documents(claims: Dict[str, Any] = Depends(require_admin)) -> List[Dict[str, Any]]:
     data_dir = _get_data_dir()
@@ -226,15 +289,30 @@ def list_documents(claims: Dict[str, Any] = Depends(require_admin)) -> List[Dict
     manifest = _load_active_manifest()
     indexed = _indexed_filenames_from_manifest(manifest)
     out: List[Dict[str, Any]] = []
+    pending_count = 0
     for e in entries:
+        is_indexed = e.get("filename") in indexed
+        if not is_indexed:
+            pending_count += 1
         out.append({
             "filename": e.get("filename"),
             "size": int(e.get("size", 0)),
             "mtime": int(e.get("mtime", 0)),
             "authority": int(e.get("authority", 0)),
             "rank": int(e.get("rank", 0)),
-            "indexed": e.get("filename") in indexed,
+            "indexed": is_indexed,
         })
+    # Auto-recovery — if any document is pending, kick off a background
+    # re-index so a subsequent refresh sees it indexed (assuming the
+    # underlying issue, e.g. a transient embedding-API failure, has
+    # resolved). Response is returned immediately; the rebuild runs
+    # asynchronously so this endpoint stays fast.
+    if pending_count > 0:
+        log.info(
+            "Pending files detected (%d); kicking background re-index",
+            pending_count,
+        )
+        _kick_background_reindex()
     return out
 
 
@@ -265,14 +343,37 @@ async def upload_document(
 
     data_dir = _get_data_dir()
     os.makedirs(data_dir, exist_ok=True)
-    target_path = _unique_target_path(data_dir, safe)
-    target_abs = os.path.abspath(target_path)
+
+    # Duplicate detection — Stage 1: reject on exact filename match.
+    # If an admin uploads a file whose name already exists in the data
+    # directory, we refuse instead of silently writing foo-1.pdf. The
+    # front-end surfaces this to the user as a clear error.
+    exact_path = os.path.join(data_dir, safe)
+    if os.path.exists(exact_path):
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error": "duplicate_filename",
+                "message": (
+                    f"A document named '{safe}' already exists. "
+                    "Delete the existing copy first, or rename the new file."
+                ),
+                "existing_filename": safe,
+            },
+        )
+
+    # Stage 2: write the file to a temporary sidecar path so we can hash
+    # its content. If the content matches an existing PDF we delete the
+    # sidecar and reject the upload — catches re-uploads of the same
+    # PDF under a different filename.
+    target_abs = os.path.abspath(exact_path)
     if not _is_safe_path(target_abs):
         raise HTTPException(status_code=400, detail={"error": "unsafe_path"})
 
     # Stream to disk with size cap + magic-byte check on first read.
     total = 0
     first_chunk = True
+    sha = hashlib.sha256()
     try:
         with open(target_abs, "wb") as out_f:
             while True:
@@ -302,6 +403,7 @@ async def upload_document(
                         status_code=413,
                         detail={"error": "file_too_large", "limit_bytes": _MAX_UPLOAD_BYTES},
                     )
+                sha.update(chunk)
                 out_f.write(chunk)
     except HTTPException:
         raise
@@ -313,7 +415,42 @@ async def upload_document(
             pass
         raise HTTPException(status_code=500, detail={"error": "upload_failed"})
 
-    log.info("Admin uploaded PDF: %s (%d bytes)", safe, total)
+    uploaded_digest = sha.hexdigest()
+
+    # Stage 2: compare content hash against all OTHER PDFs in the data
+    # directory. If we find an identical file under a different name,
+    # delete the new one and refuse the upload.
+    existing = _index_existing_pdfs(data_dir)
+    existing.pop(uploaded_digest, None)  # ignore ourselves — we just wrote
+    # Rescan the dir to find any OTHER file with the same hash.
+    other_match: Optional[str] = None
+    for other_name in os.listdir(data_dir):
+        if other_name == safe or not other_name.lower().endswith(".pdf"):
+            continue
+        other_path = os.path.join(data_dir, other_name)
+        if not os.path.isfile(other_path):
+            continue
+        if _file_sha256(other_path) == uploaded_digest:
+            other_match = other_name
+            break
+    if other_match:
+        try:
+            os.remove(target_abs)
+        except OSError:
+            pass
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "error": "duplicate_content",
+                "message": (
+                    f"This document is identical to an existing file "
+                    f"('{other_match}'). Duplicate uploads are not allowed."
+                ),
+                "existing_filename": other_match,
+            },
+        )
+
+    log.info("Admin uploaded PDF: %s (%d bytes, sha256=%s)", safe, total, uploaded_digest[:12])
 
     # Trigger indexing — blocking call, atomic blue/green swap inside.
     started = time.time()
@@ -373,9 +510,35 @@ def delete_document(
 def index_status(claims: Dict[str, Any] = Depends(require_admin)) -> Dict[str, Any]:
     manifest = _load_active_manifest()
     build_dir = manifest.get("_build_dir") or ""
+    # Include the most recent background re-index error (if any) so the
+    # admin UI can show the actual reason a file is stuck pending
+    # rather than silently looping forever.
+    last_err = _reindex_in_flight.get("last_error") or ""
+    # Truncate/clean the error for UI display — keep the important part
+    # (e.g. "insufficient_quota") and drop noise.
+    if last_err:
+        if "insufficient_quota" in last_err:
+            last_err_msg = (
+                "OpenAI quota exceeded. Add billing at "
+                "https://platform.openai.com/account/billing and refresh."
+            )
+        elif "rate_limit" in last_err.lower():
+            last_err_msg = (
+                "OpenAI rate-limit hit. Will retry automatically; "
+                "refresh in a minute."
+            )
+        elif len(last_err) > 220:
+            last_err_msg = last_err[:220] + "…"
+        else:
+            last_err_msg = last_err
+    else:
+        last_err_msg = ""
+
     return {
         "active_index_dir": build_dir,
         "built_at": _manifest_built_at(manifest),
         "doc_count": _manifest_doc_count(manifest),
         "chunk_count": _count_chunks_in_active_build(manifest),
+        "reindex_running": bool(_reindex_in_flight.get("running")),
+        "last_error": last_err_msg,
     }

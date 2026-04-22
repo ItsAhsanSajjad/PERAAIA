@@ -8,6 +8,7 @@ import type { VoiceState } from "../../lib/types";
 interface Props {
   onSend: (text: string) => void;
   disabled?: boolean;
+  systemOffline?: boolean;
 }
 
 function formatSeconds(s: number): string {
@@ -16,7 +17,7 @@ function formatSeconds(s: number): string {
   return `${m}:${sec.toString().padStart(2, "0")}`;
 }
 
-export const Composer = memo(function Composer({ onSend, disabled }: Props) {
+export const Composer = memo(function Composer({ onSend, disabled, systemOffline }: Props) {
   const [input, setInput] = useState("");
   const { ref: textareaRef, resize } = useAutoResizeTextarea(150);
 
@@ -29,14 +30,14 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
     useVoiceRecorder(handleTranscribed);
 
   const handleSend = useCallback(() => {
-    if (!input.trim() || disabled) return;
+    if (!input.trim() || disabled || systemOffline) return;
     onSend(input);
     setInput("");
     // Reset textarea height
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
     }
-  }, [input, disabled, onSend, textareaRef]);
+  }, [input, disabled, systemOffline, onSend, textareaRef]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
@@ -123,8 +124,73 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
             </div>
           </div>
         )}
-        <style>{`
-          /* ---- Professional audio-app styled recording bar ---- */
+        <style dangerouslySetInnerHTML={{ __html: REC_CSS }} />
+
+        <div className="flex items-end gap-2">
+          <div className="flex-1 relative">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onInput={handleInput}
+              placeholder={
+                systemOffline
+                  ? "System offline — please try again later when the system is active"
+                  : "Ask about PERA regulations, governance, enforcement, or KPIs"
+              }
+              rows={1}
+              className="chat-input w-full resize-none px-4 py-3 pr-28 text-sm"
+              style={{ maxHeight: 150, minHeight: 48 }}
+              disabled={disabled || isRecordingOrTranscribing || systemOffline}
+              aria-label="Message input"
+            />
+
+            {/* Voice Button */}
+            <button
+              onClick={toggleRecording}
+              disabled={disabled || voiceState === "transcribing" || systemOffline}
+              className={`voice-btn ${voiceState === "recording" ? "voice-btn-rec" : ""}`}
+              aria-label={voiceState === "recording" ? "Stop recording" : "Start voice input"}
+            >
+              {voiceState === "recording" ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="voice-btn-ic">
+                  <rect x="6" y="6" width="12" height="12" rx="3" />
+                </svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="voice-btn-ic">
+                  <rect x="9" y="3" width="6" height="12" rx="3" />
+                  <path d="M5 11a7 7 0 0 0 14 0" />
+                  <line x1="12" y1="18" x2="12" y2="22" />
+                </svg>
+              )}
+            </button>
+            <style dangerouslySetInnerHTML={{ __html: VOICE_BTN_CSS }} />
+
+            {/* Send Button */}
+            <button
+              onClick={handleSend}
+              disabled={!input.trim() || disabled || isRecordingOrTranscribing || systemOffline}
+              className={`send-btn-pro ${input.trim() && !disabled && !isRecordingOrTranscribing && !systemOffline ? "is-active" : ""}`}
+              aria-label="Send message"
+            >
+              <span className="send-btn-glow" aria-hidden />
+              <span className="send-btn-sheen" aria-hidden />
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="send-btn-ic">
+                <path d="M4 12h16M14 6l6 6-6 6" />
+              </svg>
+            </button>
+            <style dangerouslySetInnerHTML={{ __html: SEND_BTN_CSS }} />
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  );
+});
+
+const REC_CSS = `
           @keyframes rec-pro-in {
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
@@ -347,44 +413,10 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
             animation: rec-pro-fill-march 1.6s linear infinite;
             box-shadow: 0 0 10px rgba(212, 160, 23, 0.6);
           }
-        `}</style>
+`;
 
-        <div className="flex items-end gap-2">
-          <div className="flex-1 relative">
-            <textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onInput={handleInput}
-              placeholder="Ask about PERA regulations, governance, enforcement, or KPIs"
-              rows={1}
-              className="chat-input w-full resize-none px-4 py-3 pr-28 text-sm"
-              style={{ maxHeight: 150, minHeight: 48 }}
-              disabled={disabled || isRecordingOrTranscribing}
-              aria-label="Message input"
-            />
+const VOICE_BTN_CSS = `
 
-            {/* Voice Button */}
-            <button
-              onClick={toggleRecording}
-              disabled={disabled || voiceState === "transcribing"}
-              className={`voice-btn ${voiceState === "recording" ? "voice-btn-rec" : ""}`}
-              aria-label={voiceState === "recording" ? "Stop recording" : "Start voice input"}
-            >
-              {voiceState === "recording" ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="voice-btn-ic">
-                  <rect x="6" y="6" width="12" height="12" rx="3" />
-                </svg>
-              ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="voice-btn-ic">
-                  <rect x="9" y="3" width="6" height="12" rx="3" />
-                  <path d="M5 11a7 7 0 0 0 14 0" />
-                  <line x1="12" y1="18" x2="12" y2="22" />
-                </svg>
-              )}
-            </button>
-            <style>{`
               /* ============================================================
                  COMPOSER ACTION BUTTONS — unified premium system
                  The textarea has padding-right: 6rem to reserve space for
@@ -400,6 +432,7 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
                 width: 36px;
                 height: 36px;
                 border-radius: 10px;
+                flex-shrink: 0;
                 border: 1px solid rgba(212, 160, 23, 0.3);
                 background: rgba(212, 160, 23, 0.08);
                 color: rgba(254, 243, 199, 0.7);
@@ -488,22 +521,11 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
                     inset 0 1px 0 rgba(255, 255, 255, 0.35);
                 }
               }
-            `}</style>
+            
+`;
 
-            {/* Send Button */}
-            <button
-              onClick={handleSend}
-              disabled={!input.trim() || disabled || isRecordingOrTranscribing}
-              className={`send-btn-pro ${input.trim() && !disabled && !isRecordingOrTranscribing ? "is-active" : ""}`}
-              aria-label="Send message"
-            >
-              <span className="send-btn-glow" aria-hidden />
-              <span className="send-btn-sheen" aria-hidden />
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="send-btn-ic">
-                <path d="M4 12h16M14 6l6 6-6 6" />
-              </svg>
-            </button>
-            <style>{`
+const SEND_BTN_CSS = `
+
               .send-btn-pro {
                 position: absolute;
                 right: 8px;
@@ -630,12 +652,6 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
               @keyframes send-btn-spin {
                 to { transform: rotate(360deg); }
               }
-            `}</style>
-          </div>
-        </div>
+            
+`;
 
-
-      </div>
-    </div>
-  );
-});

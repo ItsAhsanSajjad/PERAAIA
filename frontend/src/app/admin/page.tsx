@@ -147,6 +147,25 @@ export default function AdminDashboard() {
       showToast("err", "Only PDF files are accepted.");
       return;
     }
+    // Client-side duplicate check — name AND size match = almost
+    // certainly the same file. Catches it instantly without wasting
+    // an upload round-trip. Server still performs a SHA-256 content
+    // hash check as the authoritative guard.
+    const nameLower = file.name.toLowerCase();
+    const duplicate = docs.find(
+      (d) =>
+        d.filename.toLowerCase() === nameLower ||
+        (d.filename.toLowerCase().replace(/\s+/g, "") === nameLower.replace(/\s+/g, "") &&
+          d.size === file.size),
+    );
+    if (duplicate) {
+      showToast(
+        "err",
+        `"${duplicate.filename}" is already uploaded. Delete it first if you want to replace it.`,
+      );
+      if (inputRef.current) inputRef.current.value = "";
+      return;
+    }
     setUploading(true);
     setUploadPct(0);
     setUploadFileName(file.name);
@@ -374,20 +393,41 @@ export default function AdminDashboard() {
               </svg>
               {sessionEmail}
             </div>
-            <button onClick={logout} className="admin-signout">
+            <button onClick={logout} className="admin-signout" aria-label="Sign out">
               <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden>
                 <path
                   d="M10 17l-1.4-1.4 2.6-2.6H3v-2h8.2L8.6 8.4 10 7l5 5-5 5Zm9-14v18h-7v-2h5V5h-5V3h7Z"
                   fill="currentColor"
                 />
               </svg>
-              Sign Out
+              <span className="admin-signout-label">Sign Out</span>
             </button>
           </div>
         </div>
       </header>
 
       <main className={`admin-main ${stage === "ready" ? "is-ready" : ""}`}>
+        {/* Index error banner */}
+        {status?.last_error && (
+          <div className="idx-error-banner" role="alert">
+            <span className="idx-error-icon" aria-hidden>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                <path d="M12 2 1 21h22L12 2Zm1 7v6h-2V9h2Zm0 8v2h-2v-2h2Z" />
+              </svg>
+            </span>
+            <div className="idx-error-body">
+              <div className="idx-error-title">Indexing paused</div>
+              <div className="idx-error-msg">{status.last_error}</div>
+            </div>
+            {status.reindex_running && (
+              <span className="idx-error-retry">
+                <span className="idx-error-retry-dot" />
+                Retrying
+              </span>
+            )}
+          </div>
+        )}
+
         {/* KPI strip */}
         <section className="kpi-row">
           <div className="kpi-card stagger" style={{ "--d": "0ms" } as React.CSSProperties}>
@@ -1108,10 +1148,23 @@ export default function AdminDashboard() {
           justify-content: space-between;
           gap: 1rem;
         }
+        @media (max-width: 640px) {
+          .admin-header-inner {
+            padding: 0.7rem 1rem;
+            gap: 0.6rem;
+          }
+        }
         .admin-brand {
           display: flex;
           align-items: center;
           gap: 0.85rem;
+          min-width: 0;
+          flex: 1;
+        }
+        @media (max-width: 640px) {
+          .admin-brand {
+            gap: 0.55rem;
+          }
         }
         .admin-brand-logo {
           position: relative;
@@ -1120,6 +1173,13 @@ export default function AdminDashboard() {
           display: flex;
           align-items: center;
           justify-content: center;
+          flex-shrink: 0;
+        }
+        @media (max-width: 640px) {
+          .admin-brand-logo {
+            width: 36px;
+            height: 36px;
+          }
         }
         .brand-ring-1,
         .brand-ring-2 {
@@ -1144,6 +1204,14 @@ export default function AdminDashboard() {
           font-weight: 800;
           color: #ffffff;
           letter-spacing: -0.01em;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        @media (max-width: 640px) {
+          .admin-brand-title {
+            font-size: 0.92rem;
+          }
         }
         .brand-gold {
           background: linear-gradient(180deg, #f4d37a 0%, #d4a017 55%, #b8860b);
@@ -1160,6 +1228,13 @@ export default function AdminDashboard() {
           display: inline-flex;
           align-items: center;
           gap: 6px;
+          white-space: nowrap;
+        }
+        @media (max-width: 640px) {
+          .admin-brand-sub {
+            font-size: 9px;
+            letter-spacing: 0.18em;
+          }
         }
         .live-dot {
           display: inline-block;
@@ -1174,6 +1249,16 @@ export default function AdminDashboard() {
           display: flex;
           align-items: center;
           gap: 0.9rem;
+          flex-shrink: 0;
+        }
+        @media (max-width: 640px) {
+          .admin-user {
+            gap: 0.4rem;
+          }
+          /* Hide the email on mobile — Sign Out button stays visible */
+          .admin-user-email {
+            display: none !important;
+          }
         }
         .admin-user-email {
           display: inline-flex;
@@ -1195,6 +1280,16 @@ export default function AdminDashboard() {
           cursor: pointer;
           transition: background 180ms ease, transform 180ms ease,
             box-shadow 180ms ease;
+          flex-shrink: 0;
+        }
+        @media (max-width: 640px) {
+          .admin-signout {
+            padding: 0.45rem 0.6rem;
+            font-size: 0.72rem;
+          }
+          .admin-signout-label {
+            display: none;
+          }
         }
         .admin-signout:hover {
           background: rgba(212, 160, 23, 0.18);
@@ -1210,6 +1305,11 @@ export default function AdminDashboard() {
           margin: 0 auto;
           padding: 2.25rem 1.75rem 4rem;
         }
+        @media (max-width: 640px) {
+          .admin-main {
+            padding: 1.5rem 1rem 3rem;
+          }
+        }
         .stagger {
           opacity: 0;
           transform: translateY(16px);
@@ -1219,7 +1319,110 @@ export default function AdminDashboard() {
           animation-delay: var(--d, 0ms);
         }
 
+        /* Index error banner */
+        .idx-error-banner {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          padding: 14px 18px;
+          margin-bottom: 1.25rem;
+          border-radius: 14px;
+          background: linear-gradient(
+            135deg,
+            rgba(127, 29, 29, 0.26),
+            rgba(76, 5, 25, 0.22)
+          );
+          border: 1px solid rgba(244, 63, 94, 0.35);
+          box-shadow: 0 10px 28px -16px rgba(244, 63, 94, 0.4);
+          animation: banner-in 300ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .idx-error-icon {
+          flex-shrink: 0;
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(244, 63, 94, 0.2);
+          color: #fca5a5;
+          border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+        .idx-error-body { flex: 1; min-width: 0; }
+        .idx-error-title {
+          font-size: 0.82rem;
+          font-weight: 700;
+          color: #fecaca;
+          letter-spacing: 0.01em;
+        }
+        .idx-error-msg {
+          margin-top: 2px;
+          font-size: 0.78rem;
+          color: rgba(254, 202, 202, 0.85);
+          line-height: 1.45;
+          word-break: break-word;
+        }
+        .idx-error-retry {
+          flex-shrink: 0;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 0.7rem;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #fbbf24;
+          padding: 6px 10px;
+          border-radius: 999px;
+          background: rgba(234, 179, 8, 0.14);
+          border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+        .idx-error-retry-dot {
+          width: 6px;
+          height: 6px;
+          border-radius: 50%;
+          background: #fbbf24;
+          box-shadow: 0 0 6px #fbbf24;
+          animation: dot-pulse 1.6s ease-in-out infinite;
+        }
+        @keyframes banner-in {
+          from { opacity: 0; transform: translateY(-6px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
         /* ---------- KPI ---------- */
+        @media (max-width: 640px) {
+          .kpi-row {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0.65rem !important;
+          }
+          .kpi-card {
+            padding: 0.8rem 0.9rem !important;
+            gap: 0.6rem !important;
+          }
+          .kpi-icon {
+            width: 32px !important;
+            height: 32px !important;
+          }
+          .kpi-label {
+            font-size: 9px !important;
+            letter-spacing: 0.14em !important;
+          }
+          .kpi-value {
+            font-size: 1.1rem !important;
+          }
+          .kpi-value-mono {
+            font-size: 0.72rem !important;
+          }
+          .kpi-refresh {
+            grid-column: span 2;
+          }
+          .refresh-btn {
+            min-height: 48px !important;
+            width: 100%;
+          }
+        }
+
         .kpi-row {
           display: grid;
           grid-template-columns: 1.4fr 1fr 1fr auto;

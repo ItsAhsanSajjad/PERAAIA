@@ -9,7 +9,7 @@ import random
 from typing import List, Dict, Any, Optional, Tuple
 
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(override=True)
 
 import numpy as np
 import faiss  # type: ignore
@@ -197,15 +197,25 @@ def embed_texts(texts: List[str]) -> np.ndarray:
         time.sleep(base + random.uniform(0.0, 0.25))
 
     def _call_embeddings(inp: List[str]) -> List[List[float]]:
+        from openai_clients import mark_openai_available, mark_openai_unavailable
         last_err: Optional[Exception] = None
         for attempt in range(max(1, EMBED_RETRIES)):
             try:
                 resp = client.embeddings.create(model=EMBEDDING_MODEL, input=inp)
+                # Any successful embedding call confirms OpenAI is reachable;
+                # clear the offline flag if it was set.
+                mark_openai_available()
                 return [d.embedding for d in resp.data]
             except Exception as e:
                 last_err = e
                 log.debug("embed_texts attempt=%d/%d error=%s", attempt + 1, EMBED_RETRIES, e)
                 _sleep(attempt)
+        # All retries exhausted — if this is a quota-exhaustion error,
+        # flip the system into offline mode so the answerer returns a
+        # clear "service unavailable" message instead of a fake
+        # "couldn't find information" answer.
+        if last_err is not None:
+            mark_openai_unavailable(last_err)
         raise RuntimeError(f"Embedding call failed after retries: {last_err}")
 
     batch: List[str] = []

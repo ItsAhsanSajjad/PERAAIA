@@ -11,11 +11,35 @@ import re
 import time
 from typing import List, Dict, Any, Optional
 
-from openai_clients import get_chat_client, ANSWER_MODEL
+from openai_clients import (
+    get_chat_client,
+    ANSWER_MODEL,
+    get_openai_status,
+    mark_openai_available,
+    mark_openai_unavailable,
+)
 from grounding import verify_grounding, GroundingResult
 from log_config import get_logger
 
 log = get_logger("pera.answerer")
+
+
+def _system_offline_response() -> Dict[str, Any]:
+    """Response payload returned when the OpenAI service is known to be
+    unavailable (quota exhausted). Produces a clear user-facing message
+    with a distinct ``decision`` so the frontend can render an offline
+    banner instead of a generic refusal."""
+    return {
+        "answer": (
+            "⚠️ The system is currently offline. Please try again later "
+            "when the system is active."
+        ),
+        "references": [],
+        "decision": "system_offline",
+        "support_state": "system_offline",
+        "system_status": "offline",
+    }
+
 
 # Evidence quality thresholds
 ANSWER_MIN_TOP_SCORE = float(os.getenv("ANSWER_MIN_TOP_SCORE", "0.15"))
@@ -1990,6 +2014,18 @@ def answer_question(
     client = get_chat_client()
     intent = intent or {}
 
+    # 0z. System-offline early guard.
+    # If the OpenAI service has been marked unavailable (quota
+    # exhausted), skip retrieval and the LLM call entirely and return a
+    # clear offline payload immediately. The background probe worker
+    # will flip the flag back when OpenAI recovers.
+    if not get_openai_status().get("available", True):
+        log.warning(
+            "OpenAI marked unavailable — returning offline response for: %r",
+            (current_question or "")[:80],
+        )
+        return _system_offline_response()
+
     # 0a. Out-of-scope fast-path (Phase 5).
     # The intent classifier marks weather/sports/recipes/etc. so we can
     # decline cheaply without retrieval cost. We only fast-path when
@@ -2040,6 +2076,14 @@ def answer_question(
     # 1. Build Context
     context_str = format_evidence_for_llm(retrieval, question=current_question)
     if not context_str:
+        # Retrieval returned nothing. This can happen either because
+        # (a) FAISS genuinely has no relevant evidence, OR (b) the
+        # embedding call failed with quota exhaustion and was swallowed
+        # by retriever.py's exception handler. Check the availability
+        # flag — if OpenAI is down, surface that instead of a
+        # misleading "no information" message.
+        if not get_openai_status().get("available", True):
+            return _system_offline_response()
         return {
             "answer": "I'm sorry, I couldn't find any information about that in the PERA documents.",
             "references": [],
@@ -2196,11 +2240,19 @@ def answer_question(
 
     # 4. Call LLM
     try:
-        response = client.chat.completions.create(
-            model=ANSWER_MODEL,
-            messages=messages,
-            temperature=0.0,
-        )
+        try:
+            response = client.chat.completions.create(
+                model=ANSWER_MODEL,
+                messages=messages,
+                temperature=0.0,
+            )
+            # Successful roundtrip — clear any prior offline flag.
+            mark_openai_available()
+        except Exception as _e:
+            # Flip system offline on quota exhaustion. Non-quota errors
+            # are re-raised untouched and handled by the outer except.
+            mark_openai_unavailable(_e)
+            raise
         answer_text = response.choices[0].message.content or ""
 
         # --- Conditional Multi-Pass Refinement ---
@@ -2230,6 +2282,7 @@ def answer_question(
                     messages=[{"role": "system", "content": refinement_prompt}],
                     temperature=0.0,
                 )
+                mark_openai_available()
                 refined = refine_response.choices[0].message.content or ""
                 # Only use refinement if it's meaningfully longer
                 if len(refined.split()) > answer_word_count + 20:
@@ -2239,6 +2292,9 @@ def answer_question(
                 else:
                     log.info("Refinement did not expand answer — keeping original")
             except Exception as e:
+                # Track quota signal but do not raise — the initial
+                # answer is usable, refinement is best-effort.
+                mark_openai_unavailable(e)
                 log.warning("Refinement pass failed: %s — using initial answer", e)
 
         # Strip references ONLY if user did NOT explicitly ask for them
@@ -2454,6 +2510,12 @@ def answer_question(
 
     except Exception as e:
         log.error("LLM call failed: %s", e, exc_info=True)
+        # If the inner quota-aware try/except already flipped the
+        # service into offline mode, return a clear offline response
+        # instead of the generic "encountered an error" fallback so
+        # the user (and the frontend banner) get accurate information.
+        if not get_openai_status().get("available", True):
+            return _system_offline_response()
         return {
             "answer": "I encountered an error while processing your request. Please try again.",
             "references": [],

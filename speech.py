@@ -266,21 +266,41 @@ def transcribe_audio(audio_bytes: bytes, model: str = None) -> str:
             #      characters, transliterate them to Roman-Urdu
             #      Latin letters via _transliterate_devanagari.
             client = get_transcription_client()
+            # Vocabulary hint only — PERA-specific terms help the model
+            # recognise acronyms and proper nouns. No language bias in the
+            # prompt itself: the `language` parameter below controls script.
+            #
+            # CRITICAL: pass `language="en"` to force Latin-script output.
+            # Without it, Pakistani/Indian-accented English is often
+            # misclassified as Hindi and returned in Devanagari, which our
+            # transliterator then mangles into phonetic gibberish like
+            # "panjaapa inphorsmenta" for spoken "Punjab enforcement".
+            #
+            # With language="en":
+            #   - Pure English speech -> clean English output
+            #   - Urdu/Roman-Urdu speech -> Whisper transcribes phonetically
+            #     in Latin letters (natural Roman-Urdu), which is what the
+            #     downstream RAG pipeline expects.
             prompt = (
-                "Transcribe in English, Roman Urdu, or a mix. Use Latin "
-                "letters only. Do not use Devanagari/Hindi script. "
-                "Keep English technical terms in English. "
-                "Examples: 'kya pera officer illegal recording kar sakta hai?', "
-                "'SSO ki salary kitni hai?', 'schedule 3 ka matlab bataen.'"
+                "PERA, Punjab Enforcement and Regulatory Authority, "
+                "EPO, Enforcement Protection Order, hearing officer, "
+                "Schedule 3, SSO, KPI, compliance, notification."
             )
             with open(use_path, "rb") as f:
                 result = client.audio.transcriptions.create(
                     model=model,
                     file=f,
                     prompt=prompt,
+                    language="en",
+                    response_format="text",
                 )
 
-            text = (getattr(result, "text", None) or "").strip()
+            # response_format="text" returns a plain string; other formats
+            # return an object with a .text attribute. Handle both.
+            if isinstance(result, str):
+                text = result.strip()
+            else:
+                text = (getattr(result, "text", None) or "").strip()
             if not text:
                 log.warning("Transcription returned empty text")
                 return "⚠️ I could not transcribe the audio. Please try again with clearer speech."

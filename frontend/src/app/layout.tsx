@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
@@ -17,6 +17,20 @@ export const metadata: Metadata = {
     icon: "/favicon.png",
     apple: "/pera_logo.png",
   },
+};
+
+// Viewport meta — explicitly set width=device-width so mobile browsers
+// render at the phone's actual CSS width instead of treating the page
+// as a desktop-width (≈980 px) layout and zooming out. Without this,
+// the header appears microscopic on phones.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f5f3ef" },
+    { media: "(prefers-color-scheme: dark)",  color: "#0b1020" },
+  ],
 };
 
 export default function RootLayout({

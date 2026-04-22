@@ -10,7 +10,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 const EXAMPLE_QUERIES = [
   {
-    q: "What are PERA enforcement powers?",
+    q: "What power actually PERA hold?",
     hint: "Regulation & Act",
     glyph: "⚖",
   },
@@ -20,7 +20,7 @@ const EXAMPLE_QUERIES = [
     glyph: "📊",
   },
   {
-    q: "How is an EPO issued?",
+    q: "Why EPO issued?",
     hint: "Enforcement",
     glyph: "⚡",
   },
@@ -308,7 +308,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           <p>
             Informational guidance derived from official PERA regulations,
             policies, governance documents, and performance frameworks —
-            responses are grounded in verified institutional sources.
+            responses are grounded in verified authority sources.
           </p>
         </section>
 
@@ -423,7 +423,16 @@ export const WelcomeScreen = memo(function WelcomeScreen({
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: PW_CSS }} />
+    </div>
+  );
+});
+
+// CSS lives at module scope and is injected via dangerouslySetInnerHTML
+// so React treats it as opaque HTML. Prevents hydration mismatches that
+// otherwise fire on the multi-line CSS comments containing em-dashes
+// and backticks.
+const PW_CSS = `
         /* ================================================================
            ROOT
         ================================================================ */
@@ -661,6 +670,20 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           flex-direction: column;
           gap: 2.4rem;
         }
+        /* Phones — reduce padding/gap to fit comfortably without
+           triggering horizontal scroll. */
+        @media (max-width: 640px) {
+          .pw-shell {
+            padding: 1.75rem 1rem 3rem;
+            gap: 1.75rem;
+          }
+        }
+        @media (max-width: 400px) {
+          .pw-shell {
+            padding: 1.5rem 0.75rem 2.5rem;
+            gap: 1.4rem;
+          }
+        }
 
         /* ================================================================
            HERO
@@ -672,6 +695,12 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           text-align: center;
           gap: 1.6rem;
           padding: 0.8rem 0 0.6rem;
+        }
+        @media (max-width: 640px) {
+          .pw-hero {
+            gap: 1.1rem;
+            padding: 0.4rem 0 0.3rem;
+          }
         }
         .pw-hero-crown {
           display: inline-flex;
@@ -709,6 +738,27 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           justify-content: center;
           animation: emblem-in 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
           animation-delay: 260ms;
+        }
+        @media (max-width: 640px) {
+          .pw-emblem {
+            width: 104px;
+            height: 104px;
+            margin: 0.2rem 0 0.4rem;
+          }
+          .pw-emblem-inner {
+            width: 82px !important;
+            height: 82px !important;
+          }
+        }
+        @media (max-width: 400px) {
+          .pw-emblem {
+            width: 92px;
+            height: 92px;
+          }
+          .pw-emblem-inner {
+            width: 72px !important;
+            height: 72px !important;
+          }
         }
         .pw-emblem-halo {
           position: absolute;
@@ -812,10 +862,16 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           animation: fade-up 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
           animation-delay: 360ms;
         }
+        @media (max-width: 640px) {
+          .pw-hero-kicker {
+            font-size: 0.82rem;
+            padding: 0 0.5rem;
+          }
+        }
 
         .pw-hero-title {
           position: relative;
-          font-size: clamp(2.2rem, 4vw, 3.4rem);
+          font-size: clamp(1.75rem, 7vw, 3.4rem);
           line-height: 1.1;
           font-weight: 600;
           letter-spacing: -0.015em;
@@ -892,6 +948,18 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           color: rgba(254, 243, 199, 0.78);
           margin: 0.6rem 0 0;
         }
+        @media (max-width: 640px) {
+          .pw-hero-sub {
+            font-size: 0.92rem;
+            line-height: 1.5;
+            padding: 0 0.25rem;
+          }
+        }
+        @media (max-width: 400px) {
+          .pw-hero-sub {
+            font-size: 0.85rem;
+          }
+        }
         .pw-hero-em {
           color: #f4d37a;
           font-weight: 600;
@@ -903,6 +971,21 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           gap: 0.55rem;
           margin-top: 0.8rem;
           justify-content: center;
+        }
+        @media (max-width: 640px) {
+          .pw-hero-meta {
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+          }
+        }
+        .pw-meta-chip {
+          white-space: nowrap;
+        }
+        @media (max-width: 400px) {
+          .pw-meta-chip {
+            font-size: 0.66rem;
+            padding: 5px 10px;
+          }
         }
         .pw-meta-chip {
           display: inline-flex;
@@ -1317,38 +1400,46 @@ export const WelcomeScreen = memo(function WelcomeScreen({
         html:not([data-theme="dark"]) .pw-stage-gradient {
           background: radial-gradient(
               1400px 800px at 50% 0%,
-              rgba(212, 160, 23, 0.16),
+              rgba(244, 211, 122, 0.06),
               transparent 55%
             ),
             radial-gradient(
               1100px 700px at 100% 100%,
-              rgba(88, 70, 180, 0.08),
-              transparent 55%
-            ),
-            radial-gradient(
-              900px 500px at 0% 80%,
-              rgba(184, 134, 11, 0.1),
+              rgba(88, 70, 180, 0.03),
               transparent 55%
             );
         }
         html:not([data-theme="dark"]) .pw-stage-grid {
           background-image: linear-gradient(
-              rgba(184, 134, 11, 0.1) 1px,
+              rgba(26, 22, 18, 0.035) 1px,
               transparent 1px
             ),
             linear-gradient(
               90deg,
-              rgba(184, 134, 11, 0.1) 1px,
+              rgba(26, 22, 18, 0.035) 1px,
               transparent 1px
             );
-          opacity: 0.6;
+          opacity: 0.5;
         }
         html:not([data-theme="dark"]) .pw-stage-orb-1,
         html:not([data-theme="dark"]) .pw-stage-orb-2 {
-          opacity: 0.35;
+          opacity: 0.12;
         }
         html:not([data-theme="dark"]) .pw-stage-orb-3 {
-          opacity: 0.15;
+          opacity: 0.05;
+        }
+        html:not([data-theme="dark"]) .pw-stage-beams {
+          opacity: 0.08 !important;
+        }
+        html:not([data-theme="dark"]) .pw-cursor-follow {
+          opacity: 0.4;
+        }
+        html:not([data-theme="dark"]) .pw-stage-aurora {
+          background: radial-gradient(
+            800px circle at var(--mx, 50%) var(--my, 30%),
+            rgba(244, 211, 122, 0.08),
+            transparent 55%
+          ) !important;
         }
         html:not([data-theme="dark"]) .pw-stage-vignette {
           background: radial-gradient(
@@ -1357,13 +1448,16 @@ export const WelcomeScreen = memo(function WelcomeScreen({
             rgba(0, 0, 0, 0.12) 100%
           );
         }
+        html:not([data-theme="dark"]) .pw-stage-particles {
+          opacity: 0.35;
+        }
         html:not([data-theme="dark"]) .pw-particle-gold {
-          background: rgba(184, 134, 11, 0.7);
-          box-shadow: 0 0 10px rgba(184, 134, 11, 0.55);
+          background: rgba(184, 134, 11, 0.4);
+          box-shadow: 0 0 8px rgba(184, 134, 11, 0.3);
         }
         html:not([data-theme="dark"]) .pw-particle-mauve {
-          background: rgba(88, 70, 180, 0.55);
-          box-shadow: 0 0 10px rgba(88, 70, 180, 0.55);
+          background: rgba(88, 70, 180, 0.3);
+          box-shadow: 0 0 8px rgba(88, 70, 180, 0.3);
         }
 
         html:not([data-theme="dark"]) .pw-crown-mark {
@@ -1459,32 +1553,39 @@ export const WelcomeScreen = memo(function WelcomeScreen({
         }
 
         html:not([data-theme="dark"]) .pw-quick-card,
-        html:not([data-theme="dark"]) .pw-explore-card,
-        html:not([data-theme="dark"]) .pw-cap-pill {
-          background: linear-gradient(
-            165deg,
-            rgba(255, 255, 255, 0.92),
-            rgba(255, 251, 245, 0.92)
-          );
-          border-color: rgba(184, 134, 11, 0.2);
-          box-shadow: 0 6px 20px -10px rgba(26, 22, 18, 0.08);
+        html:not([data-theme="dark"]) .pw-explore-card {
+          background: #ffffff;
+          border: 1px solid rgba(26, 22, 18, 0.08);
+          box-shadow:
+            0 1px 2px rgba(26, 22, 18, 0.04),
+            0 6px 20px -12px rgba(26, 22, 18, 0.08);
         }
         html:not([data-theme="dark"]) .pw-quick-card:hover,
-        html:not([data-theme="dark"]) .pw-explore-card:hover,
+        html:not([data-theme="dark"]) .pw-explore-card:hover {
+          background: #ffffff;
+          border-color: rgba(184, 134, 11, 0.45);
+          box-shadow:
+            0 2px 4px rgba(26, 22, 18, 0.05),
+            0 18px 36px -18px rgba(184, 134, 11, 0.35);
+        }
+        /* Capability pills — clean outlined, not heavy gradient */
+        html:not([data-theme="dark"]) .pw-cap-pill {
+          background: #ffffff;
+          border: 1px solid rgba(26, 22, 18, 0.1);
+          box-shadow: 0 1px 2px rgba(26, 22, 18, 0.03);
+        }
         html:not([data-theme="dark"]) .pw-cap-pill:hover {
           background: #ffffff;
-          border-color: rgba(184, 134, 11, 0.55);
-          box-shadow: 0 22px 40px -22px rgba(184, 134, 11, 0.35);
+          border-color: rgba(184, 134, 11, 0.5);
+          box-shadow:
+            0 2px 4px rgba(26, 22, 18, 0.06),
+            0 10px 24px -12px rgba(184, 134, 11, 0.3);
         }
         html:not([data-theme="dark"]) .pw-quick-glyph,
         html:not([data-theme="dark"]) .pw-explore-glyph,
         html:not([data-theme="dark"]) .pw-cap-glyph {
-          background: linear-gradient(
-            145deg,
-            rgba(212, 160, 23, 0.28),
-            rgba(212, 160, 23, 0.1)
-          );
-          border-color: rgba(184, 134, 11, 0.4);
+          background: rgba(212, 160, 23, 0.12);
+          border: 1px solid rgba(184, 134, 11, 0.25);
           color: #8b6508;
         }
         html:not([data-theme="dark"]) .pw-quick-hint {
@@ -1515,13 +1616,11 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           color: #8b6508;
         }
 
+        /* Remove the inner masked gradient border — on light mode
+           the card already has a flat 1px border which reads better
+           than a multi-stop gold-tinted frame. */
         html:not([data-theme="dark"]) .pw-card-border {
-          background: linear-gradient(
-            140deg,
-            rgba(184, 134, 11, 0.35) 0%,
-            rgba(184, 134, 11, 0.06) 45%,
-            rgba(184, 134, 11, 0.32) 100%
-          );
+          display: none;
         }
 
         html:not([data-theme="dark"]) .pw-hint {
@@ -1702,7 +1801,4 @@ export const WelcomeScreen = memo(function WelcomeScreen({
             opacity: 0.6;
           }
         }
-      `}</style>
-    </div>
-  );
-});
+`;

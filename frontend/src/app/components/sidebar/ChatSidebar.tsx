@@ -200,14 +200,18 @@ export const ChatSidebar = memo(function ChatSidebar({
         />
       )}
 
-      <style>{`
-        /* ============================================================
-           SIDEBAR — clean institutional design
-           - Dark: deep neutral #0f1117 with pale type, gold only for
-             the primary CTA and brand accent
-           - Light: pure white surface with charcoal type
-           - No decorative halos, no rotating rings, no ambient orbs
-           ============================================================ */
+      <style dangerouslySetInnerHTML={{ __html: SIDEBAR_CSS }} />
+    </>
+  );
+});
+
+// CSS moved to a module-level constant and injected via
+// dangerouslySetInnerHTML to avoid a hydration mismatch — React serializes
+// some embedded CSS tokens (comments, backticks, etc.) inconsistently
+// between server and client when the block is interpolated as JSX
+// children. dangerouslySetInnerHTML is treated as opaque HTML and
+// compared as a single string, so no mismatch can occur.
+const SIDEBAR_CSS = `
         .sb {
           position: relative;
           z-index: 30;
@@ -223,8 +227,33 @@ export const ChatSidebar = memo(function ChatSidebar({
           border-right-color: rgba(17, 24, 39, 0.08);
           box-shadow: 2px 0 24px -18px rgba(17, 24, 39, 0.12);
         }
+        /* ── Desktop: inline sidebar pushes content ── */
         .sb.sb-open { width: 276px; transform: translateX(0); }
         .sb.sb-closed { width: 0; transform: translateX(-100%); }
+
+        /* ── Mobile: overlay drawer pattern — sidebar floats above
+           content instead of taking layout space. Width adapts to
+           viewport: ~85% of screen, capped at 320 px. ── */
+        @media (max-width: 767px) {
+          .sb {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 40;
+            box-shadow: 4px 0 32px -8px rgba(0, 0, 0, 0.7);
+          }
+          .sb.sb-open {
+            width: min(85vw, 320px);
+          }
+          .sb.sb-closed {
+            width: min(85vw, 320px);
+            transform: translateX(-100%);
+          }
+          .sb-inner {
+            width: 100% !important;
+          }
+        }
 
         .sb-inner {
           display: flex;
@@ -627,7 +656,4 @@ export const ChatSidebar = memo(function ChatSidebar({
         html:not([data-theme="dark"]) .sb-footer-brand {
           color: rgba(17, 24, 39, 0.55);
         }
-      `}</style>
-    </>
-  );
-});
+`;

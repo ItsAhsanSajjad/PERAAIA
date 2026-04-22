@@ -213,6 +213,15 @@ body {
   background: var(--bg-page);
   border-bottom: 1px solid var(--border);
   box-shadow: none;
+  min-height: 56px;
+}
+@media (max-width: 640px) {
+  .inst-header {
+    min-height: 52px;
+  }
+  .inst-header h1 {
+    font-size: 0.82rem;
+  }
 }
 
 /* Legacy fallback */

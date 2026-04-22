@@ -26,6 +26,8 @@ export interface IndexStatus {
   built_at: number;
   doc_count: number;
   chunk_count: number;
+  reindex_running?: boolean;
+  last_error?: string;
 }
 
 export interface IndexResult {
@@ -191,7 +193,16 @@ export function uploadDocument(
         if (xhr.status >= 200 && xhr.status < 300) {
           resolve(body as UploadResponse);
         } else {
-          reject(new Error(body?.detail?.error || body?.error || `upload_failed_${xhr.status}`));
+          // Surface the server-side human-readable message when present
+          // (e.g. duplicate detection) so the user sees a real reason
+          // instead of a generic "upload_failed_409".
+          const msg =
+            body?.detail?.message ||
+            body?.message ||
+            body?.detail?.error ||
+            body?.error ||
+            `upload_failed_${xhr.status}`;
+          reject(new Error(msg));
         }
       } catch {
         reject(new Error(`upload_failed_${xhr.status}`));

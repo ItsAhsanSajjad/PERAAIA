@@ -435,6 +435,13 @@ export default function LoginPage() {
           overflow: hidden;
           perspective: 1400px;
         }
+        @media (max-width: 640px) {
+          .login-root {
+            padding: 0.9rem 0.9rem 1.5rem;
+            align-items: flex-start;
+            min-height: 100dvh;
+          }
+        }
 
         /* ---------- Splash screen ---------- */
         .splash {
@@ -690,6 +697,18 @@ export default function LoginPage() {
             gap: 4rem;
           }
         }
+        /* Phones — tighter gap so the brand panel + sign-in card
+           both fit in the viewport without requiring a scroll. */
+        @media (max-width: 767px) {
+          .login-shell {
+            gap: 1.5rem;
+          }
+        }
+        @media (max-width: 400px) {
+          .login-shell {
+            gap: 1.1rem;
+          }
+        }
 
         .brand-panel {
           display: flex;
@@ -707,6 +726,19 @@ export default function LoginPage() {
           display: flex;
           align-items: center;
           justify-content: center;
+        }
+        /* Smaller logo on phones so the whole flow fits without scroll */
+        @media (max-width: 767px) {
+          .logo-wrap > div {
+            width: 96px !important;
+            height: 96px !important;
+          }
+        }
+        @media (max-width: 400px) {
+          .logo-wrap > div {
+            width: 82px !important;
+            height: 82px !important;
+          }
         }
         .logo-ring {
           position: absolute;
@@ -751,7 +783,7 @@ export default function LoginPage() {
 
         .brand-title {
           margin-top: 2rem;
-          font-size: clamp(2.5rem, 4vw, 3.5rem);
+          font-size: clamp(1.8rem, 7vw, 3.5rem);
           font-weight: 800;
           letter-spacing: -0.02em;
           color: #ffffff;
@@ -760,6 +792,11 @@ export default function LoginPage() {
           align-items: baseline;
           justify-content: center;
           gap: 0.45rem;
+        }
+        @media (max-width: 640px) {
+          .brand-title {
+            margin-top: 0.7rem;
+          }
         }
         .brand-word {
           display: inline-flex;
@@ -791,6 +828,13 @@ export default function LoginPage() {
           opacity: 0;
           transform: translateY(6px);
         }
+        @media (max-width: 640px) {
+          .brand-subtitle {
+            margin-top: 0.5rem;
+            font-size: 0.82rem;
+            padding: 0 0.5rem;
+          }
+        }
         .is-ready .brand-subtitle {
           animation: fade-up 600ms ease 1500ms forwards;
         }
@@ -806,6 +850,11 @@ export default function LoginPage() {
           );
           position: relative;
           opacity: 0;
+        }
+        @media (max-width: 640px) {
+          .brand-divider {
+            margin-top: 0.7rem;
+          }
         }
         .is-ready .brand-divider {
           animation: fade-up 600ms ease 1700ms forwards;
@@ -906,9 +955,20 @@ export default function LoginPage() {
             0 30px 60px -20px rgba(0, 0, 0, 0.7),
             0 8px 24px -8px rgba(212, 160, 23, 0.18);
         }
+        @media (max-width: 640px) {
+          .card-body {
+            padding: 1.35rem 1.2rem 1.5rem;
+            border-radius: 16px;
+          }
+        }
 
         .card-header {
           margin-bottom: 1.9rem;
+        }
+        @media (max-width: 640px) {
+          .card-header {
+            margin-bottom: 1.1rem;
+          }
         }
         .card-badge {
           display: inline-flex;
@@ -938,6 +998,11 @@ export default function LoginPage() {
           color: #ffffff;
           letter-spacing: -0.02em;
           line-height: 1.1;
+        }
+        @media (max-width: 640px) {
+          .card-title {
+            font-size: 1.4rem;
+          }
         }
         .card-hint {
           margin-top: 0.5rem;
@@ -975,6 +1040,16 @@ export default function LoginPage() {
           border: 1px solid transparent;
           transition: border-color 180ms ease, box-shadow 220ms ease,
             transform 220ms ease, background 220ms ease;
+        }
+        @media (max-width: 640px) {
+          :global(.field-input) {
+            padding: 0.75rem 0.9rem;
+            font-size: 0.88rem;
+          }
+          /* Tighten form field spacing on mobile */
+          :global(.card-body form.space-y-5 > * + *) {
+            margin-top: 0.85rem !important;
+          }
         }
         :global(.field-input::placeholder) {
           color: #94a3b8;
@@ -1072,6 +1147,13 @@ export default function LoginPage() {
           box-shadow:
             0 10px 24px -12px rgba(212, 160, 23, 0.8),
             inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+        @media (max-width: 640px) {
+          .submit-btn {
+            padding: 0.8rem 1rem;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+          }
         }
         .submit-btn:hover:not(:disabled) {
           filter: brightness(1.08);

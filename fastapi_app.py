@@ -175,10 +175,24 @@ async def add_security_headers(request, call_next):
 
 # Phase 7 — Body size cap (declared Content-Length only).
 # This cheaply rejects oversize bodies before the route runs. Per-route
-# guards (e.g. /transcribe) still enforce stricter limits on the actual
-# bytes read, in case a client lies about Content-Length.
+# guards (e.g. /transcribe, /api/admin/documents) still enforce stricter
+# limits on the actual bytes read, in case a client lies about
+# Content-Length.
+#
+# Routes that handle legitimate large uploads are exempted from the
+# default 2 MB global cap — they enforce their own per-route cap
+# instead:
+#   /transcribe                — 25 MB (audio)
+#   /api/admin/documents       — 100 MB (PDF upload)
+_LARGE_UPLOAD_PATHS = ("/transcribe", "/api/admin/documents")
+
+
 @app.middleware("http")
 async def enforce_max_body_size(request: Request, call_next):
+    # Let routes with their own size guard handle their own limits.
+    path = request.url.path or ""
+    if any(path.startswith(p) for p in _LARGE_UPLOAD_PATHS):
+        return await call_next(request)
     cl = request.headers.get("content-length")
     if cl:
         try:
@@ -1383,16 +1397,30 @@ _PROCESS_STARTED_AT = time.time()
 
 @app.get("/health")
 def health_check():
-    """Lightweight liveness probe — confirms the process is alive.
-    Returns immediately without touching disk or network.
+    """Lightweight liveness probe — confirms the process is alive and
+    reports the current OpenAI service status so the frontend can
+    surface an offline banner when needed.
     """
+    try:
+        from openai_clients import get_openai_status
+        openai_status = get_openai_status()
+        openai_available = bool(openai_status.get("available", True))
+    except Exception:
+        openai_status = {"available": True, "reason": "", "since": 0.0}
+        openai_available = True
+
     return {
-        "status": "ok",
+        "status": "ok" if openai_available else "degraded",
         "version": APP_VERSION,
         "env": APP_ENV,
         "uptime_seconds": int(time.time() - _PROCESS_STARTED_AT),
         "ts": int(time.time()),
         "auth": auth_status_summary(),
+        "openai": {
+            "available": openai_available,
+            "reason": openai_status.get("reason", ""),
+            "offline_since": openai_status.get("since", 0.0),
+        },
     }
 
 
