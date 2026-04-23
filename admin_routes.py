@@ -265,6 +265,11 @@ def _kick_background_reindex() -> None:
                 _reindex_in_flight["last_error"] = str(err)
                 log.warning("Auto re-index for pending files failed: %s", err)
             else:
+                # Clear any prior sticky error now that the worker completed
+                # cleanly — previously this only cleared at the *start* of
+                # the next kick, so transient validation failures stayed
+                # surfaced on the admin dashboard forever.
+                _reindex_in_flight["last_error"] = ""
                 log.info(
                     "Auto re-index complete: changed=%s active_dir=%s",
                     result.get("changed"), result.get("active_index_dir"),
@@ -514,6 +519,26 @@ def index_status(claims: Dict[str, Any] = Depends(require_admin)) -> Dict[str, A
     # admin UI can show the actual reason a file is stuck pending
     # rather than silently looping forever.
     last_err = _reindex_in_flight.get("last_error") or ""
+
+    # Defensive: if the active index is healthy (all scanned PDFs are in
+    # the manifest and no re-index is currently running), an old "last
+    # error" from a prior failed build is stale and would only confuse
+    # the admin. Clear and hide it.
+    try:
+        indexed_names = _indexed_filenames_from_manifest(manifest)
+        scanned_entries = scan_assets_data(_get_data_dir())
+        pending_now = sum(
+            1 for e in scanned_entries if e.get("filename") not in indexed_names
+        )
+    except Exception:
+        pending_now = 0
+    if (
+        last_err
+        and pending_now == 0
+        and not _reindex_in_flight.get("running")
+    ):
+        _reindex_in_flight["last_error"] = ""
+        last_err = ""
     # Truncate/clean the error for UI display — keep the important part
     # (e.g. "insufficient_quota") and drop noise.
     if last_err:

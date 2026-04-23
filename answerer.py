@@ -2157,18 +2157,6 @@ def answer_question(
     except Exception:
         pass
 
-    # 0z. System-offline early guard.
-    # If the OpenAI service has been marked unavailable (quota
-    # exhausted), skip retrieval and the LLM call entirely and return a
-    # clear offline payload immediately. The background probe worker
-    # will flip the flag back when OpenAI recovers.
-    if not get_openai_status().get("available", True):
-        log.warning(
-            "OpenAI marked unavailable — returning offline response for: %r",
-            (current_question or "")[:80],
-        )
-        return _system_offline_response()
-
     # 0a. Out-of-scope fast-path (Phase 5).
     # The intent classifier marks weather/sports/recipes/etc. so we can
     # decline cheaply without retrieval cost. We only fast-path when
@@ -2219,14 +2207,9 @@ def answer_question(
     # 1. Build Context
     context_str = format_evidence_for_llm(retrieval, question=current_question)
     if not context_str:
-        # Retrieval returned nothing. This can happen either because
-        # (a) FAISS genuinely has no relevant evidence, OR (b) the
-        # embedding call failed with quota exhaustion and was swallowed
-        # by retriever.py's exception handler. Check the availability
-        # flag — if OpenAI is down, surface that instead of a
-        # misleading "no information" message.
-        if not get_openai_status().get("available", True):
-            return _system_offline_response()
+        # Retrieval returned nothing. FAISS genuinely has no relevant
+        # evidence for this query — return the standard "no information
+        # found" refusal regardless of underlying OpenAI state.
         return {
             "answer": "I'm sorry, I couldn't find any information about that in the PERA documents.",
             "references": [],
@@ -2653,12 +2636,6 @@ def answer_question(
 
     except Exception as e:
         log.error("LLM call failed: %s", e, exc_info=True)
-        # If the inner quota-aware try/except already flipped the
-        # service into offline mode, return a clear offline response
-        # instead of the generic "encountered an error" fallback so
-        # the user (and the frontend banner) get accurate information.
-        if not get_openai_status().get("available", True):
-            return _system_offline_response()
         return {
             "answer": "I encountered an error while processing your request. Please try again.",
             "references": [],

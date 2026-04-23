@@ -148,21 +148,14 @@ def _looks_like_quota_exhaustion(exc: BaseException) -> bool:
 
 
 def mark_openai_unavailable(exc: BaseException) -> None:
-    """Called from the answer/retrieval path when an OpenAI call raises.
-    No-op unless the exception matches a quota-exhaustion signature —
-    transient rate-limits should recover via existing retry loops and
-    must NOT flip the system into offline mode."""
-    if not _looks_like_quota_exhaustion(exc):
-        return
-    with _status_lock:
-        if _openai_status["available"]:
-            _openai_status["since"] = time.time()
-        _openai_status["available"] = False
-        _openai_status["reason"] = (
-            "OpenAI quota exceeded. The service is temporarily unavailable."
-        )
-    # Ensure the background probe is running so we detect recovery.
-    start_openai_probe_worker()
+    """DISABLED — system never flips into offline mode.
+
+    Per product decision, the chatbot must always respond to the user
+    regardless of OpenAI quota state. Genuine OpenAI errors propagate
+    as normal exceptions and surface through the generic error path;
+    no dedicated "offline" decision, no banner, no composer disable.
+    """
+    return
 
 
 def mark_openai_available() -> None:

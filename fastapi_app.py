@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import html
 import os
 import threading
@@ -871,6 +872,47 @@ class SimpleChatResponse(BaseModel):
     grounding: Optional[Dict[str, Any]] = None  # Part 2 additive
 
 
+# ─── Answer cache (fresh-session only) ────────────────────────────────────
+# In-memory TTL cache for repeat questions on fresh sessions. Keyed by a
+# sha256 of the lowercase-trimmed question. Only populated/read when the
+# incoming request has no conversation_history and the server-side session
+# has no prior subject — so follow-ups are never served stale. Safe to
+# discard on restart (rebuilds naturally).
+_ANSWER_CACHE_TTL_SEC = 300.0
+_ANSWER_CACHE_MAX_ENTRIES = 512
+_answer_cache: Dict[str, Tuple[float, Dict[str, Any]]] = {}
+_answer_cache_lock = threading.Lock()
+
+
+def _answer_cache_key(q: str) -> str:
+    norm = " ".join(q.lower().strip().split())
+    return hashlib.sha256(norm.encode("utf-8")).hexdigest()
+
+
+def _answer_cache_get(key: str) -> Optional[Dict[str, Any]]:
+    now = time.time()
+    with _answer_cache_lock:
+        entry = _answer_cache.get(key)
+        if not entry:
+            return None
+        ts, payload = entry
+        if now - ts > _ANSWER_CACHE_TTL_SEC:
+            _answer_cache.pop(key, None)
+            return None
+        return payload
+
+
+def _answer_cache_put(key: str, payload: Dict[str, Any]) -> None:
+    now = time.time()
+    with _answer_cache_lock:
+        if len(_answer_cache) >= _ANSWER_CACHE_MAX_ENTRIES:
+            # Evict oldest ~10% to amortize cleanup cost.
+            drop = max(1, _ANSWER_CACHE_MAX_ENTRIES // 10)
+            for k in sorted(_answer_cache.keys(), key=lambda k: _answer_cache[k][0])[:drop]:
+                _answer_cache.pop(k, None)
+        _answer_cache[key] = (now, payload)
+
+
 @app.post("/ask", response_model=SimpleChatResponse)
 def simple_ask(req: Request, request: SimpleChatRequest,
                identity: Identity = Depends(require_identity)):
@@ -905,6 +947,30 @@ def simple_ask(req: Request, request: SimpleChatRequest,
         ack_prefix = st.ack
         question = st.remaining_question
         log.info("Greeting stripped: ack='%s', question='%s'", ack_prefix, question[:60])
+
+    # ── 1b. Answer cache (fresh-session lookup) ───────────────
+    # Only attempt the cache when the request carries no prior
+    # conversation_history AND the server-side session has no subject
+    # yet. This guarantees we never return a cached answer for a
+    # follow-up where the meaning depends on prior turns.
+    _cache_eligible = (
+        not request.conversation_history
+        and not session.last_subject
+        and not session.last_question
+    )
+    _cache_key = _answer_cache_key(question) if _cache_eligible else ""
+    if _cache_eligible:
+        cached = _answer_cache_get(_cache_key)
+        if cached is not None:
+            log.info("Answer cache HIT: '%s' (ttl=%ds)", question[:60], int(_ANSWER_CACHE_TTL_SEC))
+            final_answer = (ack_prefix + cached["answer"]) if ack_prefix else cached["answer"]
+            return SimpleChatResponse(
+                answer=final_answer,
+                decision=cached.get("decision", "answer"),
+                references=cached.get("references", []),
+                session_id=sid,
+                grounding=cached.get("grounding"),
+            )
 
     # ── 2. Extract last Q/A from client history FIRST ───────────
     # (needed for entity anchoring when session_id is not sent)
@@ -1089,6 +1155,17 @@ def simple_ask(req: Request, request: SimpleChatRequest,
 
     # ── 9. Build response ─────────────────────────────────────
     final_answer = (ack_prefix + answer_text) if ack_prefix else answer_text
+
+    # Cache write — only fresh-session, normal-answer decisions.
+    # Skip refusals, errors, smalltalk, and anchored follow-ups so a
+    # cache hit always returns a self-contained, safely-grounded answer.
+    if _cache_eligible and _cache_key and decision == "answer" and not was_anchored:
+        _answer_cache_put(_cache_key, {
+            "answer": answer_text,
+            "decision": decision,
+            "references": result.get("references", []),
+            "grounding": grounding,
+        })
 
     return SimpleChatResponse(
         answer=final_answer,
