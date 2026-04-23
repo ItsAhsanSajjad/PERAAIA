@@ -58,16 +58,13 @@ log = get_logger("pera.api")
 APP_VERSION = os.getenv("APP_VERSION", "2.3.0")
 APP_ENV = os.getenv("APP_ENV", "development").strip().lower()  # "development" | "production"
 
-# CORS — hardcoded policy: allow any subdomain of pera.gop.pk over HTTPS.
-# New subdomains (e.g. admin.pera.gop.pk, api.pera.gop.pk) are picked up
-# automatically without any config change. To add a non-pera.gop.pk
-# origin (e.g. a partner domain), extend CORS_ALLOW_ORIGINS below.
-CORS_ALLOW_ORIGIN_REGEX = r"^https://([a-zA-Z0-9-]+\.)*pera\.gop\.pk$"
-CORS_ALLOW_ORIGINS: List[str] = [
-    # Add exact non-pera.gop.pk origins here, e.g.:
-    # "https://pera360.punjab.gov.pk",
-]
-CORS_ALLOW_CREDENTIALS = False  # regex + credentials is fine; set True only if cookies needed
+# CORS — fully permissive. Safe here because the service has no
+# cookie-based auth (allow_credentials is False). Browsers refuse to send
+# cookies/Authorization on wildcard origins anyway, so the admin bearer
+# token must be sent explicitly by the client.
+CORS_ALLOW_ORIGIN_REGEX = None
+CORS_ALLOW_ORIGINS: List[str] = ["*"]
+CORS_ALLOW_CREDENTIALS = False
 
 # Body / upload size guardrails.
 # MAX_REQUEST_BYTES is a global cap enforced before the route runs.
@@ -99,14 +96,15 @@ TRUSTED_FORWARDED_HEADER = os.getenv("TRUSTED_FORWARDED_HEADER", "").strip()
 # ============================================================
 app = FastAPI(title="PERA AI Backend", version=APP_VERSION)
 
-# CORS — allow *.pera.gop.pk (regex) plus any exact origins listed above.
+# CORS — wildcard origins, no credentials. See policy above.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ALLOW_ORIGINS,
-    allow_origin_regex=CORS_ALLOW_ORIGIN_REGEX,
     allow_credentials=CORS_ALLOW_CREDENTIALS,
-    allow_methods=["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=86400,
 )
 
 # Allow iframes (fix for browser blocking) + Phase 7 security headers.
