@@ -54,47 +54,19 @@ log = get_logger("pera.api")
 # are conservative for production; local development can relax them
 # via env vars without code changes.
 
-# CORS — comma-separated origin list, OR the literal value "*" for
-# allow-all-origins (intentionally preserved per Phase 8 requirements).
-#
-# Configuration semantics:
-#   CORS_ALLOW_ORIGINS="*"                       → allow ALL origins (dev or
-#                                                  intentional production
-#                                                  open API). Credentials are
-#                                                  forced off in this mode
-#                                                  because browsers reject
-#                                                  the combination.
-#   CORS_ALLOW_ORIGINS="https://a,https://b"     → strict allow-list.
-#   CORS_ALLOW_ORIGINS=""                        → no CORSMiddleware mounted
-#                                                  (most restrictive).
-#
-# The default in development is "*" (allow-all) for frictionless local
-# iteration. The default in production is "" (no middleware) so a forgotten
-# env var fails closed instead of leaking.
 APP_VERSION = os.getenv("APP_VERSION", "2.3.0")
 APP_ENV = os.getenv("APP_ENV", "development").strip().lower()  # "development" | "production"
 
-# CORS: allow-all in BOTH development and production by default. The
-# chatbot is embedded from external sites (pera360.punjab.gov.pk, the
-# mobile webview, etc.) so we need cross-origin requests to work out of
-# the box. Operators can still override with CORS_ALLOW_ORIGINS="https://a,https://b"
-# to lock it down later.
-_cors_default = "*"
-_cors_raw = os.getenv("CORS_ALLOW_ORIGINS", _cors_default).strip()
-
-# Detect the explicit allow-all directive. Treat "*" as a sentinel,
-# NOT as an item in a list, so a misconfigured "*, https://a" is read
-# as allow-all (matching the user-facing intent rather than silently
-# constructing a broken list).
-CORS_ALLOW_ALL = "*" in [s.strip() for s in _cors_raw.split(",")]
-if CORS_ALLOW_ALL:
-    CORS_ALLOW_ORIGINS: List[str] = ["*"]
-else:
-    CORS_ALLOW_ORIGINS = [o.strip() for o in _cors_raw.split(",") if o.strip()]
-
-CORS_ALLOW_CREDENTIALS = (
-    os.getenv("CORS_ALLOW_CREDENTIALS", "0").strip() == "1"
-)
+# CORS — hardcoded policy: allow any subdomain of pera.gop.pk over HTTPS.
+# New subdomains (e.g. admin.pera.gop.pk, api.pera.gop.pk) are picked up
+# automatically without any config change. To add a non-pera.gop.pk
+# origin (e.g. a partner domain), extend CORS_ALLOW_ORIGINS below.
+CORS_ALLOW_ORIGIN_REGEX = r"^https://([a-zA-Z0-9-]+\.)*pera\.gop\.pk$"
+CORS_ALLOW_ORIGINS: List[str] = [
+    # Add exact non-pera.gop.pk origins here, e.g.:
+    # "https://pera360.punjab.gov.pk",
+]
+CORS_ALLOW_CREDENTIALS = False  # regex + credentials is fine; set True only if cookies needed
 
 # Body / upload size guardrails.
 # MAX_REQUEST_BYTES is a global cap enforced before the route runs.
@@ -126,29 +98,15 @@ TRUSTED_FORWARDED_HEADER = os.getenv("TRUSTED_FORWARDED_HEADER", "").strip()
 # ============================================================
 app = FastAPI(title="PERA AI Backend", version=APP_VERSION)
 
-# CORS — env-driven. Three behaviors:
-#   • CORS_ALLOW_ORIGINS="*"                  → allow ALL origins
-#     (CORS_ALLOW_CREDENTIALS is force-disabled because browsers reject
-#      `*` + credentials combination).
-#   • CORS_ALLOW_ORIGINS="<csv list>"         → strict allow-list.
-#   • CORS_ALLOW_ORIGINS=""                   → no middleware mounted
-#     (production default, fails closed).
-if CORS_ALLOW_ALL:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=False,  # forced off — wildcard + creds is illegal
-        allow_methods=["GET", "POST", "DELETE", "PUT", "OPTIONS"],
-        allow_headers=["*"],
-    )
-elif CORS_ALLOW_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=CORS_ALLOW_ORIGINS,
-        allow_credentials=CORS_ALLOW_CREDENTIALS,
-        allow_methods=["GET", "POST", "DELETE", "PUT", "OPTIONS"],
-        allow_headers=["*"],
-    )
+# CORS — allow *.pera.gop.pk (regex) plus any exact origins listed above.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ALLOW_ORIGINS,
+    allow_origin_regex=CORS_ALLOW_ORIGIN_REGEX,
+    allow_credentials=CORS_ALLOW_CREDENTIALS,
+    allow_methods=["GET", "POST", "DELETE", "PUT", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 # Allow iframes (fix for browser blocking) + Phase 7 security headers.
 @app.middleware("http")
