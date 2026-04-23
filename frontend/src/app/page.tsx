@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import type { Reference } from "./lib/types";
 import { buildPdfUrl } from "./lib/api";
@@ -230,21 +230,18 @@ export default function Home() {
 
   const { theme, toggleTheme } = useThemePreference();
   const { status, reason, reportSuccess, reportFailure } = useHealthCheck();
-  const isOffline = status === "offline";
+  // System-offline mode has been permanently disabled — the chatbot
+  // must always respond regardless of OpenAI quota state. Leave the
+  // hook mounted (it still pings /health for latency-style monitoring)
+  // but never render the banner / disable the composer.
+  const isOffline = false;
 
   /* — Startup: confirm API origin — */
   useEffect(() => {
     console.log("[PERA] API_URL →", API_URL);
   }, []);
 
-  /* — Recovery toast: detect offline → online transition — */
-  const prevStatusRef = useRef<ConnectionStatus>(status);
-  useEffect(() => {
-    if (prevStatusRef.current === "offline" && status === "online") {
-      showToast("System is back online.", "success");
-    }
-    prevStatusRef.current = status;
-  }, [status]);
+  /* — Recovery toast disabled along with system-offline mode — */
 
   const {
     messages,
