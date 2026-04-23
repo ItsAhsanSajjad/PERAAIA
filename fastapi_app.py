@@ -74,7 +74,12 @@ log = get_logger("pera.api")
 APP_VERSION = os.getenv("APP_VERSION", "2.3.0")
 APP_ENV = os.getenv("APP_ENV", "development").strip().lower()  # "development" | "production"
 
-_cors_default = "*" if APP_ENV != "production" else ""
+# CORS: allow-all in BOTH development and production by default. The
+# chatbot is embedded from external sites (pera360.punjab.gov.pk, the
+# mobile webview, etc.) so we need cross-origin requests to work out of
+# the box. Operators can still override with CORS_ALLOW_ORIGINS="https://a,https://b"
+# to lock it down later.
+_cors_default = "*"
 _cors_raw = os.getenv("CORS_ALLOW_ORIGINS", _cors_default).strip()
 
 # Detect the explicit allow-all directive. Treat "*" as a sentinel,
@@ -752,7 +757,7 @@ def download_pdf(filename: str):
 # Main endpoint (HTML)
 # FIX: Open links should jump to the correct page (Streamlit-like)
 # ============================================================
-@app.post("/ask", response_model=QueryResponse)
+@app.post("/api/ask", response_model=QueryResponse)
 def ask_question(request: QueryRequest, identity: Identity = Depends(require_identity)):
     retrieval = retrieve(request.message)
     result = answer_question(request.message, retrieval)
@@ -908,7 +913,7 @@ class SimpleChatResponse(BaseModel):
     grounding: Optional[Dict[str, Any]] = None  # Part 2 additive
 
 
-@app.post("/api/ask", response_model=SimpleChatResponse)
+@app.post("/ask", response_model=SimpleChatResponse)
 def simple_ask(req: Request, request: SimpleChatRequest,
                identity: Identity = Depends(require_identity)):
     """Chat endpoint with session tracking, smalltalk bypass, entity anchoring, and audit trail."""

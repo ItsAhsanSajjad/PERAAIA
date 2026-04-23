@@ -15,12 +15,12 @@ function makeError(
   return { type, message, status };
 }
 
-/** POST /api/ask */
+/** POST /ask */
 export async function askQuestion(
   req: AskRequest,
 ): Promise<{ ok: true; data: AskResponse } | { ok: false; error: ApiError }> {
   try {
-    const res = await fetch(`${API_URL}/api/ask`, {
+    const res = await fetch(`${API_URL}/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(req),

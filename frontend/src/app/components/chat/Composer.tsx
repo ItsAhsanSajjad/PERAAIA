@@ -413,6 +413,63 @@ const REC_CSS = `
             animation: rec-pro-fill-march 1.6s linear infinite;
             box-shadow: 0 0 10px rgba(212, 160, 23, 0.6);
           }
+
+          /* =================================================
+             MOBILE (≤640px) — compact layout
+             On narrow screens the "Listening" status label and
+             its divider get truncated to "List..." (see bug
+             report). Hide them and shrink gaps so the core
+             REC/timer/visualizer trio fits edge-to-edge.
+             ================================================= */
+          @media (max-width: 640px) {
+            .rec-pro-inner {
+              gap: 10px;
+              padding: 8px 12px;
+              height: 42px;
+              letter-spacing: 0.1em;
+            }
+            .rec-pro-live {
+              letter-spacing: 0.16em;
+              font-size: 10px;
+            }
+            .rec-pro-timer {
+              font-size: 13px;
+            }
+            .rec-pro-visualizer {
+              min-width: 0;
+              flex: 1 1 auto;
+            }
+            /* Hide the trailing "Listening" status + its divider —
+               it overflows and displays as "List..." on phones. */
+            .rec-pro-status,
+            .rec-pro-inner > .rec-pro-divider:last-of-type {
+              display: none;
+            }
+
+            .trans-pro-inner {
+              gap: 10px;
+              padding: 8px 12px;
+              height: 42px;
+            }
+            .trans-pro-label {
+              letter-spacing: 0.16em;
+              font-size: 10px;
+            }
+            .trans-pro-text {
+              font-size: 11px;
+            }
+          }
+
+          /* Extra-narrow phones (≤380px) — reclaim every pixel */
+          @media (max-width: 380px) {
+            .rec-pro-inner {
+              gap: 8px;
+              padding: 8px 10px;
+            }
+            .rec-pro-visualizer {
+              height: 18px;
+            }
+          }
 `;
 
 const VOICE_BTN_CSS = `

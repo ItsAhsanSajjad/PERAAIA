@@ -946,7 +946,7 @@ const PW_CSS = `
           font-size: 1.02rem;
           line-height: 1.55;
           color: rgba(254, 243, 199, 0.78);
-          margin: 0.6rem 0 0;
+          margin: -0.35rem 0 0;
         }
         @media (max-width: 640px) {
           .pw-hero-sub {

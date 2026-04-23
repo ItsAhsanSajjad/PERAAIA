@@ -400,8 +400,15 @@ _ROLE_STOP_WORDS = {
     "what", "is", "are", "about", "tell", "me", "explain",
     "how", "much", "does", "do", "earn", "get", "paid", "make",
     "structure", "reporting", "report", "reports", "who",
+    # Organization name — users write "pera officer"/"pera manager" as a
+    # generic "any officer at PERA" phrasing, NOT a specific role. Leaving
+    # it in would make the role detector yield "pera officer" which then
+    # hard-drops every reference chunk (no Position Title contains the
+    # word "pera"), producing answers with zero citations.
+    "pera",
     # Urdu / Roman Urdu stop words
-    "ki", "ka", "ke", "ko", "kya", "hai", "hain", "hy", "hen",
+    "ki", "ka", "ke", "ko", "kya", "kia", "koi", "kuch", "hai", "hain", "hy", "hen",
+    "kr", "kar", "sakta", "sakti", "sakte", "sake",
     "aur", "ya", "mein", "se", "par", "pe", "ye", "yeh", "woh",
     "nahi", "nhi", "na", "ho", "tha", "thi", "the",
     "batao", "btao", "bataen", "bataiye", "batayein", "btaen",
@@ -413,10 +420,11 @@ _ROLE_STOP_WORDS = {
 
 # Urdu particles that should be stripped before role detection
 _URDU_PARTICLES = re.compile(
-    r"\b(?:ki|ka|ke|ko|kya|hai|hain|hy|hen|aur|ya|mein|se|par|pe|ye|yeh|woh|"
+    r"\b(?:ki|ka|ke|ko|kya|kia|koi|kuch|hai|hain|hy|hen|aur|ya|mein|se|par|pe|ye|yeh|woh|"
     r"nahi|nhi|na|ho|tha|thi|batao|btao|bataen|bataiye|batayein|btaen|"
     r"kitni|kitna|kitne|kahan|kaun|konsi|kaunsi|wala|wali|wale|"
-    r"hota|hoti|hote|kaise|kaisa|kesi|kaisi|abhi|kab|jab|tab)\b",
+    r"hota|hoti|hote|kaise|kaisa|kesi|kaisi|abhi|kab|jab|tab|"
+    r"kr|kar|sakta|sakti|sakte|sake)\b",
     re.IGNORECASE
 )
 
@@ -429,8 +437,25 @@ def _normalize_query_for_role(question: str) -> str:
     return re.sub(r'\s+', ' ', q).strip()
 
 def _extract_position_title(text: str) -> str:
+    # Primary: "Position Title: - Manager (Development) Report To: -"
     m = _POSITION_TITLE_RE.search(text or "")
-    return m.group(1).strip().lower() if m else ""
+    if m:
+        return m.group(1).strip().lower()
+    # Secondary: some chunks (the Compiled Working Paper's re-annotated
+    # corpus) carry only a bracket header like "[Role: Manager
+    # (Development) Report To: - ...]". Without this branch the position
+    # filter sees an empty title, skips the filter entirely, and lets
+    # unrelated-role chunks through for the answerer — producing
+    # confidently-wrong answers when the ranker put multiple roles in
+    # the top-K.
+    m2 = _REF_POSITION_TITLE_RE.search(text or "")
+    if not m2:
+        return ""
+    title = (m2.group(1) or m2.group(2) or "").strip()
+    # The "[Role:...]" capture can include "Report To:..." inline. Trim
+    # at the first "Report To" so the role name alone is returned.
+    title = re.split(r"\s*Report\s*To\s*:", title, maxsplit=1, flags=re.IGNORECASE)[0]
+    return title.strip().lower()
 
 def _extract_ref_position_title(text: str) -> str:
     """Like _extract_position_title but also matches [Role:] format.
@@ -788,6 +813,41 @@ def format_evidence_for_llm(retrieval: Dict[str, Any], question: str = "") -> st
         # Position-title matching: boost exact, DROP wrong positions entirely
         title_bonus = 0.0
         if target_role:
+            # First pass: check if the target role appears ANYWHERE in the
+            # chunk as a "Position Title: - <role>" or "[Role: <role>]"
+            # header. PERA PDFs often pack two consecutive role JDs into
+            # one chunk (e.g. CTO then Manager (Development)); the first
+            # pass ensures the second role is also boosted, not ignored
+            # because _extract_position_title only returns the first.
+            # Collapse all non-alphanumeric to a single space so that
+            # "Manager (Development)" (which normalises to "manager  development ")
+            # matches the target "manager development" regardless of the
+            # original punctuation or spacing.
+            text_norm_any = re.sub(r"[^a-z0-9]+", " ", text.lower()).strip()
+            target_norm_any = re.sub(r"[^a-z0-9]+", " ", target_role.lower()).strip()
+            target_tokens_any = [w for w in target_norm_any.split() if w]
+            role_pattern = r"\s+".join(re.escape(w) for w in target_tokens_any)
+            pt_any_re = re.compile(
+                r"position\s+title(?:\s+\w+)?\s+" + role_pattern,
+                re.IGNORECASE,
+            )
+            role_any_re = re.compile(
+                r"\brole(?:\s+\w+)?\s+" + role_pattern,
+                re.IGNORECASE,
+            )
+            if pt_any_re.search(text_norm_any) or role_any_re.search(text_norm_any):
+                # Subject-role mention present mid-chunk. Multi-role PERA
+                # JD pages often get merged into one chunk where the
+                # first Position Title is a different role; the normal
+                # _extract_position_title path only sees that first title
+                # and would down-weight this chunk. Bypass the default
+                # title logic with a strong bonus.
+                title_bonus = 10.0
+                scored_hits.append(
+                    (title_bonus + phrase_bonus + subject_match + base_score, hit)
+                )
+                continue
+
             chunk_title = _extract_position_title(text)
             if chunk_title:
                 target_norm = re.sub(r"[^a-z0-9\s]", "", target_role)
@@ -1305,8 +1365,19 @@ def extract_references_simple(
     # the 2nd/3rd/Nth title in the chunk — losing the JD page from
     # references. We now scan ALL Position Title blocks in the chunk
     # text and use the BEST match.
+    # Capture each Position Title / [Role:] occurrence separately. The
+    # capture is bounded: stop at the next " Report To:" / " Wing:" /
+    # " Purpose" / next "Position Title:" / next "[Role:" / newline.
+    # Without this the greedy [^\n]+ variant swallowed the entire rest
+    # of the chunk on the first match, so a chunk carrying multiple JDs
+    # (e.g. "CTO ... Manager (Development) ...") only ever matched the
+    # first title and the real subject Position Title was invisible to
+    # the reference picker.
     _ALL_POS_TITLE_RE = re.compile(
-        r"(?:Position\s+Title\s*:\s*-?\s*([^\n]+)|\[Role:\s*([^\]\n]+)\])",
+        r"(?:Position\s+Title\s*:\s*-?\s*"
+        r"(.+?)(?=\s+Report\s+To\s*:|\s+Wing\s*:|\s+Purpose\s+of|\s+Position\s+Title\s*:|\s*\[Role:|\n|$)"
+        r"|\[Role:\s*"
+        r"(.+?)(?=\s+Report\s+To\s*:|\s+Wing\s*:|\s+Purpose\s+of|\]|\n|$)\]?)",
         re.IGNORECASE,
     )
     _generic = {"manager", "officer", "director", "assistant", "deputy",
@@ -1316,11 +1387,29 @@ def extract_references_simple(
         text = (hit.get("text") or "").lower()
         ref_score = base_score
 
-        # Boost/Drop: best Position Title match in the chunk vs target role
+        # Boost/Drop: best Position Title match in the chunk vs target role.
+        # Also track the chunk-role match explicitly so downstream
+        # bonuses (answer-grounded, query-topic) can be gated — for a
+        # role-specific query we only want citations from chunks about
+        # the subject role, not chunks that merely mention the same
+        # supervisor/subordinate roles as the answer.
+        _role_match_kind = None  # "exact" | "sig_all" | "sig_partial" | "none" | None
+        _target_role_effective = target_role
         if target_role:
             target_norm = re.sub(r"[^a-z0-9\s]", "", target_role)
             target_sig = [w for w in target_norm.split()
                           if w not in _generic and len(w) > 2]
+            # Defensive: if the role collapses to only generic words
+            # (e.g. "officer" alone from "kia pera officer ..."), treat
+            # the query as non-role to avoid hard-dropping every chunk
+            # that doesn't carry that exact generic word in its
+            # Position Title. Policy/regulatory chunks (body-camera
+            # use, digital evidence, recording protocols) rarely have
+            # Position Title blocks and would otherwise vanish from
+            # references entirely.
+            if not target_sig and len(target_norm.split()) <= 1:
+                _target_role_effective = ""
+        if _target_role_effective:
             # Collect ALL position-title candidates in the chunk.
             chunk_titles = []
             for tm in _ALL_POS_TITLE_RE.finditer(hit.get("text") or ""):
@@ -1345,6 +1434,7 @@ def extract_references_simple(
                     else:
                         if best_kind is None:
                             best_kind = "none"
+                _role_match_kind = best_kind
                 if best_kind == "exact":
                     ref_score += 5.0  # Exact position match in some title
                 elif best_kind == "sig_all":
@@ -1363,7 +1453,16 @@ def extract_references_simple(
                 # No Position Title in chunk — check if target role words in body
                 if target_norm in text:
                     ref_score += 3.0
-                # No penalty for chunks without Position Title (may be salary tables)
+                    _role_match_kind = "body"
+                else:
+                    # No Position Title AND no body mention of the
+                    # target role. For a role-specific query, these
+                    # chunks are irrelevant as citations (TOC pages, HR
+                    # manual boilerplate, unrelated meeting minutes).
+                    # HARD DROP — otherwise they ride in as fillers
+                    # when higher-signal chunks all belong to the same
+                    # doc and hit the per-doc cap.
+                    continue
 
         # Boost: snippet mentions query subject words
         word_hits = sum(1 for w in q_words if w in text)
@@ -1406,7 +1505,18 @@ def extract_references_simple(
         # phrase present in this chunk. This is the strongest signal
         # because a chunk that contains an entity mentioned in the
         # answer is almost certainly where the model got it from.
-        if answer_key_phrases:
+        #
+        # GATE (role queries only): for questions that target a specific
+        # role, chunks that don't carry the subject role's Position
+        # Title are almost always cross-referenced mentions (the
+        # supervisor's own JD, a definitions page, a TOC, etc.) — they
+        # contain answer phrases but are NOT the source of the
+        # statement. Skip their answer-grounded boost so they can't
+        # climb above the genuine subject chunk.
+        _answer_boost_allowed = True
+        if _target_role_effective and _role_match_kind in ("sig_partial", "none", None):
+            _answer_boost_allowed = False
+        if answer_key_phrases and _answer_boost_allowed:
             text_normalized_ans = _normalize_for_match(
                 hit.get("text") or ""
             )
@@ -1425,7 +1535,7 @@ def extract_references_simple(
                     ref_score,
                 )
 
-        scored_refs.append((ref_score, doc_name, hit))
+        scored_refs.append((ref_score, doc_name, hit, _role_match_kind))
 
     scored_refs.sort(key=lambda x: x[0], reverse=True)
 
@@ -1435,7 +1545,23 @@ def extract_references_simple(
     max_refs = 4
     max_refs_per_doc = 2
 
-    for _score, doc_name, hit in scored_refs:
+    # Role-specific single-source mode: when the query targets a specific
+    # role AND the top-scoring chunk has a strong Position Title match
+    # ("exact" or "sig_all"), the user wants ONE authoritative page — the
+    # JD page. Filler refs from supervisor/subordinate JDs, organogram
+    # pages, or TOC entries are actively harmful here (user reported
+    # seeing p.21 + p.2 instead of a single p.22 for the Manager
+    # (Infrastructure) JD). Lock to a single ref in that case.
+    _top_role_confident = bool(
+        target_role
+        and scored_refs
+        and scored_refs[0][3] in ("exact", "sig_all")
+    )
+    if _top_role_confident:
+        max_refs = 1
+        max_refs_per_doc = 1
+
+    for _score, doc_name, hit, _rmk in scored_refs:
         if len(refs) >= max_refs:
             break
         if len(docs_used) >= MAX_DOCS and doc_name not in docs_used:
@@ -2013,6 +2139,23 @@ def answer_question(
     """
     client = get_chat_client()
     intent = intent or {}
+
+    # 0y. Typo correction.
+    # Apply the same PERA-vocabulary typo correction the retriever uses
+    # so `_detect_target_role` and downstream substring-matching logic
+    # see the canonical spelling (e.g. "develppment" -> "development").
+    # Without this, the retriever rewrite cleans up the query it searches
+    # with, but the answerer's position-aware filter still operates on
+    # the user's typo'd original text and fails to match.
+    try:
+        from retriever import _fix_query_typos as _fix_typos
+        _corrected = _fix_typos(current_question or "")
+        if _corrected and _corrected != current_question:
+            log.info("Typo-corrected question: %r -> %r",
+                     (current_question or "")[:80], _corrected[:80])
+            current_question = _corrected
+    except Exception:
+        pass
 
     # 0z. System-offline early guard.
     # If the OpenAI service has been marked unavailable (quota

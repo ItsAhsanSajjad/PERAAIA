@@ -153,10 +153,71 @@ def _normalize_numbered_references(query: str) -> str:
 _normalize_schedule_references = _normalize_numbered_references
 
 
+# PERA-domain vocabulary used for lightweight typo correction. Any query
+# word that is a near-miss (Levenshtein ratio >= 0.85) of one of these
+# terms gets auto-corrected before abbreviation expansion and role
+# detection run. This saves users from losing retrieval quality because
+# they typed "develppment" instead of "development".
+_PERA_VOCAB = frozenset([
+    # Role prefixes
+    "manager", "officer", "director", "assistant", "deputy", "chief",
+    "head", "coordinator", "superintendent", "inspector", "registrar",
+    "analyst", "hearing", "enforcement",
+    # Specializations / departments
+    "development", "operations", "enforcement", "investigation",
+    "planning", "finance", "admin", "administration", "compliance",
+    "communication", "legal", "audit", "procurement", "training",
+    "monitoring", "evaluation", "research", "coordination", "security",
+    "transport", "estate", "quality", "technology", "infrastructure",
+    "data", "systems", "support", "services",
+    # Common PERA nouns
+    "authority", "regulation", "regulations", "regulatory", "punjab",
+    "notification", "schedule", "salary", "responsibilities", "powers",
+    "reporting", "committee", "chairperson", "chairman", "appointment",
+    "hierarchy",
+])
+_TYPO_MIN_LEN = 5  # don't correct short tokens (too many false positives)
+_TYPO_RATIO_MIN = 0.85
+
+
+def _fix_query_typos(query: str) -> str:
+    """Cheap per-word typo correction against PERA vocabulary.
+
+    Users regularly mistype domain terms (e.g. 'develppment'). Without
+    correction, the explicit-role guard in the LLM rewriter skips
+    rewrite, the embedding search degrades, and `_detect_target_role`
+    in answerer.py fails its substring match. difflib is stdlib-only
+    and fast for short tokens.
+    """
+    import difflib as _dl
+    out: list[str] = []
+    for tok in (query or "").split():
+        # Preserve trailing punctuation like ? , .
+        m = _re.match(r"^(\w+)(\W*)$", tok, _re.UNICODE)
+        if not m:
+            out.append(tok)
+            continue
+        word, tail = m.group(1), m.group(2)
+        low = word.lower()
+        if len(low) < _TYPO_MIN_LEN or low in _PERA_VOCAB or not low.isalpha():
+            out.append(tok)
+            continue
+        match = _dl.get_close_matches(low, _PERA_VOCAB, n=1, cutoff=_TYPO_RATIO_MIN)
+        if match and match[0] != low:
+            out.append(match[0] + tail)
+        else:
+            out.append(tok)
+    return " ".join(out)
+
+
 def _expand_abbreviations(query: str) -> str:
     """Expand known abbreviations in-place for better embedding matches."""
     # First normalize schedule references
     query = _normalize_schedule_references(query)
+
+    # Correct common PERA-domain typos before role detection and
+    # abbreviation expansion downstream stages rely on clean spelling.
+    query = _fix_query_typos(query)
 
     # Normalize possessive forms: "manager's development" → "manager development"
     query = _re.sub(r"[''\u2019]s\b", "", query)
@@ -232,6 +293,66 @@ def _get_section_map_by_id(
 def _evidence_id(text: str) -> str:
     """Short hash for evidence traceability."""
     return hashlib.sha256((text or "")[:500].encode()).hexdigest()[:10]
+
+
+# Patterns for the lexical role-anchor in retrieve(): capture phrases
+# like "manager (development)", "manager development", "chief technology
+# officer", "assistant manager monitoring", "senior manager academics".
+# The anchor injects chunks that literally start with "Position Title: -
+# <role>" so role-subject chunks can't lose to role-mentioning chunks
+# on embeddings alone.
+_ROLE_PHRASE_RES = [
+    # parenthesised: "Manager (Development)"
+    _re.compile(
+        r"\b((?:senior|assistant|deputy|additional|joint|regional)\s+)?"
+        r"(manager|director|officer|coordinator|superintendent|head|chief)"
+        r"\s*\(\s*([A-Za-z][A-Za-z\s&/]{1,40}?)\s*\)",
+        _re.IGNORECASE,
+    ),
+    # "<prefix> <spec>" where spec is a single noun
+    _re.compile(
+        r"\b((?:senior|assistant|deputy|additional|joint|regional)\s+)?"
+        r"(manager|director|officer|coordinator|superintendent|head|chief)"
+        r"\s+([A-Za-z][A-Za-z&]{2,30})\b",
+        _re.IGNORECASE,
+    ),
+]
+
+
+def _extract_role_phrase_from_query(question: str) -> str:
+    """Pull a normalised role-phrase from the user's question.
+
+    Returns phrasing suitable for substring matching against chunk
+    text, e.g. 'manager (development)'. If nothing matches, returns ''.
+    """
+    q = (question or "").strip()
+    if not q:
+        return ""
+    for pat in _ROLE_PHRASE_RES:
+        m = pat.search(q)
+        if not m:
+            continue
+        prefix = (m.group(1) or "").strip()
+        prefix_full = (m.group(2) or "").strip()
+        spec = (m.group(3) or "").strip()
+        if not prefix_full or not spec:
+            continue
+        # Avoid tokens the answerer treats as non-specific.
+        if spec.lower() in {
+            "the", "and", "for", "has", "who", "what", "why", "where",
+            "when", "does", "shall", "will", "may", "can",
+            "salary", "role", "duties",
+        }:
+            continue
+        if prefix:
+            core = f"{prefix} {prefix_full}".lower()
+        else:
+            core = prefix_full.lower()
+        # Prefer parenthesised form since it matches PERA's JD layout.
+        if "(" in q and ")" in q:
+            return f"{core} ({spec.lower()})"
+        return f"{core} {spec.lower()}"
+    return ""
 
 
 # Normalization for cross-doc content fingerprinting.
@@ -407,6 +528,61 @@ def retrieve(question: str, index_dir: Optional[str] = None) -> Dict[str, Any]:
 
         # Order chunks by RRF score descending, cap at TOP_K for downstream.
         sorted_rrf = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)[:TOP_K]
+
+        # ───── Lexical role-anchor injection ─────
+        # Embedding retrieval is surprisingly weak at distinguishing
+        # chunks where a role NAME is the subject (Position Title: X)
+        # from chunks where the same role is merely referenced in a
+        # Report-To field. For questions like "Manager (Development)
+        # reporting to?" the subject chunk usually loses to a handful
+        # of subordinate-role chunks that semantically cluster around
+        # the same wording.
+        #
+        # Fix: whenever we can extract a role-shaped phrase from the
+        # question (e.g. "manager (development)" or "manager
+        # development"), force-inject ANY chunk whose text starts with
+        # "Position Title: - <role>" into the top of the fused list.
+        # Keep existing chunks after it; trim to TOP_K to preserve the
+        # downstream contract.
+        try:
+            role_phrase = _extract_role_phrase_from_query(question or "")
+            if role_phrase:
+                anchor_cids: List[int] = []
+                anchor_seen = set()
+                _pat_pt = _re.compile(
+                    r"position\s*title\s*:?\s*-?\s*"
+                    + _re.escape(role_phrase.lower()),
+                    _re.IGNORECASE,
+                )
+                _pat_role = _re.compile(
+                    r"\[\s*role\s*:?\s*" + _re.escape(role_phrase.lower()),
+                    _re.IGNORECASE,
+                )
+                existing = {ci for ci, _ in sorted_rrf}
+                for ci, row in id_map.items():
+                    if ci in anchor_seen:
+                        continue
+                    txt = (row.get("text") or "").lower()
+                    if _pat_pt.search(txt) or _pat_role.search(txt):
+                        anchor_cids.append(ci)
+                        anchor_seen.add(ci)
+                if anchor_cids:
+                    # Give anchors a synthetic top RRF score so they sort first.
+                    top_rrf = sorted_rrf[0][1] if sorted_rrf else 1.0
+                    anchor_entries = [(ci, top_rrf + 1.0 - i * 0.01)
+                                       for i, ci in enumerate(anchor_cids)]
+                    # Prepend anchors, drop them from the tail if already present.
+                    rest = [(ci, s) for ci, s in sorted_rrf if ci not in anchor_seen]
+                    sorted_rrf = (anchor_entries + rest)[:TOP_K]
+                    # Seed best_sim for anchors that FAISS never surfaced.
+                    for ci in anchor_cids:
+                        best_sim.setdefault(ci, 0.5)
+                    log.info(
+                        "Role anchor injected %d chunk(s) for role=%r",
+                        len(anchor_cids), role_phrase,
+                    )
+        except Exception as _anchor_err:
+            log.debug("Role anchor skipped: %s", _anchor_err)
 
         # Reconstruct D and I. D carries the max cosine seen (downstream
         # thresholds stay valid); I carries the RRF-ordered IDs.

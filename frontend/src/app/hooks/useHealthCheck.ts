@@ -12,7 +12,7 @@ import type { ConnectionStatus } from "../lib/types";
  *
  * The legacy `reportSuccess` / `reportFailure` callbacks are kept so
  * existing call sites (useChatSessions.ts) still work — a failed
- * /api/ask call will eagerly mark the system offline between polls.
+ * /ask call will eagerly mark the system offline between polls.
  *
  * Status values:
  *   - "online"     — /health succeeded AND openai.available === true
@@ -75,7 +75,7 @@ export function useHealthCheck() {
   }, []);
 
   const reportFailure = useCallback(() => {
-    // Explicit failures from live /api/ask calls are authoritative —
+    // Explicit failures from live /ask calls are authoritative —
     // we don't wait for the polling debounce.
     setStatus("offline");
   }, []);
