@@ -265,7 +265,12 @@ async def upload_document(
 
     data_dir = _get_data_dir()
     os.makedirs(data_dir, exist_ok=True)
-    target_path = _unique_target_path(data_dir, safe)
+    target_path = os.path.join(data_dir, safe)
+    if os.path.exists(target_path):
+        raise HTTPException(
+            status_code=409,
+            detail={"error": "duplicate_filename", "filename": safe},
+        )
     target_abs = os.path.abspath(target_path)
     if not _is_safe_path(target_abs):
         raise HTTPException(status_code=400, detail={"error": "unsafe_path"})

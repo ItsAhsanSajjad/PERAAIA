@@ -423,7 +423,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
         </div>
       </div>
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         /* ================================================================
            ROOT
         ================================================================ */
@@ -1702,7 +1702,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
             opacity: 0.6;
           }
         }
-      `}</style>
+      ` }} />
     </div>
   );
 });

@@ -86,6 +86,7 @@ export default function AdminDashboard() {
   const [successBurst, setSuccessBurst] = useState(false);
   const [deletingName, setDeletingName] = useState<string | null>(null);
   const [confirm, setConfirm] = useState<string | null>(null);
+  const [signOutConfirm, setSignOutConfirm] = useState(false);
   const [dragging, setDragging] = useState(false);
   const [stage, setStage] = useState<"splash" | "ready">("splash");
   // Tracks rows exiting so we can animate them out before unmount.
@@ -142,46 +143,76 @@ export default function AdminDashboard() {
 
   async function handleFiles(files: FileList | null) {
     if (!files || !files.length) return;
-    const file = files[0];
-    if (!file.name.toLowerCase().endsWith(".pdf")) {
+    const all = Array.from(files);
+    const pdfs = all.filter((f) => f.name.toLowerCase().endsWith(".pdf"));
+    const skipped = all.length - pdfs.length;
+    if (!pdfs.length) {
       showToast("err", "Only PDF files are accepted.");
       return;
     }
+    if (skipped > 0) {
+      showToast("err", `Skipped ${skipped} non-PDF file(s).`);
+    }
+
     setUploading(true);
-    setUploadPct(0);
-    setUploadFileName(file.name);
-    setUploadStage("uploading");
-    try {
-      const result = await uploadDocument(file, (pct) => {
-        setUploadPct(pct);
-        if (pct >= 100) setUploadStage("indexing");
-      });
-      // Flash a brief success state before resetting.
+    let okCount = 0;
+    let failCount = 0;
+    let dupCount = 0;
+
+    for (let i = 0; i < pdfs.length; i++) {
+      const file = pdfs[i];
+      const prefix = pdfs.length > 1 ? `(${i + 1}/${pdfs.length}) ` : "";
+      setUploadPct(0);
+      setUploadFileName(prefix + file.name);
+      setUploadStage("uploading");
+      try {
+        const result = await uploadDocument(file, (pct) => {
+          setUploadPct(pct);
+          if (pct >= 100) setUploadStage("indexing");
+        });
+        okCount++;
+        if (pdfs.length === 1) {
+          setUploadStage("success");
+          setSuccessBurst(true);
+          window.setTimeout(() => setSuccessBurst(false), 1400);
+          showToast(
+            "ok",
+            `Uploaded ${result.filename} · indexed in ${(
+              result.duration_ms / 1000
+            ).toFixed(1)}s`,
+          );
+        }
+      } catch (e) {
+        const raw = e instanceof Error ? e.message : "Upload failed";
+        if (raw === "duplicate_filename") {
+          dupCount++;
+          showToast("err", `Already uploaded: ${file.name}`);
+        } else {
+          failCount++;
+          showToast("err", `${file.name}: ${raw}`);
+        }
+      }
+    }
+
+    if (pdfs.length > 1) {
       setUploadStage("success");
       setSuccessBurst(true);
       window.setTimeout(() => setSuccessBurst(false), 1400);
-      showToast(
-        "ok",
-        `Uploaded ${result.filename} · indexed in ${(
-          result.duration_ms / 1000
-        ).toFixed(1)}s`,
-      );
-      await refresh();
-      window.setTimeout(() => {
-        setUploading(false);
-        setUploadPct(0);
-        setUploadStage("idle");
-        setUploadFileName("");
-      }, 900);
-    } catch (e) {
-      showToast("err", e instanceof Error ? e.message : "Upload failed");
+      const parts: string[] = [];
+      if (okCount) parts.push(`${okCount} uploaded`);
+      if (dupCount) parts.push(`${dupCount} duplicate`);
+      if (failCount) parts.push(`${failCount} failed`);
+      showToast(failCount ? "err" : "ok", parts.join(" · "));
+    }
+
+    await refresh();
+    window.setTimeout(() => {
       setUploading(false);
       setUploadPct(0);
       setUploadStage("idle");
       setUploadFileName("");
-    } finally {
-      if (inputRef.current) inputRef.current.value = "";
-    }
+    }, 900);
+    if (inputRef.current) inputRef.current.value = "";
   }
 
   async function performDelete(name: string) {
@@ -374,7 +405,7 @@ export default function AdminDashboard() {
               </svg>
               {sessionEmail}
             </div>
-            <button onClick={logout} className="admin-signout">
+            <button onClick={() => setSignOutConfirm(true)} className="admin-signout">
               <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden>
                 <path
                   d="M10 17l-1.4-1.4 2.6-2.6H3v-2h8.2L8.6 8.4 10 7l5 5-5 5Zm9-14v18h-7v-2h5V5h-5V3h7Z"
@@ -498,17 +529,18 @@ export default function AdminDashboard() {
               </svg>
             </div>
             <div className="upload-text">
-              <div className="upload-title">Upload a PDF document</div>
+              <div className="upload-title">Upload PDF documents</div>
               <div className="upload-sub">
-                Drop a file here, or click <b>Choose PDF</b>. New documents are
-                automatically indexed and become searchable in the chat. Max
-                100&nbsp;MB.
+                Drop one or more PDFs here, or click <b>Choose PDFs</b>. New
+                documents are automatically indexed and become searchable in
+                the chat. Max 100&nbsp;MB per file.
               </div>
             </div>
             <input
               ref={inputRef}
               type="file"
               accept="application/pdf,.pdf"
+              multiple
               className="hidden"
               onChange={(e) => handleFiles(e.target.files)}
               style={{ display: "none" }}
@@ -519,7 +551,7 @@ export default function AdminDashboard() {
               className="upload-btn"
             >
               <span className="upload-btn-label">
-                {uploading ? "Uploading…" : "Choose PDF"}
+                {uploading ? "Uploading…" : "Choose PDFs"}
               </span>
               <span className="upload-btn-shine" />
             </button>
@@ -842,6 +874,48 @@ export default function AdminDashboard() {
                 className="modal-del"
               >
                 {deletingName === confirm ? "Removing…" : "Delete & Re-index"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sign out confirmation modal */}
+      {signOutConfirm && (
+        <div
+          className="modal-backdrop"
+          onClick={() => setSignOutConfirm(false)}
+        >
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-glow" />
+            <div className="modal-icon">
+              <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden>
+                <path
+                  d="M10 17l-1.4-1.4 2.6-2.6H3v-2h8.2L8.6 8.4 10 7l5 5-5 5Zm9-14v18h-7v-2h5V5h-5V3h7Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </div>
+            <div className="modal-title">Sign out of admin?</div>
+            <div className="modal-hint">
+              You will be returned to the login page and any in-progress
+              uploads will be lost.
+            </div>
+            <div className="modal-actions">
+              <button
+                onClick={() => setSignOutConfirm(false)}
+                className="modal-cancel"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setSignOutConfirm(false);
+                  logout();
+                }}
+                className="modal-del"
+              >
+                Sign Out
               </button>
             </div>
           </div>

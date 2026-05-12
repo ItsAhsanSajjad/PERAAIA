@@ -58,6 +58,17 @@ def prewarm_pdf_cache(data_dir: str = "assets/data") -> None:
     import threading
     from concurrent.futures import ThreadPoolExecutor
 
+    # Allow disabling the prewarm entirely — set PDF_PREWARM_PARALLEL=0.
+    # The request path already uses cache_only=True and degrades gracefully
+    # to a linear page estimate when a PDF isn't cached, so disabling the
+    # prewarm trades slower reference refinement for zero GIL contention
+    # during queries.
+    parallel = int(os.getenv("PDF_PREWARM_PARALLEL", "8"))
+    if parallel <= 0:
+        log.info("PDF cache prewarm disabled (PDF_PREWARM_PARALLEL=0)")
+        return
+    parallel = max(1, parallel)
+
     def _worker() -> None:
         try:
             if not os.path.isdir(data_dir):
@@ -68,8 +79,8 @@ def prewarm_pdf_cache(data_dir: str = "assets/data") -> None:
                 if f.lower().endswith(".pdf")
             )
             log.info(
-                "PDF cache prewarm: %d PDFs queued (dir=%s, parallel=4)",
-                len(pdfs), data_dir,
+                "PDF cache prewarm: %d PDFs queued (dir=%s, parallel=%d)",
+                len(pdfs), data_dir, parallel,
             )
             started = time.time()
 
@@ -82,9 +93,9 @@ def prewarm_pdf_cache(data_dir: str = "assets/data") -> None:
                     log.warning("PDF prewarm failed for %s: %s", p, exc)
 
             # pdfplumber is mostly I/O bound with short bursts of CPU
-            # parsing — 4 parallel workers reliably cuts total time
-            # without overloading disk/CPU on modest hardware.
-            with ThreadPoolExecutor(max_workers=4, thread_name_prefix="pdf-warm") as ex:
+            # parsing — env-tunable; default 8 cuts cold-start window
+            # roughly in half versus the prior 4 workers.
+            with ThreadPoolExecutor(max_workers=parallel, thread_name_prefix="pdf-warm") as ex:
                 list(ex.map(_load_one, pdfs))
 
             log.info(

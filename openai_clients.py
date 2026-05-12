@@ -81,7 +81,11 @@ def get_transcription_client() -> OpenAI:
     """
     global _transcription_client
     if _transcription_client is None:
-        _transcription_client = OpenAI(api_key=require_api_key())
+        _transcription_client = OpenAI(
+            api_key=require_api_key(),
+            timeout=45.0,
+            max_retries=1,
+        )
     return _transcription_client
 
 

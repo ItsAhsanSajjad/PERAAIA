@@ -651,6 +651,105 @@ body {
   opacity: 1;
 }
 
+/* ─── Edit user message (ChatGPT-style) ─── */
+.user-msg-wrap {
+  width: 100%;
+}
+
+.msg-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-faint);
+  opacity: 0;
+  transition: opacity 0.18s ease, background 0.18s ease, color 0.18s ease;
+  border: none;
+  cursor: pointer;
+  margin-top: 2px;
+  margin-right: 2px;
+}
+.msg-edit-btn span {
+  display: none;
+}
+.user-msg-wrap:hover .msg-edit-btn,
+.msg-edit-btn:focus-visible {
+  opacity: 1;
+}
+.msg-edit-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+@media (hover: none) {
+  .msg-edit-btn {
+    opacity: 0.55;
+  }
+}
+
+.user-bubble-editing {
+  width: 100%;
+}
+
+.msg-edit-textarea {
+  width: 100%;
+  min-height: 40px;
+  max-height: 240px;
+  resize: none;
+  background: transparent;
+  color: white;
+  font-size: 14px;
+  line-height: 1.55;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+.msg-edit-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.msg-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.msg-edit-cancel,
+.msg-edit-save {
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  border: 1px solid transparent;
+}
+.msg-edit-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+.msg-edit-cancel:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+.msg-edit-save {
+  background: white;
+  color: #1a1a1a;
+}
+.msg-edit-save:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.92);
+}
+.msg-edit-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ─── Prose ─── */
 .prose p {
   margin-bottom: 0.4rem;

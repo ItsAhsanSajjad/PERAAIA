@@ -123,7 +123,7 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
             </div>
           </div>
         )}
-        <style>{`
+        <style dangerouslySetInnerHTML={{ __html: `
           /* ---- Professional audio-app styled recording bar ---- */
           @keyframes rec-pro-in {
             from { opacity: 0; transform: translateY(6px); }
@@ -347,7 +347,7 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
             animation: rec-pro-fill-march 1.6s linear infinite;
             box-shadow: 0 0 10px rgba(212, 160, 23, 0.6);
           }
-        `}</style>
+        ` }} />
 
         <div className="flex items-end gap-2">
           <div className="flex-1 relative">
@@ -384,7 +384,7 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
                 </svg>
               )}
             </button>
-            <style>{`
+            <style dangerouslySetInnerHTML={{ __html: `
               /* ============================================================
                  COMPOSER ACTION BUTTONS — unified premium system
                  The textarea has padding-right: 6rem to reserve space for
@@ -488,7 +488,7 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
                     inset 0 1px 0 rgba(255, 255, 255, 0.35);
                 }
               }
-            `}</style>
+            ` }} />
 
             {/* Send Button */}
             <button
@@ -503,7 +503,7 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
                 <path d="M4 12h16M14 6l6 6-6 6" />
               </svg>
             </button>
-            <style>{`
+            <style dangerouslySetInnerHTML={{ __html: `
               .send-btn-pro {
                 position: absolute;
                 right: 8px;
@@ -630,7 +630,7 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
               @keyframes send-btn-spin {
                 to { transform: rotate(360deg); }
               }
-            `}</style>
+            ` }} />
           </div>
         </div>
 

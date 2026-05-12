@@ -138,6 +138,18 @@ export function useChatSessions(healthCallbacks: {
     [messages, healthCallbacks],
   );
 
+  // ─── Edit a previous user message: truncate from that point and resend ───
+  const editMessage = useCallback(
+    (index: number, newText: string) => {
+      const trimmed = newText.trim();
+      if (!trimmed) return;
+      setMessages((prev) => prev.slice(0, index));
+      setFailedPrompt(null);
+      setTimeout(() => sendMessage(trimmed), 0);
+    },
+    [sendMessage],
+  );
+
   // ─── Retry failed message ───
   const retryLastFailed = useCallback(() => {
     if (!failedPrompt) return;
@@ -212,6 +224,7 @@ export function useChatSessions(healthCallbacks: {
     lastBotIsNew,
     clearNewFlag: useCallback(() => setLastBotIsNew(false), []),
     sendMessage,
+    editMessage,
     retryLastFailed,
     startNewChat,
     loadChat,

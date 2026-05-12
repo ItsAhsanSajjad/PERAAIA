@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { memo, useState, useCallback, useMemo } from "react";
+import { memo, useState, useCallback, useMemo, useEffect, useRef } from "react";
 import type { Message, Reference } from "../../lib/types";
 import { renderMarkdown } from "../../lib/markdown";
 import { showToast } from "../common/Toast";
@@ -52,6 +52,7 @@ interface Props {
   onOpenPdf?: (ref: Reference) => void;
   onRetry?: () => void;
   onSendQuery?: (text: string) => void;
+  onEdit?: (newText: string) => void;
 }
 
 export const MessageBubble = memo(function MessageBubble({
@@ -61,8 +62,37 @@ export const MessageBubble = memo(function MessageBubble({
   onOpenPdf,
   onRetry,
   onSendQuery,
+  onEdit,
 }: Props) {
   const [copied, setCopied] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editText, setEditText] = useState(message.content);
+  const editTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (isEditing && editTextareaRef.current) {
+      const ta = editTextareaRef.current;
+      ta.focus();
+      ta.setSelectionRange(ta.value.length, ta.value.length);
+      ta.style.height = "auto";
+      ta.style.height = `${ta.scrollHeight}px`;
+    }
+  }, [isEditing]);
+
+  const cancelEdit = useCallback(() => {
+    setIsEditing(false);
+    setEditText(message.content);
+  }, [message.content]);
+
+  const saveEdit = useCallback(() => {
+    const trimmed = editText.trim();
+    if (!trimmed || trimmed === message.content) {
+      cancelEdit();
+      return;
+    }
+    setIsEditing(false);
+    onEdit?.(trimmed);
+  }, [editText, message.content, onEdit, cancelEdit]);
 
   const copyText = useCallback(() => {
     navigator.clipboard.writeText(message.content);
@@ -78,9 +108,53 @@ export const MessageBubble = memo(function MessageBubble({
   );
 
   if (message.role === "user") {
+    if (isEditing) {
+      return (
+        <div className="flex justify-end gap-2.5">
+          <div className="max-w-[82%] md:max-w-[72%] user-bubble user-bubble-editing">
+            <div className="px-4 py-3 relative z-10">
+              <textarea
+                ref={editTextareaRef}
+                value={editText}
+                onChange={(e) => {
+                  setEditText(e.target.value);
+                  const ta = e.currentTarget;
+                  ta.style.height = "auto";
+                  ta.style.height = `${ta.scrollHeight}px`;
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    saveEdit();
+                  } else if (e.key === "Escape") {
+                    e.preventDefault();
+                    cancelEdit();
+                  }
+                }}
+                className="msg-edit-textarea"
+                rows={1}
+                aria-label="Edit message"
+              />
+              <div className="msg-edit-actions">
+                <button onClick={cancelEdit} className="msg-edit-cancel">
+                  Cancel
+                </button>
+                <button
+                  onClick={saveEdit}
+                  disabled={!editText.trim() || editText.trim() === message.content}
+                  className="msg-edit-save"
+                >
+                  Save &amp; Send
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
     return (
-      <div className="flex justify-end gap-2.5">
-        <div className="max-w-[82%] md:max-w-[72%] user-bubble">
+      <div className="flex flex-col items-end gap-1 user-msg-wrap">
+        <div className="max-w-[82%] md:max-w-[72%] user-bubble relative">
           <div className="px-4 py-3 relative z-10">
             <p className="text-sm leading-relaxed text-white">{message.content}</p>
           </div>
@@ -88,6 +162,23 @@ export const MessageBubble = memo(function MessageBubble({
             {timeAgo(message.timestamp)}
           </div>
         </div>
+        {onEdit && (
+          <button
+            onClick={() => {
+              setEditText(message.content);
+              setIsEditing(true);
+            }}
+            className="msg-edit-btn"
+            aria-label="Edit message"
+            title="Edit message"
+          >
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+            </svg>
+            <span>Edit</span>
+          </button>
+        )}
       </div>
     );
   }

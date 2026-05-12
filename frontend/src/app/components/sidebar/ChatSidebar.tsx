@@ -200,7 +200,7 @@ export const ChatSidebar = memo(function ChatSidebar({
         />
       )}
 
-      <style>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         /* ============================================================
            SIDEBAR — clean institutional design
            - Dark: deep neutral #0f1117 with pale type, gold only for
@@ -627,7 +627,7 @@ export const ChatSidebar = memo(function ChatSidebar({
         html:not([data-theme="dark"]) .sb-footer-brand {
           color: rgba(17, 24, 39, 0.55);
         }
-      `}</style>
+      ` }} />
     </>
   );
 });

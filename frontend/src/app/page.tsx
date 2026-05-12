@@ -61,6 +61,7 @@ export default function Home() {
     lastBotIsNew,
     clearNewFlag,
     sendMessage,
+    editMessage,
     retryLastFailed,
     startNewChat,
     loadChat,
@@ -167,6 +168,7 @@ export default function Home() {
           onSendSuggestion={handleSend}
           onOpenPdf={handleOpenPdf}
           onRetry={retryLastFailed}
+          onEditMessage={editMessage}
         />
 
         {/* Query Interface */}

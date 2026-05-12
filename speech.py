@@ -23,6 +23,60 @@ log = get_logger("pera.speech")
 _DEVANAGARI_RE = re.compile(r"[\u0900-\u097F]")
 
 
+# Whisper hallucinates canned phrases when fed silence / non-speech.
+# See: https://github.com/openai/whisper/discussions/679
+_WHISPER_HALLUCINATIONS = [
+    re.compile(r"^\s*thanks?\s+for\s+watching[\s.!]*$", re.I),
+    re.compile(r"^\s*thank\s+you[\s.!]*$", re.I),
+    re.compile(r"^\s*(please\s+)?(don'?t\s+forget\s+to\s+)?(like|subscribe|comment)[\s,.!]*$", re.I),
+    re.compile(r"^\s*\[\s*music\s*\][\s.]*$", re.I),
+    re.compile(r"^\s*\(\s*music\s*\)[\s.]*$", re.I),
+    re.compile(r"^\s*\[?\s*(silence|inaudible|applause|laughter)\s*\]?[\s.]*$", re.I),
+    re.compile(r"^\s*for\s+more\s+information[,.]?\s*(please\s+)?visit\s+\S+[\s.!]*$", re.I),
+    re.compile(r"^\s*(visit\s+)?www\.[\w.-]+\.\w+[\s.!]*$", re.I),
+    re.compile(r"^\s*https?://\S+[\s.!]*$", re.I),
+    re.compile(r"^[\s.,!?\u2026\-]*$"),
+]
+
+
+def _is_whisper_hallucination(text: str) -> bool:
+    """Return True if text matches known Whisper-on-silence patterns."""
+    if not text:
+        return True
+    for pat in _WHISPER_HALLUCINATIONS:
+        if pat.match(text):
+            return True
+    return _looks_like_noise_hallucination(text)
+
+
+def _looks_like_noise_hallucination(text: str) -> bool:
+    """Detect repetition-driven Whisper hallucinations from background noise.
+
+    Signature: short fragments that repeat — e.g. 'X Y X Y X Y' or
+    'foo bar baz foo bar baz'. Real speech has high token diversity.
+    """
+    tokens = re.findall(r"\S+", text or "")
+    n = len(tokens)
+    if n < 4:
+        return False
+
+    unique_ratio = len(set(tokens)) / n
+    if unique_ratio < 0.35:
+        return True
+
+    for win in (1, 2, 3):
+        if n < win * 3:
+            continue
+        for i in range(n - win * 3 + 1):
+            phrase = tuple(tokens[i:i + win])
+            if (
+                tuple(tokens[i + win:i + 2 * win]) == phrase
+                and tuple(tokens[i + 2 * win:i + 3 * win]) == phrase
+            ):
+                return True
+    return False
+
+
 # Devanagari -> Roman-Urdu transliteration table.
 # Inherent "a" handling: Hindi consonants carry an implicit short "a"
 # unless followed by a vowel sign or the virama (halant). We implement
@@ -240,13 +294,15 @@ def transcribe_audio(audio_bytes: bytes, model: str = None) -> str:
             with open(raw_path, "wb") as f:
                 f.write(audio_bytes)
 
-            # If file is unknown/webm, try converting to wav for maximum compatibility
+            # Whisper accepts webm/m4a/ogg/mp3/wav natively. Only convert
+            # truly unknown formats (.bin) to wav for compatibility — skipping
+            # ffmpeg saves ~5-15s per request.
             use_path = raw_path
-            if ext in (".webm", ".bin", ".m4a", ".ogg"):
+            if ext == ".bin":
                 wav = _convert_to_wav(raw_path)
                 if wav:
                     use_path = wav
-                    log.debug("Converted %s to WAV for Whisper", ext)
+                    log.debug("Converted unknown audio to WAV for Whisper")
 
             # Call OpenAI transcription.
             #
@@ -284,6 +340,10 @@ def transcribe_audio(audio_bytes: bytes, model: str = None) -> str:
             if not text:
                 log.warning("Transcription returned empty text")
                 return "⚠️ I could not transcribe the audio. Please try again with clearer speech."
+
+            if _is_whisper_hallucination(text):
+                log.info("Whisper hallucination filtered (silent audio): %r", text[:80])
+                return "⚠️ I did not hear any speech. Please try again."
 
             if _looks_like_devanagari(text):
                 original = text

@@ -15,6 +15,7 @@ interface Props {
   onSendSuggestion: (text: string) => void;
   onOpenPdf: (ref: Reference) => void;
   onRetry: () => void;
+  onEditMessage?: (index: number, newText: string) => void;
 }
 
 /**
@@ -30,7 +31,15 @@ export const ChatWindow = memo(function ChatWindow({
   onSendSuggestion,
   onOpenPdf,
   onRetry,
+  onEditMessage,
 }: Props) {
+  let lastUserIdx = -1;
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].role === "user") {
+      lastUserIdx = i;
+      break;
+    }
+  }
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -84,32 +93,56 @@ export const ChatWindow = memo(function ChatWindow({
     return () => cancelAnimationFrame(rafId);
   }, [shouldAnimate, messages]);
 
-  // Scroll to bottom when loading indicator appears
+  // Track whether user is pinned to the bottom. We freeze this latch at the
+  // start of streaming so per-character scroll decisions don't flap when the
+  // user scrolls up to read.
+  const pinnedRef = useRef(true);
+  const lastScrollAtRef = useRef(0);
+
+  const isNearBottom = () => {
+    const c = scrollContainerRef.current;
+    if (!c) return true;
+    return c.scrollHeight - c.scrollTop - c.clientHeight < 120;
+  };
+
+  // Continuously update pinned state from user scroll position
   useEffect(() => {
-    if (loading) {
+    const c = scrollContainerRef.current;
+    if (!c) return;
+    const onScroll = () => {
+      pinnedRef.current = isNearBottom();
+    };
+    c.addEventListener("scroll", onScroll, { passive: true });
+    return () => c.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Smooth scroll when loading indicator appears (one-shot, not per char)
+  useEffect(() => {
+    if (loading && pinnedRef.current) {
       chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [loading]);
 
-  // Scroll when new user message is sent
+  // Smooth scroll to bottom when a new user message is appended
   useEffect(() => {
     const last = messages[messages.length - 1];
     if (last?.role === "user") {
+      pinnedRef.current = true;
       chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
-  // Gentle scroll during typing — only if user is already near the bottom
+  // During typing: throttled INSTANT scroll (no smooth) — only if user was
+  // pinned when streaming started AND they haven't scrolled up since. Avoids
+  // the jittery rubber-band caused by spawning new smooth-scrolls every frame.
   useEffect(() => {
     if (!isTyping) return;
-    const container = scrollContainerRef.current;
-    if (!container) return;
-    const threshold = 100;
-    const isNearBottom =
-      container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
-    if (isNearBottom) {
-      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
+    if (!pinnedRef.current) return;
+    const now = performance.now();
+    if (now - lastScrollAtRef.current < 120) return;
+    lastScrollAtRef.current = now;
+    const c = scrollContainerRef.current;
+    if (c) c.scrollTop = c.scrollHeight;
   }, [displayedText, isTyping]);
 
   const showWelcome = messages.length === 0 && !loading;
@@ -135,6 +168,11 @@ export const ChatWindow = memo(function ChatWindow({
               onOpenPdf={onOpenPdf}
               onRetry={msg.failed ? onRetry : undefined}
               onSendQuery={onSendSuggestion}
+              onEdit={
+                onEditMessage && i === lastUserIdx && !loading
+                  ? (newText) => onEditMessage(i, newText)
+                  : undefined
+              }
             />
           );
         })}
