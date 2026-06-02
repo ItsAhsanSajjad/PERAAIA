@@ -5,6 +5,7 @@ import type { Message, Reference } from "../../lib/types";
 import { WelcomeScreen } from "./WelcomeScreen";
 import { MessageBubble } from "./MessageBubble";
 import { ThinkingIndicator } from "./ThinkingIndicator";
+import { scrollBehavior, prefersReducedMotion } from "../../lib/motion";
 
 interface Props {
   messages: Message[];
@@ -63,6 +64,14 @@ export const ChatWindow = memo(function ChatWindow({
     if (last.role !== "assistant") return;
     const full = last.content;
 
+    // Reduced-motion: show the full answer immediately, no typewriter.
+    if (prefersReducedMotion()) {
+      setDisplayedText(full);
+      setIsTyping(false);
+      setShouldAnimate(false);
+      return;
+    }
+
     setIsTyping(true);
     setDisplayedText("");
     let i = 0;
@@ -119,7 +128,7 @@ export const ChatWindow = memo(function ChatWindow({
   // Smooth scroll when loading indicator appears (one-shot, not per char)
   useEffect(() => {
     if (loading && pinnedRef.current) {
-      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      chatEndRef.current?.scrollIntoView({ behavior: scrollBehavior() });
     }
   }, [loading]);
 
@@ -128,7 +137,7 @@ export const ChatWindow = memo(function ChatWindow({
     const last = messages[messages.length - 1];
     if (last?.role === "user") {
       pinnedRef.current = true;
-      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      chatEndRef.current?.scrollIntoView({ behavior: scrollBehavior() });
     }
   }, [messages]);
 
@@ -150,7 +159,7 @@ export const ChatWindow = memo(function ChatWindow({
   return (
     <div
       ref={scrollContainerRef}
-      className="flex-1 overflow-y-auto px-4 md:px-0"
+      className="flex-1 overflow-y-auto overflow-x-hidden px-4 md:px-0"
       style={{ background: "var(--bg-chat)" }}
     >
       <div className="max-w-3xl mx-auto py-6 space-y-5">

@@ -41,8 +41,19 @@ function parseInline(text: string): InlineSegment[] {
   return segments;
 }
 
+export interface MarkdownOptions {
+  /** Called when a clickable citation badge is activated. */
+  onCite?: (n: number) => void;
+  /** Citation numbers that have a matching source chip — only these become clickable. */
+  citeSet?: Set<number>;
+}
+
 /** Render inline segments to React nodes */
-function renderInline(text: string, keyPrefix: string): ReactNode[] {
+function renderInline(
+  text: string,
+  keyPrefix: string,
+  opts?: MarkdownOptions,
+): ReactNode[] {
   return parseInline(text).map((seg, i) => {
     const key = `${keyPrefix}-${i}`;
     switch (seg.type) {
@@ -50,12 +61,24 @@ function renderInline(text: string, keyPrefix: string): ReactNode[] {
         return createElement("strong", { key, className: "msg-inline-bold" }, seg.value);
       case "italic":
         return createElement("em", { key, className: "msg-inline-italic" }, seg.value);
-      case "cite":
-        return createElement(
-          "span",
-          { key, className: "cite-badge" },
-          `[${seg.value}]`,
-        );
+      case "cite": {
+        const n = parseInt(seg.value, 10);
+        if (opts?.onCite && opts.citeSet?.has(n)) {
+          return createElement(
+            "button",
+            {
+              key,
+              type: "button",
+              className: "cite-badge cite-badge-link",
+              onClick: () => opts.onCite!(n),
+              title: `Jump to source [${n}]`,
+              "aria-label": `Jump to source ${n}`,
+            },
+            `[${seg.value}]`,
+          );
+        }
+        return createElement("span", { key, className: "cite-badge" }, `[${seg.value}]`);
+      }
       default:
         return createElement("span", { key }, seg.value);
     }
@@ -138,7 +161,7 @@ function parseBlocks(text: string): BlockElement[] {
 }
 
 /** Render a full markdown string to an array of React elements — fully safe, no raw HTML */
-export function renderMarkdown(text: string): ReactNode[] {
+export function renderMarkdown(text: string, opts?: MarkdownOptions): ReactNode[] {
   const blocks = parseBlocks(text);
 
   return blocks.map((block, i) => {
@@ -150,7 +173,7 @@ export function renderMarkdown(text: string): ReactNode[] {
         return createElement(
           tag,
           { key, className: "msg-heading" },
-          ...renderInline(block.content!, key),
+          ...renderInline(block.content!, key, opts),
         );
       }
 
@@ -158,7 +181,7 @@ export function renderMarkdown(text: string): ReactNode[] {
         return createElement(
           "p",
           { key, className: "msg-para" },
-          ...renderInline(block.content!, key),
+          ...renderInline(block.content!, key, opts),
         );
 
       case "ul":
@@ -169,7 +192,7 @@ export function renderMarkdown(text: string): ReactNode[] {
             createElement(
               "li",
               { key: `${key}-li-${j}` },
-              ...renderInline(item, `${key}-li-${j}`),
+              ...renderInline(item, `${key}-li-${j}`, opts),
             ),
           ),
         );
@@ -182,7 +205,7 @@ export function renderMarkdown(text: string): ReactNode[] {
             createElement(
               "li",
               { key: `${key}-li-${j}` },
-              ...renderInline(item, `${key}-li-${j}`),
+              ...renderInline(item, `${key}-li-${j}`, opts),
             ),
           ),
         );

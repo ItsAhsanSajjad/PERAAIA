@@ -357,7 +357,7 @@ export const Composer = memo(function Composer({ onSend, disabled }: Props) {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               onInput={handleInput}
-              placeholder="Ask about PERA regulations, governance, enforcement, or KPIs"
+              placeholder={'Ask a PERA-related question, e.g. "How can I file a complaint?"'}
               rows={1}
               className="chat-input w-full resize-none px-4 py-3 pr-28 text-sm"
               style={{ maxHeight: 150, minHeight: 48 }}

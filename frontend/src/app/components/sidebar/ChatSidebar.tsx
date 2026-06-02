@@ -226,6 +226,18 @@ export const ChatSidebar = memo(function ChatSidebar({
         .sb.sb-open { width: 276px; transform: translateX(0); }
         .sb.sb-closed { width: 0; transform: translateX(-100%); }
 
+        /* Mobile: overlay instead of consuming flex width (matches the
+           md:hidden backdrop). Prevents the main column being squished
+           when the sidebar opens on small screens. */
+        @media (max-width: 767px) {
+          .sb {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+          }
+        }
+
         .sb-inner {
           display: flex;
           flex-direction: column;

@@ -10,84 +10,76 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 
 const EXAMPLE_QUERIES = [
   {
-    q: "What are PERA enforcement powers?",
-    hint: "Regulation & Act",
-    glyph: "⚖",
+    q: "How can I file a complaint with PERA?",
+    hint: "Complaints",
+    glyph: "📝",
   },
   {
-    q: "What KPIs measure PERA performance?",
-    hint: "Performance",
-    glyph: "📊",
-  },
-  {
-    q: "How is an EPO issued?",
-    hint: "Enforcement",
-    glyph: "⚡",
-  },
-  {
-    q: "What is the structure of the PERA Board?",
-    hint: "Governance",
+    q: "What does PERA regulate?",
+    hint: "About PERA",
     glyph: "🏛",
+  },
+  {
+    q: "What are my rights during an inspection?",
+    hint: "Inspections",
+    glyph: "🔍",
+  },
+  {
+    q: "How can I appeal or challenge a penalty?",
+    hint: "Appeals",
+    glyph: "⚖",
   },
 ];
 
 const EXPLORE_CARDS = [
   {
-    theme: "Governance",
-    glyph: "⚖",
+    theme: "Complaints",
+    glyph: "📝",
     prompts: [
-      "What powers does PERA have under the Act?",
-      "What is the structure of the PERA Board?",
+      "How can I file a complaint with PERA?",
+      "How can I track my complaint status?",
     ],
   },
   {
-    theme: "Roles",
-    glyph: "👤",
+    theme: "Inspections",
+    glyph: "🔍",
     prompts: [
-      "Responsibilities of the Chief Technology Officer?",
-      "Duties of enforcement officers?",
+      "What are my rights during an inspection?",
+      "What happens during a PERA inspection?",
     ],
   },
   {
-    theme: "Enforcement",
+    theme: "Rules & Regulations",
+    glyph: "📖",
+    prompts: [
+      "What does PERA regulate?",
+      "Which rules and regulations apply to me?",
+    ],
+  },
+  {
+    theme: "Enforcement Actions",
     glyph: "⚡",
     prompts: [
-      "How is an EPO issued?",
-      "What enforcement powers does PERA have?",
+      "How can I appeal or challenge a penalty?",
+      "What enforcement actions can PERA take?",
     ],
   },
   {
-    theme: "Performance",
-    glyph: "📊",
+    theme: "Documents & Sources",
+    glyph: "📄",
     prompts: [
-      "What KPIs measure operational success?",
-      "How is efficiency measured?",
-    ],
-  },
-  {
-    theme: "Compliance",
-    glyph: "🔒",
-    prompts: [
-      "Professional conduct standards for PERA employees?",
-      "Confidentiality obligations for staff?",
-    ],
-  },
-  {
-    theme: "Learning",
-    glyph: "📚",
-    prompts: [
-      "Training expectations for PERA staff?",
-      "How is capacity building measured?",
+      "Which official documents does PERA publish?",
+      "Where can I find PERA notifications?",
     ],
   },
 ];
 
 const CAPABILITIES = [
-  { label: "Regulations & Powers", glyph: "§" },
-  { label: "Governance & Roles", glyph: "⚖" },
-  { label: "Enforcement Procedures", glyph: "⚡" },
-  { label: "Performance Frameworks", glyph: "◆" },
-  { label: "Policies & Standards", glyph: "★" },
+  { label: "Official PERA Documents", glyph: "§" },
+  { label: "Source-Based Answers", glyph: "◆" },
+  { label: "Inspections & Rights", glyph: "⚖" },
+  { label: "Complaints & Appeals", glyph: "⚡" },
+  { label: "Citizen Support", glyph: "★" },
 ];
 
 interface Props {
@@ -131,20 +123,20 @@ export const WelcomeScreen = memo(function WelcomeScreen({
   >([]);
   useEffect(() => {
     setParticles(
-      Array.from({ length: 42 }).map((_, i) => ({
+      Array.from({ length: 14 }).map((_, i) => ({
         id: i,
         left: Math.random() * 100,
-        size: 1.4 + Math.random() * 3.5,
-        delay: Math.random() * 14,
-        duration: 14 + Math.random() * 16,
-        hue: Math.random() > 0.75 ? "mauve" : "gold",
+        size: 1.4 + Math.random() * 3,
+        delay: Math.random() * 16,
+        duration: 20 + Math.random() * 16,
+        hue: Math.random() > 0.8 ? "mauve" : "gold",
       })),
     );
   }, []);
 
   const orbitDots = useMemo(
     () =>
-      [0, 1, 2, 3, 4, 5].map((i) => ({
+      [0, 1, 2].map((i) => ({
         id: i,
         delay: -i * 2.4,
       })),
@@ -173,9 +165,6 @@ export const WelcomeScreen = memo(function WelcomeScreen({
         <div className="pw-stage-orb pw-stage-orb-3" />
         <div className="pw-stage-aurora" />
         <div className="pw-stage-beams">
-          <span className="pw-beam" />
-          <span className="pw-beam" />
-          <span className="pw-beam" />
           <span className="pw-beam" />
           <span className="pw-beam" />
         </div>
@@ -244,7 +233,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
                 <span
                   key={i}
                   className="pw-char"
-                  style={{ animationDelay: `${500 + i * 70}ms` }}
+                  style={{ animationDelay: `${120 + i * 35}ms` }}
                 >
                   {c}
                 </span>
@@ -256,7 +245,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
                 <span
                   key={i}
                   className="pw-char"
-                  style={{ animationDelay: `${780 + i * 70}ms` }}
+                  style={{ animationDelay: `${240 + i * 35}ms` }}
                 >
                   {c}
                 </span>
@@ -268,7 +257,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
                 <span
                   key={i}
                   className="pw-char"
-                  style={{ animationDelay: `${1060 + i * 50}ms` }}
+                  style={{ animationDelay: `${400 + i * 30}ms` }}
                 >
                   {c}
                 </span>
@@ -276,24 +265,21 @@ export const WelcomeScreen = memo(function WelcomeScreen({
             </span>
           </h1>
 
-          <p className="pw-hero-sub pw-fade" style={{ "--d": "1700ms" } as React.CSSProperties}>
-            Official intelligence layer for <span className="pw-hero-em">regulations</span>,
-            <span className="pw-hero-em"> governance</span>, <span className="pw-hero-em">enforcement</span>, and
-            <span className="pw-hero-em"> Authority performance</span>.
+          <p className="pw-hero-sub pw-fade" style={{ "--d": "540ms" } as React.CSSProperties}>
+            Ask questions about PERA and get answers based on
+            <span className="pw-hero-em"> official documents</span>,
+            <span className="pw-hero-em"> rules</span>, and
+            <span className="pw-hero-em"> notifications</span> — with sources you can verify.
           </p>
 
-          <div className="pw-hero-meta pw-fade" style={{ "--d": "1860ms" } as React.CSSProperties}>
+          <div className="pw-hero-meta pw-fade" style={{ "--d": "660ms" } as React.CSSProperties}>
             <span className="pw-meta-chip">
               <span className="pw-live-dot" />
-              Official Government System
-            </span>
-            <span className="pw-meta-chip">
-              <span className="pw-meta-bullet">v</span>
-              Version 2.0
+              Government of Punjab
             </span>
             <span className="pw-meta-chip">
               <span className="pw-meta-bullet">◆</span>
-              Knowledge Base · Current
+              Official PERA Documents
             </span>
           </div>
         </section>
@@ -301,21 +287,20 @@ export const WelcomeScreen = memo(function WelcomeScreen({
         {/* ══ Notice ribbon ══ */}
         <section
           className="pw-notice pw-fade"
-          style={{ "--d": "2040ms" } as React.CSSProperties}
+          style={{ "--d": "780ms" } as React.CSSProperties}
         >
           <span className="pw-notice-bar" />
           <span className="pw-notice-glow" />
           <p>
-            Informational guidance derived from official PERA regulations,
-            policies, governance documents, and performance frameworks —
-            responses are grounded in verified institutional sources.
+            Answers are generated from available official PERA documents
+            and may include sources where available.
           </p>
         </section>
 
         {/* ══ Quick prompts ══ */}
         <section
           className="pw-quick pw-fade"
-          style={{ "--d": "2180ms" } as React.CSSProperties}
+          style={{ "--d": "900ms" } as React.CSSProperties}
         >
           <div className="pw-eyebrow">
             <span className="pw-eyebrow-line" />
@@ -328,7 +313,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
                 key={q.q}
                 onClick={() => onSendMessage(q.q)}
                 className="pw-quick-card"
-                style={{ animationDelay: `${2280 + i * 80}ms` }}
+                style={{ animationDelay: `${1000 + i * 70}ms` }}
               >
                 <span className="pw-quick-bg" />
                 <span className="pw-quick-glyph">{q.glyph}</span>
@@ -421,6 +406,12 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           Ask anything below to begin.
           <span className="pw-hint-arrow">↓</span>
         </div>
+
+        <p className="pw-disclaimer pw-fade" style={{ "--d": "4040ms" } as React.CSSProperties}>
+          Ask PERA provides AI-generated guidance based on available official
+          PERA documents. For final decisions, legal matters, or case-specific
+          issues, please contact the official PERA office.
+        </p>
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
@@ -436,6 +427,8 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           margin-left: calc(50% - 50vw);
           margin-right: calc(50% - 50vw);
           width: 100vw;
+          max-width: 100vw;
+          overflow-x: hidden;
         }
 
         /* ================================================================
@@ -503,8 +496,8 @@ export const WelcomeScreen = memo(function WelcomeScreen({
             rgba(212, 160, 23, 0.65),
             transparent 70%
           );
-          opacity: 0.7;
-          animation: orb-a 24s ease-in-out infinite;
+          opacity: 0.5;
+          animation: orb-a 40s ease-in-out infinite;
         }
         .pw-stage-orb-2 {
           width: 680px;
@@ -516,8 +509,8 @@ export const WelcomeScreen = memo(function WelcomeScreen({
             rgba(184, 134, 11, 0.6),
             transparent 70%
           );
-          opacity: 0.55;
-          animation: orb-b 28s ease-in-out infinite;
+          opacity: 0.4;
+          animation: orb-b 46s ease-in-out infinite;
         }
         .pw-stage-orb-3 {
           width: 520px;
@@ -530,8 +523,8 @@ export const WelcomeScreen = memo(function WelcomeScreen({
             rgba(88, 70, 180, 0.55),
             transparent 70%
           );
-          opacity: 0.32;
-          animation: orb-c 34s ease-in-out infinite;
+          opacity: 0.2;
+          animation: orb-c 52s ease-in-out infinite;
         }
         .pw-stage-aurora {
           position: absolute;
@@ -546,7 +539,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
         .pw-stage-beams {
           position: absolute;
           inset: 0;
-          opacity: 0.55;
+          opacity: 0.3;
         }
         .pw-beam {
           position: absolute;
@@ -621,7 +614,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           pointer-events: none;
           background: radial-gradient(
             circle,
-            rgba(212, 160, 23, 0.16),
+            rgba(212, 160, 23, 0.08),
             transparent 55%
           );
           transform: translate(
@@ -1015,7 +1008,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
         ================================================================ */
         .pw-quick-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
           gap: 0.9rem;
         }
         .pw-quick-card {
@@ -1117,7 +1110,7 @@ export const WelcomeScreen = memo(function WelcomeScreen({
         ================================================================ */
         .pw-explore-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
           gap: 0.9rem;
         }
         .pw-explore-card {
@@ -1296,6 +1289,14 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           animation: arrow-bob 1.6s ease-in-out infinite;
           color: #f4d37a;
         }
+        .pw-disclaimer {
+          max-width: 46rem;
+          margin: 1.4rem auto 0;
+          text-align: center;
+          font-size: 0.74rem;
+          line-height: 1.6;
+          color: rgba(254, 243, 199, 0.42);
+        }
 
         /* ================================================================
            FADE HELPERS
@@ -1456,6 +1457,9 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           border-color: rgba(184, 134, 11, 0.2);
           color: rgba(26, 22, 18, 0.82);
           box-shadow: 0 10px 24px -14px rgba(26, 22, 18, 0.12);
+        }
+        html:not([data-theme="dark"]) .pw-disclaimer {
+          color: rgba(26, 22, 18, 0.5);
         }
 
         html:not([data-theme="dark"]) .pw-quick-card,
@@ -1700,6 +1704,20 @@ export const WelcomeScreen = memo(function WelcomeScreen({
           50% {
             transform: translateY(4px);
             opacity: 0.6;
+          }
+        }
+
+        /* ================================================================
+           MOBILE — prevent horizontal overflow, tighten spacing
+        ================================================================ */
+        @media (max-width: 640px) {
+          .pw-shell {
+            padding: 2rem 1rem 4rem;
+            gap: 2rem;
+          }
+          .pw-quick-grid,
+          .pw-explore-grid {
+            grid-template-columns: 1fr;
           }
         }
       ` }} />
