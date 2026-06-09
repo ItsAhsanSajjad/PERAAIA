@@ -75,6 +75,18 @@ def _norm_key(s: str) -> str:
 # Normalize abbrev keys once so Schedule-I etc. work
 _ABBREV_MAP = {_norm_key(k): v for k, v in _ABBREV_MAP_RAW.items()}
 
+# Whole-phrase aliases: informal/colloquial role names users type → the EXACT
+# official PERA Position Title. Compiled case-insensitive. Order matters — more
+# specific phrases first. Kept deliberately small and high-confidence; only add
+# a mapping when the informal term is genuinely ambiguous with a junior role
+# that shares keywords (which would otherwise win retrieval on lexical overlap).
+_ROLE_ALIAS_MAP = [
+    (_re.compile(r"\bsocial\s+media\s+manager\b", _re.IGNORECASE),
+     "Manager (Digital Strategy & Communication)"),
+    (_re.compile(r"\bdigital\s+(?:strategy\s+|media\s+)?manager\b", _re.IGNORECASE),
+     "Manager (Digital Strategy & Communication)"),
+]
+
 # Smart Context Expansion Keywords
 # If query contains these, we fetch adjacent pages (±RADIUS) to capture tables/schedules
 _EXPANSION_KEYWORDS = {
@@ -160,6 +172,15 @@ def _expand_abbreviations(query: str) -> str:
 
     # Normalize possessive forms: "manager's development" → "manager development"
     query = _re.sub(r"[''\u2019]s\b", "", query)
+
+    # Informal/colloquial role names → official PERA Position Titles. Applied as
+    # whole-phrase, case-insensitive substitutions BEFORE generic role-title
+    # normalization, so retrieval embeds toward the correct Position Title chunk
+    # instead of a junior role that merely shares keywords. Example: "social
+    # media manager" must resolve to the SPPP-3 "Manager (Digital Strategy &
+    # Communication)", not the junior "Associate Social Media" role.
+    for _alias_pat, _alias_repl in _ROLE_ALIAS_MAP:
+        query = _alias_pat.sub(_alias_repl, query)
 
     # Role title normalization: "manager development" → also add "Manager (Development)"
     # In PERA PDFs, role titles use parentheses like "Manager (Development)"

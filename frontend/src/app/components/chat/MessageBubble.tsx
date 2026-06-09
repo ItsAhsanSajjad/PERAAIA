@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { memo, useState, useCallback, useMemo, useEffect, useRef } from "react";
 import type { Message, Reference } from "../../lib/types";
-import { renderMarkdown } from "../../lib/markdown";
+import { renderMarkdown, sanitizeStreamingMarkdown } from "../../lib/markdown";
 import { scrollBehavior } from "../../lib/motion";
 import { showToast } from "../common/Toast";
 
@@ -290,10 +290,15 @@ export const MessageBubble = memo(function MessageBubble({
               )}
               <div className="msg-bot-text">
                 {isTyping ? (
-                  /* While typing, show raw text (whitespace preserved) so
-                     incomplete markdown tokens don't flash/reflow per char.
-                     Full markdown renders once typing completes. */
-                  <span style={{ whiteSpace: "pre-wrap" }}>{displayText}</span>
+                  /* While typing, render markdown on a SANITIZED copy of the
+                     partial text so the formatting looks clean live (no raw
+                     ### / **). The sanitizer hides only incomplete tokens;
+                     completed pairs, lists, and citations render normally.
+                     Citations are non-clickable until refs arrive on complete. */
+                  renderMarkdown(sanitizeStreamingMarkdown(displayText), {
+                    onCite: jumpToSource,
+                    citeSet,
+                  })
                 ) : (
                   renderMarkdown(displayText, { onCite: jumpToSource, citeSet })
                 )}

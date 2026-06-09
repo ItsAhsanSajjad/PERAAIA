@@ -74,21 +74,84 @@ log = get_logger("pera.api")
 APP_VERSION = os.getenv("APP_VERSION", "2.3.0")
 APP_ENV = os.getenv("APP_ENV", "development").strip().lower()  # "development" | "production"
 
-_cors_default = "*" if APP_ENV != "production" else ""
-_cors_raw = os.getenv("CORS_ALLOW_ORIGINS", _cors_default).strip()
-
-# Detect the explicit allow-all directive. Treat "*" as a sentinel,
-# NOT as an item in a list, so a misconfigured "*, https://a" is read
-# as allow-all (matching the user-facing intent rather than silently
-# constructing a broken list).
-CORS_ALLOW_ALL = "*" in [s.strip() for s in _cors_raw.split(",")]
-if CORS_ALLOW_ALL:
-    CORS_ALLOW_ORIGINS: List[str] = ["*"]
-else:
-    CORS_ALLOW_ORIGINS = [o.strip() for o in _cors_raw.split(",") if o.strip()]
+# Built-in development origins — always allowed when APP_ENV is not
+# "production" so local frontends (Next.js, Vite, etc.) work without any
+# CORS_ALLOW_ORIGINS configuration. NEVER applied in production.
+_DEV_DEFAULT_ORIGINS: List[str] = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3002",
+    "http://localhost:5173",
+    "http://127.0.0.1:3000",
+    "http://127.0.0.1:3001",
+    "http://127.0.0.1:3002",
+    "http://127.0.0.1:5173",
+]
 
 CORS_ALLOW_CREDENTIALS = (
     os.getenv("CORS_ALLOW_CREDENTIALS", "0").strip() == "1"
+)
+
+
+def parse_cors_origins(
+    raw: str,
+    app_env: str,
+    allow_credentials: bool,
+) -> Tuple[bool, List[str]]:
+    """Resolve the effective CORS config from a raw CSV env value.
+
+    Returns ``(allow_all, origins)``:
+      • ``allow_all`` True  → mount wildcard CORS (credentials must be off).
+      • otherwise           → use the explicit ``origins`` allow-list.
+
+    Rules:
+      • CSV is trimmed, empties dropped, de-duplicated (order preserved).
+      • Wildcard ``*`` is honored ONLY when app_env != "production" AND
+        credentials are disabled (browsers reject ``*`` + credentials).
+        In production, or with credentials on, ``*`` is dropped/ignored.
+      • In non-production, the built-in dev origins are merged in so local
+        frontends always work, with custom origins appended.
+    """
+    is_prod = app_env == "production"
+    items = [s.strip() for s in (raw or "").split(",")]
+    items = [s for s in items if s]  # drop empties
+
+    has_wildcard = "*" in items
+    explicit = [s for s in items if s != "*"]
+
+    # Wildcard only in non-prod and only without credentials.
+    if has_wildcard and not is_prod and not allow_credentials:
+        return True, ["*"]
+    if has_wildcard and (is_prod or allow_credentials):
+        log.warning(
+            "CORS: wildcard '*' ignored (app_env=%s, allow_credentials=%s) — "
+            "falling back to explicit allow-list.",
+            app_env, allow_credentials,
+        )
+
+    merged: List[str] = []
+    if not is_prod:
+        merged.extend(_DEV_DEFAULT_ORIGINS)
+    merged.extend(explicit)
+
+    # De-duplicate, preserve order.
+    seen: set = set()
+    origins: List[str] = []
+    for o in merged:
+        if o not in seen:
+            seen.add(o)
+            origins.append(o)
+    return False, origins
+
+
+_cors_default = "*" if APP_ENV != "production" else ""
+_cors_raw = os.getenv("CORS_ALLOW_ORIGINS", _cors_default).strip()
+CORS_ALLOW_ALL, CORS_ALLOW_ORIGINS = parse_cors_origins(
+    _cors_raw, APP_ENV, CORS_ALLOW_CREDENTIALS
+)
+log.info(
+    "CORS configured: app_env=%s allow_all=%s origin_count=%d allow_credentials=%s",
+    APP_ENV, CORS_ALLOW_ALL, len(CORS_ALLOW_ORIGINS), CORS_ALLOW_CREDENTIALS,
 )
 
 # Body / upload size guardrails.
@@ -1043,6 +1106,10 @@ def simple_ask(req: Request, request: SimpleChatRequest,
             retrieval,
             conversation_history=hist_for_llm,
             intent=intent_payload,
+            # Step 3: give the answer step the normalized/translated retrieval
+            # query so it can understand Roman-Urdu/informal intent while still
+            # answering in the user's original language.
+            retrieval_question=query_for_retrieval,
         )
 
     # ── 6. Extract metadata for session + audit ───────────────

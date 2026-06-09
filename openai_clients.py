@@ -12,12 +12,46 @@ from typing import Optional
 from dotenv import load_dotenv
 from openai import OpenAI
 
-load_dotenv()
+# override=True: .env is the source of truth for keys/config. Prevents a
+# stale OS env var (e.g. an old OPENAI_API_KEY) from shadowing the funded
+# key in .env, which otherwise causes 429 insufficient_quota at runtime.
+load_dotenv(override=True)
 
 # ─── Configuration (all from .env) ───────────────────────────────────────────
 
 OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "").strip()
 OPENAI_BASE_URL: str = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1").strip()
+
+
+def _env_float(name: str, default: float) -> float:
+    """Parse a float env var, falling back safely on missing/invalid."""
+    try:
+        v = float(os.getenv(name, "").strip())
+        return v if v > 0 else default
+    except (TypeError, ValueError):
+        return default
+
+
+def _env_int(name: str, default: int) -> int:
+    """Parse a non-negative int env var, falling back safely."""
+    try:
+        v = int(os.getenv(name, "").strip())
+        return v if v >= 0 else default
+    except (TypeError, ValueError):
+        return default
+
+
+# Request reliability controls (env-driven, safe defaults). These bound
+# how long any OpenAI call may hang and how many times the SDK retries
+# transient failures. Applied at the client level so every chat /
+# embedding / judge call inherits them.
+OPENAI_TIMEOUT_SECONDS: float = _env_float("OPENAI_TIMEOUT_SECONDS", 30.0)
+OPENAI_MAX_RETRIES: int = _env_int("OPENAI_MAX_RETRIES", 1)
+
+# Max-token caps for generation (read by answerer.py). Kept here so all
+# OpenAI-related knobs live in one place.
+OPENAI_ANSWER_MAX_TOKENS: int = _env_int("OPENAI_ANSWER_MAX_TOKENS", 1200)
+OPENAI_REFINE_MAX_TOKENS: int = _env_int("OPENAI_REFINE_MAX_TOKENS", 600)
 
 # Model names
 ANSWER_MODEL: str = os.getenv("ANSWER_MODEL", "gpt-4o-mini").strip()
@@ -70,6 +104,8 @@ def get_chat_client() -> OpenAI:
         _chat_client = OpenAI(
             api_key=require_api_key(),
             base_url=OPENAI_BASE_URL or "https://api.openai.com/v1",
+            timeout=OPENAI_TIMEOUT_SECONDS,
+            max_retries=OPENAI_MAX_RETRIES,
         )
     return _chat_client
 
@@ -122,7 +158,12 @@ def get_grounding_judge_client() -> OpenAI:
                 or OPENAI_BASE_URL
                 or "https://api.openai.com/v1"
             )
-            _judge_client = OpenAI(api_key=api_key, base_url=base_url)
+            _judge_client = OpenAI(
+                api_key=api_key,
+                base_url=base_url,
+                timeout=OPENAI_TIMEOUT_SECONDS,
+                max_retries=OPENAI_MAX_RETRIES,
+            )
         except Exception:
             return get_chat_client()
     return _judge_client

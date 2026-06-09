@@ -23,6 +23,7 @@ from typing import Any, Dict, List, Optional
 from urllib.parse import unquote
 
 from fastapi import APIRouter, Depends, File, HTTPException, Request, UploadFile
+from fastapi.concurrency import run_in_threadpool
 from pydantic import BaseModel
 
 from admin_auth import (
@@ -33,6 +34,7 @@ from admin_auth import (
 )
 from doc_registry import scan_assets_data
 from log_config import get_logger
+from audit_trail import redact_ip
 
 log = get_logger("pera.admin_routes")
 
@@ -206,12 +208,12 @@ def admin_login(body: LoginBody, request: Request) -> Dict[str, Any]:
         )
     if not verify_credentials(body.email, body.password):
         # Intentionally opaque to prevent user-enumeration.
-        log.info("Admin login rejected for ip=%s", client_ip)
+        log.info("Admin login rejected for ip=%s", redact_ip(client_ip))
         raise HTTPException(
             status_code=401, detail={"error": "invalid_credentials"}
         )
     token, exp = issue_admin_token(body.email.strip())
-    log.info("Admin login granted for ip=%s", client_ip)
+    log.info("Admin login granted for ip=%s", redact_ip(client_ip))
     return {"token": token, "expires_at": exp}
 
 
@@ -320,13 +322,16 @@ async def upload_document(
 
     log.info("Admin uploaded PDF: %s (%d bytes)", safe, total)
 
-    # Trigger indexing — blocking call, atomic blue/green swap inside.
+    # Trigger indexing. ensure_index_once() is blocking (CPU + disk +
+    # internal threading.Lock, atomic blue/green swap inside). This route
+    # is async, so run it in a threadpool to avoid freezing the event
+    # loop; we still await it so the response reflects the rebuild result.
     started = time.time()
     try:
         indexer = _get_indexer()
-        result = indexer.ensure_index_once() or {}
+        result = await run_in_threadpool(indexer.ensure_index_once) or {}
     except Exception as exc:
-        log.error("Index rebuild after upload failed: %s", exc)
+        log.error("Index rebuild after upload failed: %s", exc, exc_info=True)
         result = {"changed": False, "error": str(exc)}
     duration_ms = int((time.time() - started) * 1000)
     return {
@@ -359,12 +364,15 @@ def delete_document(
 
     log.info("Admin deleted PDF: %s", name)
 
+    # This route is a sync `def`, so FastAPI already runs it in a
+    # threadpool — ensure_index_once() does not block the event loop here.
+    # (The internal threading.Lock serializes against upload/poller.)
     started = time.time()
     try:
         indexer = _get_indexer()
         result = indexer.ensure_index_once() or {}
     except Exception as exc:
-        log.error("Index rebuild after delete failed: %s", exc)
+        log.error("Index rebuild after delete failed: %s", exc, exc_info=True)
         result = {"changed": False, "error": str(exc)}
     duration_ms = int((time.time() - started) * 1000)
     return {

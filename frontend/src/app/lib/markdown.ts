@@ -160,6 +160,46 @@ function parseBlocks(text: string): BlockElement[] {
   return blocks;
 }
 
+/**
+ * Sanitize PARTIAL markdown emitted mid-stream so the user never sees raw,
+ * incomplete tokens (dangling `**`, bare/partial `#` heading markers).
+ * Completed pairs, citations `[n]`, numbered/bullet list markers, and line
+ * breaks are all preserved untouched. Safe to call every streaming frame.
+ */
+export function sanitizeStreamingMarkdown(text: string): string {
+  if (!text) return text;
+
+  const lines = text.split("\n").map((line) => {
+    // Heading WITH content streamed: normalize the hash count to the range the
+    // block renderer supports (2–4) so a single `#` or `#####` still renders as
+    // a heading instead of leaking raw `#`.
+    const withContent = line.match(/^(\s*)(#{1,6})\s+(.*\S.*)$/);
+    if (withContent) {
+      const indent = withContent[1];
+      const level = Math.min(Math.max(withContent[2].length, 2), 4);
+      return `${indent}${"#".repeat(level)} ${withContent[3]}`;
+    }
+    // Bare/partial heading markers (hashes typed, heading text not streamed
+    // yet) → keep only the indentation so raw `#`/`##`/`###` never flashes.
+    if (/^\s*#{1,6}\s*$/.test(line)) {
+      return (line.match(/^(\s*)/) as RegExpMatchArray)[1];
+    }
+    return line;
+  });
+
+  let result = lines.join("\n");
+
+  // Dangling bold marker: an odd count of `**` means the closing pair hasn't
+  // streamed yet. Drop the LAST unmatched `**` only — every completed
+  // `**bold**` pair stays intact, and the closer renders bold once it arrives.
+  if ((result.match(/\*\*/g) || []).length % 2 === 1) {
+    const idx = result.lastIndexOf("**");
+    result = result.slice(0, idx) + result.slice(idx + 2);
+  }
+
+  return result;
+}
+
 /** Render a full markdown string to an array of React elements — fully safe, no raw HTML */
 export function renderMarkdown(text: string, opts?: MarkdownOptions): ReactNode[] {
   const blocks = parseBlocks(text);

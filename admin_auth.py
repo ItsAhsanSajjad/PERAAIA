@@ -26,6 +26,15 @@ from typing import Any, Deque, Dict, Optional, Tuple
 
 from fastapi import Header, HTTPException, Request
 
+try:
+    # python-dotenv is a project dependency; load .env so ADMIN_* env
+    # vars are available regardless of import order. Idempotent + safe.
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except Exception:  # pragma: no cover — dotenv optional at runtime
+    pass
+
 from log_config import get_logger
 
 log = get_logger("pera.admin_auth")
@@ -34,10 +43,23 @@ log = get_logger("pera.admin_auth")
 # ---------------------------------------------------------------------------
 # Credentials
 # ---------------------------------------------------------------------------
-# These are intentionally held as module-level constants so a single change
-# here is the only place credentials exist. They are never echoed to logs.
-ADMIN_EMAIL = "admin@pera.gop.pk"
-ADMIN_PASSWORD = "Pera@112233"
+# Credentials are NEVER hardcoded. They are sourced from environment:
+#
+#   ADMIN_EMAIL          — the admin login email (plain string).
+#   ADMIN_PASSWORD_HASH  — a PBKDF2-HMAC-SHA256 hash of the admin password,
+#                          in the format produced by ``hash_password`` below:
+#                          ``pbkdf2_sha256$<iterations>$<salt_b64>$<hash_b64>``.
+#
+# Generate a hash with: ``python scripts/generate_admin_password_hash.py``.
+# If either variable is missing/malformed, admin login FAILS SAFELY (no
+# fallback to any default credential). Values are never written to logs.
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "").strip()
+ADMIN_PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH", "").strip()
+
+# PBKDF2 parameters for newly generated hashes (verification reads the
+# embedded iteration count, so changing this only affects new hashes).
+_PBKDF2_ALGO = "pbkdf2_sha256"
+_PBKDF2_ITERATIONS = 240_000
 
 # 12 hours of session validity after login.
 TOKEN_TTL_SECONDS = 12 * 60 * 60
@@ -143,11 +165,57 @@ def verify_admin_token(token: str) -> Optional[Dict[str, Any]]:
 
 
 # ---------------------------------------------------------------------------
-# Credential check (constant-time)
+# Password hashing (PBKDF2-HMAC-SHA256, Python stdlib — no extra dependency)
 # ---------------------------------------------------------------------------
+def hash_password(password: str, iterations: int = _PBKDF2_ITERATIONS) -> str:
+    """Return a self-describing PBKDF2 hash string for ``password``.
+
+    Format: ``pbkdf2_sha256$<iterations>$<salt_b64>$<hash_b64>``.
+    A fresh random salt is generated each call. Used by the helper script
+    to produce ``ADMIN_PASSWORD_HASH``; never stores the plaintext.
+    """
+    salt = secrets.token_bytes(16)
+    dk = hashlib.pbkdf2_hmac("sha256", password.encode("utf-8"), salt, iterations)
+    return f"{_PBKDF2_ALGO}${iterations}${_b64u_encode(salt)}${_b64u_encode(dk)}"
+
+
+def _verify_password(password: str, stored_hash: str) -> bool:
+    """Constant-time verify ``password`` against a stored PBKDF2 hash.
+
+    Returns False on any malformed/unsupported hash rather than raising,
+    so a misconfigured ADMIN_PASSWORD_HASH fails safely (login denied).
+    """
+    try:
+        algo, iter_s, salt_b64, hash_b64 = stored_hash.split("$", 3)
+        if algo != _PBKDF2_ALGO:
+            return False
+        iterations = int(iter_s)
+        salt = _b64u_decode(salt_b64)
+        expected = _b64u_decode(hash_b64)
+    except Exception:
+        return False
+    dk = hashlib.pbkdf2_hmac("sha256", (password or "").encode("utf-8"), salt, iterations)
+    return hmac.compare_digest(dk, expected)
+
+
+# ---------------------------------------------------------------------------
+# Credential check (constant-time, env-sourced, fail-safe)
+# ---------------------------------------------------------------------------
+def admin_auth_configured() -> bool:
+    """True only when both ADMIN_EMAIL and ADMIN_PASSWORD_HASH are present."""
+    return bool(ADMIN_EMAIL) and bool(ADMIN_PASSWORD_HASH)
+
+
 def verify_credentials(email: str, password: str) -> bool:
+    # Fail safely when not configured — never fall back to a default.
+    if not admin_auth_configured():
+        log.error(
+            "Admin auth misconfigured: ADMIN_EMAIL and/or ADMIN_PASSWORD_HASH "
+            "is not set. Login denied. Configure these env vars to enable login."
+        )
+        return False
     email_ok = hmac.compare_digest((email or "").strip(), ADMIN_EMAIL)
-    pw_ok = hmac.compare_digest(password or "", ADMIN_PASSWORD)
+    pw_ok = _verify_password(password or "", ADMIN_PASSWORD_HASH)
     return email_ok and pw_ok
 
 

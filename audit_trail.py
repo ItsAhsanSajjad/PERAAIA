@@ -43,6 +43,17 @@ AUDIT_ENABLED = os.getenv("AUDIT_ENABLED", "1").strip() != "0"
 AUDIT_STORE_FULL_TEXT = os.getenv("AUDIT_STORE_FULL_TEXT", "0").strip() != "0"
 AUDIT_MAX_ANSWER_CHARS = int(os.getenv("AUDIT_MAX_ANSWER_CHARS", "500"))
 
+# ── Privacy controls (Step 5) ─────────────────────────────────
+# Default privacy-safe: raw citizen questions and full client IPs are
+# NOT written to the audit log. Instead a length + short salted hash is
+# stored, which preserves dedup/abuse-triage utility without retaining
+# the raw PII. Flip these to "1" only for local debugging.
+LOG_RAW_QUERIES = os.getenv("LOG_RAW_QUERIES", "0").strip() == "1"
+LOG_CLIENT_IP = os.getenv("LOG_CLIENT_IP", "0").strip() == "1"
+# Salt for the short hashes. Without a salt the hash is still useful for
+# equality/dedup within a deployment but is not reversible to the raw value.
+AUDIT_HASH_SALT = os.getenv("AUDIT_HASH_SALT", "")
+
 # Phase 7 — integrity / retention controls (all optional / safe defaults).
 AUDIT_SCHEMA_VERSION = 2
 AUDIT_HMAC_SECRET = os.getenv("AUDIT_HMAC_SECRET", "").encode("utf-8")
@@ -67,6 +78,41 @@ def _ensure_dir() -> str:
 def _answer_fingerprint(text: str) -> str:
     """SHA256 hash of the answer for privacy-bounded storage."""
     return hashlib.sha256((text or "").encode()).hexdigest()[:16]
+
+
+def _short_hash(value: str) -> str:
+    """Short salted SHA256 of a value for privacy-bounded storage.
+
+    Used for query/IP fingerprints when raw logging is disabled. Returns
+    "" for empty input so the field stays clean.
+    """
+    if not value:
+        return ""
+    h = hashlib.sha256()
+    if AUDIT_HASH_SALT:
+        h.update(AUDIT_HASH_SALT.encode("utf-8"))
+        h.update(b"\x00")
+    h.update(value.encode("utf-8"))
+    return h.hexdigest()[:16]
+
+
+def redact_query(text: str) -> str:
+    """Return the raw query only when LOG_RAW_QUERIES is enabled, else ''."""
+    return (text or "")[:500] if LOG_RAW_QUERIES else ""
+
+
+def redact_ip(ip: str) -> str:
+    """Privacy-safe IP rendering for logs.
+
+    When LOG_CLIENT_IP is enabled returns the (bounded) raw IP; otherwise
+    returns a short salted hash prefixed "h:" so log readers can correlate
+    requests from the same source without storing the address itself.
+    """
+    if not ip:
+        return ""
+    if LOG_CLIENT_IP:
+        return ip[:64]
+    return "h:" + _short_hash(ip)
 
 
 def _current_log_path() -> str:
@@ -277,9 +323,17 @@ def log_audit_entry(
         "ts_unix": round(time.time(), 3),
         "request_id": request_id,
         "session_id": session_id,
-        "client_ip": client_ip[:64] if client_ip else "",
-        "question": question[:500],
-        "normalized_query": normalized_query[:500] if normalized_query else "",
+        # Privacy-safe by default (Step 5): raw IP/query withheld unless
+        # explicitly enabled. Length + short salted hash are always kept so
+        # dedup/abuse-triage still works without retaining PII. Keys remain
+        # present for backward compatibility with downstream consumers.
+        "client_ip": redact_ip(client_ip),
+        "client_ip_hash": _short_hash(client_ip) if client_ip else "",
+        "question": redact_query(question),
+        "question_len": len(question or ""),
+        "question_hash": _short_hash(question) if question else "",
+        "normalized_query": redact_query(normalized_query),
+        "normalized_query_hash": _short_hash(normalized_query) if normalized_query else "",
         "decision": decision,
         "references_count": references_count,
         "evidence_ids": (evidence_ids or [])[:10],
@@ -334,8 +388,9 @@ def log_audit_entry(
         entry["answer_hash"] = _answer_fingerprint(answer_text)
         entry["answer_len"] = len(answer_text or "")
 
-    # Rewrite diff — shows original → rewritten query
-    if rewrite_diff:
+    # Rewrite diff — shows original → rewritten query (contains raw query
+    # text, so only retained when raw query logging is explicitly enabled).
+    if rewrite_diff and LOG_RAW_QUERIES:
         entry["rewrite_diff"] = rewrite_diff[:500]
 
     # Reranker scores — top hits with blend scores

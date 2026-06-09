@@ -6,7 +6,19 @@
 .env
 .env.local
 .env.*.local
+.env.*
+*.env
+*.env.*
+.env.bak*
+*.env.bak*
+env.txt
+env.txt.*
+*.secret
+*.secrets
+secrets.*
 .admin_secret
+# Keep the placeholder example committed (no real secrets inside).
+!.env.example
 
 # ── Python bytecode & caches ─────────────────────────────────────
 __pycache__/
@@ -50,6 +62,17 @@ audit_logs/
 # ── Scratch / debug output ───────────────────────────────────────
 *.log
 /tmp/
+# Local debug/scratch artifacts (Step 5). These patterns target throwaway
+# debug scripts and dumps only — they intentionally do NOT match the
+# committed `tests/` suite or files literally named test_*.py.
+debug_*.py
+*_debug.json
+*_debug.txt
+debug_*.txt
+tmp_*
+ans_tmp.json
+*_test_output.txt
+retrieval_log.txt
 .claude/
 eval/
 test_pdf/

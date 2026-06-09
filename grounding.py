@@ -283,11 +283,14 @@ def _semantic_support_check(answer_text: str, context_str: str, question: str = 
                 if len(line_stripped) > 3 and line_stripped.lower() != "none":
                     unsupported.append(line_stripped.lstrip("-•*").strip())
 
-        return {"support": support, "unsupported_claims": unsupported[:8]}
+        return {"support": support, "unsupported_claims": unsupported[:8], "judge_failed": False}
 
     except Exception as e:
-        log.warning("Semantic support check failed: %s — defaulting to 'partial'", e)
-        return {"support": "partial", "unsupported_claims": []}
+        # Judge failure / timeout is NOT the same as a genuine "partial"
+        # verdict. Flag it so the verifier can lean toward caution/refusal
+        # rather than crediting partial support we never actually confirmed.
+        log.warning("Semantic support check failed: %s — flagging judge failure (cautious)", e)
+        return {"support": "partial", "unsupported_claims": [], "judge_failed": True}
 
 
 # ── Main Verifier ─────────────────────────────────────────────────────────────
@@ -337,12 +340,19 @@ def verify_grounding(
         sem_result = _semantic_support_check(answer_text, context_str, question)
         semantic_support = sem_result.get("support", "partial")
         sem_unsupported = sem_result.get("unsupported_claims", [])
+        judge_failed = sem_result.get("judge_failed", False)
 
         # Phase 4: tighter mapping. "combined" must clear a higher bar to
         # avoid serving as a soft pass for weak inference. "partial" now
         # contributes less, and "none" near-zero, so unsupported answers
         # cannot ride evidence-quality alone past the grounded threshold.
-        if semantic_support == "full":
+        if judge_failed:
+            # Step 4: judge failure/timeout — we never confirmed support, so
+            # stay cautious (lower than a real "partial") to bias the gate
+            # toward refusal instead of crediting unverified support.
+            claim_ratio = 0.20
+            notes.append("Judge unavailable (failure/timeout) — cautious score")
+        elif semantic_support == "full":
             claim_ratio = 1.0
             notes.append("Judge: fully supported")
         elif semantic_support == "combined":
