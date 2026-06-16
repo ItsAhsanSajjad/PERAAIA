@@ -801,7 +801,7 @@ def download_pdf(filename: str):
 # Main endpoint (HTML)
 # FIX: Open links should jump to the correct page (Streamlit-like)
 # ============================================================
-@app.post("/ask", response_model=QueryResponse)
+@app.post("/ask_html", response_model=QueryResponse)
 def ask_question(request: QueryRequest, identity: Identity = Depends(require_identity)):
     retrieval = retrieve(request.message)
     result = answer_question(request.message, retrieval)
@@ -957,10 +957,14 @@ class SimpleChatResponse(BaseModel):
     grounding: Optional[Dict[str, Any]] = None  # Part 2 additive
 
 
-@app.post("/api/ask", response_model=SimpleChatResponse)
-def simple_ask(req: Request, request: SimpleChatRequest,
-               identity: Identity = Depends(require_identity)):
-    """Chat endpoint with session tracking, smalltalk bypass, entity anchoring, and audit trail."""
+def _run_chat(req: Request, request: SimpleChatRequest,
+              identity: Identity) -> SimpleChatResponse:
+    """Shared chat pipeline: session tracking, smalltalk bypass, entity
+    anchoring, contextual rewrite, retrieval, answer, and audit trail.
+
+    Serves both the frontend `/ask` route and the `/api/ask` route used by
+    mobile + other web apps, so the two stay behaviorally identical until
+    intentionally diverged."""
     question = request.question.strip()
     rid = getattr(req.state, "request_id", "")
 
@@ -1187,6 +1191,34 @@ def simple_ask(req: Request, request: SimpleChatRequest,
         session_id=sid,
         grounding=grounding,
     )
+
+
+@app.post("/ask", response_model=SimpleChatResponse)
+def ask_chat(req: Request, request: SimpleChatRequest,
+             identity: Identity = Depends(require_identity)):
+    """Chat endpoint for THIS Next.js frontend. Dedicated path so the
+    frontend contract can evolve without touching /api/ask (mobile + other
+    web apps). Identical pipeline today."""
+    return _run_chat(req, request, identity)
+
+
+class ApiAskRequest(BaseModel):
+    message: str
+    user_id: Optional[str] = None
+
+
+@app.post("/api/ask", response_model=SimpleChatResponse)
+def simple_ask(req: Request, request: ApiAskRequest,
+               identity: Identity = Depends(require_identity)):
+    """Chat endpoint consumed by mobile + other web apps. Accepts only
+    {message, user_id}; runs the same pipeline as /ask and returns the full
+    SimpleChatResponse. No conversation_history/session_id on this contract."""
+    chat_req = SimpleChatRequest(
+        question=request.message,
+        conversation_history=None,
+        session_id=None,
+    )
+    return _run_chat(req, chat_req, identity)
 
 
 # ============================================================

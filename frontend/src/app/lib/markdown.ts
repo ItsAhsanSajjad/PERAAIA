@@ -86,10 +86,27 @@ function renderInline(
 }
 
 interface BlockElement {
-  type: "heading" | "paragraph" | "ul" | "ol" | "spacer";
+  type: "heading" | "paragraph" | "ul" | "ol" | "spacer" | "table";
   level?: number;        // heading level (2-4)
   content?: string;      // for heading/paragraph
   items?: string[];      // for lists
+  headers?: string[];    // for table header row
+  rows?: string[][];     // for table body rows
+}
+
+/** Split a single markdown table row into trimmed cell strings. */
+function splitTableRow(line: string): string[] {
+  let s = line.trim();
+  if (s.startsWith("|")) s = s.slice(1);
+  if (s.endsWith("|")) s = s.slice(0, -1);
+  return s.split("|").map((c) => c.trim());
+}
+
+/** A `|---|:--:|` style alignment/separator row underneath the header. */
+function isTableSeparator(line: string): boolean {
+  const t = line.trim();
+  if (!t.includes("-") || !t.includes("|")) return false;
+  return /^\|?[\s:|-]+\|?$/.test(t);
 }
 
 /** Parse markdown text into block-level elements */
@@ -112,6 +129,25 @@ function parseBlocks(text: string): BlockElement[] {
       if (i > 0 && rawLines[i - 1]?.trim()) {
         blocks.push({ type: "spacer" });
       }
+      continue;
+    }
+
+    // Table: a `| ... |` header row immediately followed by a `|---|` separator.
+    if (
+      trimmed.startsWith("|") &&
+      i + 1 < rawLines.length &&
+      isTableSeparator(rawLines[i + 1])
+    ) {
+      flushList();
+      const headers = splitTableRow(trimmed);
+      const rows: string[][] = [];
+      let j = i + 2; // skip header + separator
+      while (j < rawLines.length && rawLines[j].trim().startsWith("|")) {
+        rows.push(splitTableRow(rawLines[j]));
+        j++;
+      }
+      blocks.push({ type: "table", headers, rows });
+      i = j - 1; // loop ++ advances past last consumed row
       continue;
     }
 
@@ -249,6 +285,48 @@ export function renderMarkdown(text: string, opts?: MarkdownOptions): ReactNode[
             ),
           ),
         );
+
+      case "table": {
+        const headers = block.headers ?? [];
+        const rows = block.rows ?? [];
+        const thead = createElement(
+          "thead",
+          { key: `${key}-thead` },
+          createElement(
+            "tr",
+            { key: `${key}-htr` },
+            headers.map((h, c) =>
+              createElement(
+                "th",
+                { key: `${key}-th-${c}` },
+                ...renderInline(h, `${key}-th-${c}`, opts),
+              ),
+            ),
+          ),
+        );
+        const tbody = createElement(
+          "tbody",
+          { key: `${key}-tbody` },
+          rows.map((row, r) =>
+            createElement(
+              "tr",
+              { key: `${key}-tr-${r}` },
+              headers.map((_, c) =>
+                createElement(
+                  "td",
+                  { key: `${key}-td-${r}-${c}` },
+                  ...renderInline(row[c] ?? "", `${key}-td-${r}-${c}`, opts),
+                ),
+              ),
+            ),
+          ),
+        );
+        return createElement(
+          "div",
+          { key, className: "msg-table-wrap" },
+          createElement("table", { key: `${key}-tbl`, className: "msg-table" }, thead, tbody),
+        );
+      }
 
       case "spacer":
         return createElement("div", { key, className: "h-2" });
